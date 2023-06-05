@@ -1,8 +1,10 @@
+import { Box, Heading } from "@chakra-ui/react";
+
 function App() {
   return (
-    <div>
-      <h1>Renginių žemėlapis</h1>
-    </div>
+    <Box>
+      <Heading size="lg">Renginių žemėlapis</Heading>
+    </Box>
   );
 }
 
