@@ -1,1 +1,5 @@
 @import url("https://js.arcgis.com/next/esri/themes/light/main.css");
+
+.esri-view .esri-view-surface--inset-outline:focus::after {
+  outline: none !important;
+}

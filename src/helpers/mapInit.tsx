@@ -9,6 +9,7 @@ import Home from "@arcgis/core/widgets/Home.js";
 import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol.js";
 import Expand from "@arcgis/core/widgets/Expand.js";
 import { featureLayerPublic } from "../layers";
+import { layerRenderer } from "./layerRenderer";
 
 interface MapApp {
   view?: MapView;
@@ -51,6 +52,8 @@ export function init(container: HTMLDivElement) {
       snapToZoom: false,
     },
   });
+
+  layerRenderer(view);
   const marker = new SimpleMarkerSymbol({ color: [203, 52, 52, 0.93] });
 
   const sources = [
@@ -81,7 +84,7 @@ export function init(container: HTMLDivElement) {
   });
 
   view.ui.add(searchExpand, {
-    position: "top-left",
+    position: "top-right",
     index: 2,
   });
 
@@ -93,7 +96,6 @@ export function init(container: HTMLDivElement) {
   const legendExpand = new Expand({
     view,
     content: legend,
-    expanded: true,
     expandTooltip: "Legenda",
   });
 

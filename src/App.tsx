@@ -1,11 +1,11 @@
 import { Routes, Route } from "react-router-dom";
-import { ArcGISMap } from "./components/Map/Map";
+import { Map } from "./pages/Map";
 import "./App.css";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<ArcGISMap />} />
+      <Route path="/" element={<Map />} />
     </Routes>
   );
 }
