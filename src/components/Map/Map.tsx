@@ -12,5 +12,5 @@ export function ArcGISMap() {
     }
   }, [mapRef, loadMap]);
 
-  return <Box w="100%" h="100%" pl="300px" pt="60px" ref={mapRef}></Box>;
+  return <Box w="100%" h="100%" pl="400px" pt="60px" ref={mapRef}></Box>;
 }

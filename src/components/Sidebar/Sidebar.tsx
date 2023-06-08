@@ -1,6 +1,10 @@
-import { Box, Text } from "@chakra-ui/react";
+import React from "react";
+import { Box } from "@chakra-ui/react";
+interface Sidebar {
+  children: React.ReactNode;
+}
 
-const Sidebar = () => {
+const Sidebar = ({ children }: Sidebar) => {
   return (
     <Box
       position="absolute"
@@ -8,11 +12,11 @@ const Sidebar = () => {
       px="3"
       pt="80px"
       top={0}
-      w="300px"
+      w="400px"
       h="100%"
-      bg="#eee"
+      bg="brand.white"
     >
-      <Text>Sidebar</Text>
+      {children}
     </Box>
   );
 };
