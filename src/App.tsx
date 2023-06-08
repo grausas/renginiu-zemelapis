@@ -1,10 +1,12 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Routes, Route } from "react-router-dom";
+import { ArcGISMap } from "./components/Map/Map";
+import "./App.css";
 
 function App() {
   return (
-    <Box>
-      <Heading size="lg">Renginių žemėlapis</Heading>
-    </Box>
+    <Routes>
+      <Route path="/" element={<ArcGISMap />} />
+    </Routes>
   );
 }
 
