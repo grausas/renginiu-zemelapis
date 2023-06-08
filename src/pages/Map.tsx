@@ -1,6 +1,12 @@
 import { ArcGISMap } from "../components/Map/Map";
-import { Box, Button } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import Sidebar from "../components/Sidebar/Sidebar";
 
 export function Map() {
-  return <ArcGISMap />;
+  return (
+    <Box w="100" h="100%">
+      <Sidebar />
+      <ArcGISMap />
+    </Box>
+  );
 }

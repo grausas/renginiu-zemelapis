@@ -10,7 +10,7 @@ import theme from "./theme";
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
-      <ChakraProvider theme={theme}>
+      <ChakraProvider theme={theme} resetCSS={true}>
         <MapProvider>
           <App />
         </MapProvider>

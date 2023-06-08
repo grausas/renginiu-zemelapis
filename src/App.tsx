@@ -1,12 +1,16 @@
 import { Routes, Route } from "react-router-dom";
 import { Map } from "./pages/Map";
 import "./App.css";
+import Header from "./components/Header/Header";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Map />} />
-    </Routes>
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Map />} />
+      </Routes>
+    </>
   );
 }
 
