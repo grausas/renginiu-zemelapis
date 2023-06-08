@@ -30,6 +30,22 @@ const theme = extendTheme({
       dark: "#302B27",
     },
   },
+  components: {
+    Button: {
+      sizes: {
+        md: {
+          borderRadius: "sm",
+        },
+      },
+    },
+    Input: {
+      sizes: {
+        md: {
+          field: { borderRadius: "sm" },
+        },
+      },
+    },
+  },
 });
 
 export default theme;
