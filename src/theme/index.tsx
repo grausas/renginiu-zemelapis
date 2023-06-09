@@ -34,14 +34,17 @@ const theme = extendTheme({
     Button: {
       sizes: {
         md: {
-          borderRadius: "sm",
+          borderRadius: "md",
+        },
+        sm: {
+          borderRadius: "md",
         },
       },
     },
     Input: {
       sizes: {
         md: {
-          field: { borderRadius: "sm" },
+          field: { borderRadius: "md" },
         },
       },
     },

@@ -8,8 +8,9 @@ export default function Filter() {
       color="brand.dark"
       variant="outline"
       px="6"
-      fontSize="sm"
+      fontSize="xs"
       shadow="md"
+      textTransform="uppercase"
     >
       Filtrai
     </Button>

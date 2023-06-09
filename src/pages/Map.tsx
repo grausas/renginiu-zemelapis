@@ -3,6 +3,7 @@ import { Box, Stack, Text } from "@chakra-ui/react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Search from "../components/Search/Search";
 import Filter from "../components/Filter/Filter";
+import FilterByDate from "../components/FilterByDate/FilterByDate";
 import Card from "../components/Card/Card";
 import { queryFeatures } from "../queries/queryFeatures";
 import { useEffect, useState } from "react";
@@ -46,10 +47,12 @@ export function Map() {
         <Box px="3" mb="2">
           <Text>Rodomi {data.length} renginiai</Text>
         </Box>
+        <FilterByDate />
         <Box
           h="calc(100% - 80px)"
           px="3"
           overflow="auto"
+          mt="2"
           css={{
             "&::-webkit-scrollbar": {
               width: "4px",

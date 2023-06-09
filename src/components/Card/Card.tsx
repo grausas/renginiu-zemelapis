@@ -16,7 +16,7 @@ export default function Card({ data }: any) {
         key={feature.attributes.OBJECTID}
         border="1px solid #eee"
         p="3"
-        borderRadius="sm"
+        borderRadius="md"
         shadow="base"
         mb="2"
         flexDirection="column"
