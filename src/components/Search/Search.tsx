@@ -7,7 +7,12 @@ export default function Search() {
       <InputLeftElement pointerEvents="none">
         <SearchIcon color="gray.400" />
       </InputLeftElement>
-      <Input variant="filled" placeholder="Ieškoti renginio" fontSize="sm" />
+      <Input
+        variant="filled"
+        placeholder="Ieškoti renginio"
+        fontSize="sm"
+        shadow="md"
+      />
     </InputGroup>
   );
 }

@@ -5,7 +5,7 @@ export default function Header() {
   return (
     <Flex
       as="header"
-      position="fixed"
+      position="relative"
       align="center"
       w="100%"
       bg="brand.dark"
@@ -13,6 +13,7 @@ export default function Header() {
       px="3"
       zIndex="22"
       height="60px"
+      shadow="base"
     >
       <Image src={logo} maxW="40px" mr="4" />
       <Text fontSize="xl" textTransform="uppercase">

@@ -9,6 +9,7 @@ export default function Filter() {
       variant="outline"
       px="5"
       fontSize="sm"
+      shadow="md"
     >
       Filtrai
     </Button>

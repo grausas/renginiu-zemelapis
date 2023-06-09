@@ -7,13 +7,12 @@ interface Sidebar {
 const Sidebar = ({ children }: Sidebar) => {
   return (
     <Box
-      position="absolute"
-      left={0}
-      px="3"
-      pt="80px"
-      top={0}
+      position="fixed"
+      left="0"
+      top="60px"
+      pt="4"
       w="400px"
-      h="100%"
+      h="calc(100% - 60px)"
       bg="brand.white"
     >
       {children}

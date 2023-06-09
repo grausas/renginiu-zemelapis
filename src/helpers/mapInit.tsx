@@ -42,7 +42,7 @@ export function init(container: HTMLDivElement) {
   const view = new MapView({
     map,
     container,
-    center: [25.27043, 54.689],
+    center: [25.33043, 54.689],
     zoom: 11,
     ui: {
       components: ["attribution"],

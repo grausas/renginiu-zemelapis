@@ -10,7 +10,7 @@ const theme = extendTheme({
         padding: "0",
         width: "100%",
         height: "100%",
-        overflowX: "hidden",
+        overflow: "hidden",
       },
       body: {
         textRendering: "optimizeSpeed",
