@@ -1,5 +1,5 @@
 import { ArcGISMap } from "../components/Map/Map";
-import { Box, Stack } from "@chakra-ui/react";
+import { Box, Stack, Text } from "@chakra-ui/react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Search from "../components/Search/Search";
 import Filter from "../components/Filter/Filter";
@@ -8,9 +8,17 @@ import { queryFeatures } from "../queries/queryFeatures";
 import { useEffect, useState } from "react";
 import { featureLayerPublic } from "../layers";
 
+const todayStart = new Date(new Date().setHours(0, 0, 0)).toLocaleString(
+  "lt-LT"
+);
+const todayEnd = new Date(new Date().setHours(23, 59, 59)).toLocaleString(
+  "lt-LT"
+);
+const defaultWhereParams = `RENGINIO_PRADZIA <= '${todayEnd}' AND RENGINIO_PABAIGA >= '${todayStart}'`;
+
 export function Map() {
   const [data, setData] = useState<__esri.Graphic[]>([]);
-  const [whereParams, setWhereParams] = useState("1=1");
+  const [whereParams, setWhereParams] = useState(defaultWhereParams);
 
   // query features
   const query = async (layer: __esri.FeatureLayer) => {
@@ -31,12 +39,15 @@ export function Map() {
   return (
     <Box w="100" h="100%">
       <Sidebar>
-        <Stack direction={["column", "row"]} spacing="3" px="3" mb="3">
+        <Stack direction={["column", "row"]} spacing="3" px="3" mb="2">
           <Search />
           <Filter />
         </Stack>
+        <Box px="3" mb="2">
+          <Text>Rodomi {data.length} renginiai</Text>
+        </Box>
         <Box
-          h="calc(100% - 60px)"
+          h="calc(100% - 80px)"
           px="3"
           overflow="auto"
           css={{

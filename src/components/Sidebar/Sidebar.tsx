@@ -9,7 +9,7 @@ const Sidebar = ({ children }: Sidebar) => {
     <Box
       position="fixed"
       left="0"
-      top="60px"
+      top="50px"
       pt="4"
       w="400px"
       h="calc(100% - 60px)"

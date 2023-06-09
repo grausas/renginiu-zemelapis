@@ -7,7 +7,7 @@ export default function Filter() {
       leftIcon={<HamburgerIcon />}
       color="brand.dark"
       variant="outline"
-      px="5"
+      px="6"
       fontSize="sm"
       shadow="md"
     >
