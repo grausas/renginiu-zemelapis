@@ -1,46 +1,34 @@
-import { Flex, Button } from "@chakra-ui/react";
+import { Box, Button, useRadio } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
-export default function Filter() {
+export default function FilterByDate(props: any) {
+  const { getInputProps, getRadioProps } = useRadio(props);
+
+  const input = getInputProps();
+  const checkbox = getRadioProps();
+
   return (
-    <Flex px="3" w="100%" justify="space-between">
-      <Button
-        leftIcon={<ViewIcon />}
-        variant="outline"
-        px="6"
+    <Box as="label">
+      <input {...input} />
+      <Box
+        {...checkbox}
+        py="2"
+        border="1px solid"
+        borderColor="gray.200"
+        borderRadius="md"
+        px="7"
         fontSize="xs"
         shadow="md"
-        size="sm"
-        bg="brand.dark"
-        color="brand.white"
-        textTransform="uppercase"
-      >
-        Dienos
-      </Button>
-      <Button
-        leftIcon={<ViewOffIcon />}
         color="brand.dark"
-        variant="outline"
-        px="6"
-        fontSize="xs"
-        shadow="md"
-        size="sm"
         textTransform="uppercase"
+        _checked={{
+          bg: "brand.dark",
+          color: "brand.white",
+        }}
       >
-        Savaitės
-      </Button>
-      <Button
-        leftIcon={<ViewOffIcon />}
-        color="brand.dark"
-        variant="outline"
-        px="6"
-        fontSize="xs"
-        shadow="md"
-        size="sm"
-        textTransform="uppercase"
-      >
-        Mėnesio
-      </Button>
-    </Flex>
+        {input.checked === true ? <ViewIcon mr="1" /> : <ViewOffIcon mr="1" />}
+        {props.children}
+      </Box>
+    </Box>
   );
 }

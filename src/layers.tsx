@@ -1,4 +1,6 @@
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+const date = new Date();
+const publicDate = new Date(date.setMonth(date.getMonth() - 1)).toISOString();
 
 export const featureLayerPublic = () => {
   const layer = new FeatureLayer({
@@ -6,6 +8,7 @@ export const featureLayerPublic = () => {
     outFields: ["*"],
     title: "public",
     id: "public",
+    definitionExpression: "RENGINIO_PABAIGA > '" + publicDate + "'",
   });
   return layer;
 };

@@ -10,9 +10,8 @@ export default function Search() {
       <Input
         variant="filled"
         placeholder="Ieškoti renginio"
-        fontSize="xs"
+        fontSize="sm"
         shadow="md"
-        textTransform="uppercase"
       />
     </InputGroup>
   );
