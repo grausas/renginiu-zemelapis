@@ -44,7 +44,6 @@ export function Map() {
   //       setData([]);
   //       try {
   //         const features = await queryFeatures(layer, whereParams);
-  //         console.log("features", features);
   //         setData(features);
   //       } catch (err) {
   //         console.log("erorr", err);
@@ -55,44 +54,27 @@ export function Map() {
 
   //   useEffect(() => {
   //     query(featureLayerPublic());
-  //     console.log("fweewgw");
   //   }, [query]);
 
   useEffect(() => {
     view
       ?.whenLayerView(view.map.layers.getItemAt(0))
       .then(function (layerView: any) {
-        console.log("view", view);
-        console.log("layerView", layerView);
-        // layerView.filter = {
-        //   where: whereParams,
-        // };
-        const filter = { where: whereParams };
-        layerView.featureEffect = {
-          filter: filter,
-          excludedEffect: "grayscale(100%) opacity(0%)",
-          includedEffect: "drop-shadow(0px, 0px, 3px)",
-        };
-
+        layerView.filter = { where: whereParams };
         reactiveUtils.when(
           () => !layerView.updating,
           () => {
-            // const queryParams = layerView.filter.createQuery();
-            // queryParams.geometry = view.extent;
-
-            console.log("finished");
+            const queryParams = layerView.filter.createQuery();
+            queryParams.geometry = view.extent;
             layerView
               .queryFeatures({ where: whereParams })
               .then(function (results: __esri.FeatureSet) {
-                console.log("results", results);
                 setData(results.features);
                 setLoading(false);
               })
               .catch(function (error: string) {
                 setLoading(false);
-                console.error("query failed: ", error);
               });
-            console.log("LayerView finished updating.");
           },
           { once: true }
         );

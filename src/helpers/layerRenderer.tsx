@@ -10,7 +10,6 @@ import ValstybinisRenginys from "../assets/icons/valstybinis_renginys.svg";
 import ViesasisRenginys from "../assets/icons/viesasis_renginys.svg";
 
 export const layerRenderer = (view: any) => {
-  // add graphicLayer to map if user logged in
   reactiveUtils
     .whenOnce(() => view.ready)
     .then(() => {
