@@ -12,11 +12,11 @@ export default function FilterByDate(props: any) {
       <input {...input} />
       <Box
         {...checkbox}
-        py="2"
+        py={{ base: "1", md: "2" }}
         border="1px solid"
         borderColor="gray.200"
         borderRadius="md"
-        px="7"
+        px={{ base: "5", md: "7" }}
         fontSize="xs"
         shadow="md"
         color="brand.dark"

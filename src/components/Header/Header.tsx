@@ -16,7 +16,7 @@ export default function Header() {
       shadow="base"
     >
       <Image src={logo} maxW="40px" mr="4" />
-      <Text fontSize="xl" textTransform="uppercase">
+      <Text fontSize={{ base: "md", md: "xl" }} textTransform="uppercase">
         Vilniaus miesto renginių žemėlapis
       </Text>
     </Flex>

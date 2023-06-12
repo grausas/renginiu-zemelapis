@@ -160,7 +160,7 @@ export function Map() {
         </Flex>
         {/* <FilterByDate /> */}
         <Box
-          h="calc(100% - 80px)"
+          h="calc(100% - 120px)"
           px="3"
           overflow="auto"
           mt="2"
