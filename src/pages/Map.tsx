@@ -1,5 +1,12 @@
 import { ArcGISMap } from "../components/Map/Map";
-import { Box, Flex, Stack, Text, useRadioGroup } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Stack,
+  Text,
+  useRadioGroup,
+  Spinner,
+} from "@chakra-ui/react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Search from "../components/Search/Search";
 import Filter from "../components/Filter/Filter";
@@ -8,10 +15,8 @@ import Card from "../components/Card/Card";
 import { queryFeatures } from "../queries/queryFeatures";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { featureLayerPublic } from "../layers";
-import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter.js";
-import FeatureEffect from "@arcgis/core/layers/support/FeatureEffect.js";
-import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
 
+import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
 import { MapContext } from "../context/map-context";
 import { layerRenderer } from "../helpers/layerRenderer";
 
@@ -23,6 +28,7 @@ export function Map() {
   const [data, setData] = useState<__esri.Graphic[]>([]);
   const [dateStart, setDateStart] = useState(todayStart);
   const [dateEnd, setDateEnd] = useState(todayEnd);
+  const [loading, setLoading] = useState(false);
   const [whereParams, setWhereParams] = useState(defaultWhereParams);
   const { view } = useContext(MapContext);
 
@@ -53,20 +59,27 @@ export function Map() {
   //   }, [query]);
 
   useEffect(() => {
+    setLoading(true);
     view
       ?.whenLayerView(view.map.layers.getItemAt(0))
       .then(function (layerView: any) {
         console.log("view", view);
         console.log("layerView", layerView);
-        layerView.filter = {
-          where: whereParams,
+        // layerView.filter = {
+        //   where: whereParams,
+        // };
+        const filter = { where: whereParams };
+        layerView.featureEffect = {
+          filter: filter,
+          excludedEffect: "grayscale(100%) opacity(0%)",
+          includedEffect: "drop-shadow(0px, 0px, 3px)",
         };
 
         reactiveUtils.when(
           () => !layerView.updating,
           () => {
-            const queryParams = layerView.filter.createQuery();
-            queryParams.geometry = view.extent;
+            // const queryParams = layerView.filter.createQuery();
+            // queryParams.geometry = view.extent;
 
             console.log("finished");
             layerView
@@ -74,8 +87,10 @@ export function Map() {
               .then(function (results: __esri.FeatureSet) {
                 console.log("results", results);
                 setData(results.features);
+                setLoading(false);
               })
               .catch(function (error: string) {
+                setLoading(false);
                 console.error("query failed: ", error);
               });
             console.log("LayerView finished updating.");
@@ -87,9 +102,6 @@ export function Map() {
         // An error occurred during the layerview creation
         console.log("error", error);
       });
-    // const params = `RENGINIO_PRADZIA <= '${new Date(
-    //   todayEnd
-    // ).getTime()}' AND RENGINIO_PABAIGA >= '${new Date(todayStart).getTime()}'`;
   }, [view, whereParams]);
 
   const handleChangeDate = (value: string) => {
@@ -165,7 +177,18 @@ export function Map() {
             },
           }}
         >
-          <Card data={data} />
+          {loading ? (
+            <Spinner
+              color="orange"
+              size="xl"
+              position="absolute"
+              top="30%"
+              left="45%"
+              label="loading..."
+            />
+          ) : (
+            <Card data={data} />
+          )}
         </Box>
       </Sidebar>
       <ArcGISMap />

@@ -14,6 +14,8 @@ const Sidebar = ({ children }: Sidebar) => {
       w="400px"
       h="calc(100% - 60px)"
       bg="brand.white"
+      borderRight="1px solid"
+      borderColor="gray.200"
     >
       {children}
     </Box>
