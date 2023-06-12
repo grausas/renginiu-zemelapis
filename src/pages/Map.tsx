@@ -28,7 +28,7 @@ export function Map() {
   const [data, setData] = useState<__esri.Graphic[]>([]);
   const [dateStart, setDateStart] = useState(todayStart);
   const [dateEnd, setDateEnd] = useState(todayEnd);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [whereParams, setWhereParams] = useState(defaultWhereParams);
   const { view } = useContext(MapContext);
 
@@ -59,7 +59,6 @@ export function Map() {
   //   }, [query]);
 
   useEffect(() => {
-    setLoading(true);
     view
       ?.whenLayerView(view.map.layers.getItemAt(0))
       .then(function (layerView: any) {

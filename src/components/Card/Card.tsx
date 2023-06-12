@@ -1,9 +1,9 @@
-import { Text, Flex, Box } from "@chakra-ui/react";
+import { Text, Flex } from "@chakra-ui/react";
 import { sortByDate } from "../../helpers/sortBydate";
 
 export default function Card({ data }: any) {
   const sortedData = sortByDate(data);
-  return sortedData.map((feature: any) => {
+  return sortedData.map((feature: __esri.Graphic) => {
     const startDate = new Date(
       feature.attributes.RENGINIO_PRADZIA
     ).toLocaleString();
