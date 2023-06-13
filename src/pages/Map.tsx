@@ -106,14 +106,8 @@ export function Map() {
 
   // filter events by category
   const handleFilter = (e: string[]) => {
-    // const value = e.target.value;
-    console.log("value", e);
     setCategory(e);
   };
-
-  useEffect(() => {
-    console.log("category", category);
-  }, [category]);
 
   return (
     <Box w="100" h="100%">

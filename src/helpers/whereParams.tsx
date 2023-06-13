@@ -3,7 +3,6 @@ export const whereParamsChange = (
   end: number,
   category: string[]
 ) => {
-  console.log("start", start);
   const params: string[] = [];
   if (end) {
     params.push(`RENGINIO_PRADZIA <= '${end}'`);
@@ -15,6 +14,5 @@ export const whereParamsChange = (
     params.push(`KATEGORIJA IN (${category.join(",")})`);
   }
 
-  console.log("params", params.join(" AND "));
   return params.join(" AND ");
 };

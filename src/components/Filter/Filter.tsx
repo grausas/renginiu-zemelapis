@@ -31,7 +31,6 @@ export default function Filter({ handleFilter }: FilterProps) {
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    console.log("e", event);
     setCheckedItems([
       ...checkedItems.slice(0, index),
       event.target.checked,
@@ -64,6 +63,7 @@ export default function Filter({ handleFilter }: FilterProps) {
           shadow="md"
           textTransform="uppercase"
           onClick={onOpen}
+          w="100%"
         >
           {category.length === 0 ? "Filtrai" : category.length + " filtrai"}
         </Button>

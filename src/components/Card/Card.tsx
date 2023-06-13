@@ -15,17 +15,37 @@ export default function Card({ data }: any) {
     return (
       <Flex
         key={feature.attributes.OBJECTID}
-        border="1px solid #eee"
+        border="1px solid"
+        borderColor="gray.200"
         p="3"
         borderRadius="md"
         shadow="base"
         mb="2"
         flexDirection="column"
+        // position="relative"
       >
         {CategoryData.map((category) => {
           if (category.value === feature.attributes.KATEGORIJA) {
             return (
               <Flex justify="center" key={category.id}>
+                {/* <Box
+                  position="absolute"
+                  top="calc(50% - 30%)"
+                  right="0"
+                  bg={category.color}
+                  w="4px"
+                  h="60%"
+                  borderLeftRadius="xl"
+                />
+                <Box
+                  position="absolute"
+                  top="calc(50% - 30%)"
+                  left="0"
+                  bg={category.color}
+                  w="4px"
+                  h="60%"
+                  borderRightRadius="xl"
+                /> */}
                 <Flex
                   align="center"
                   justify="center"

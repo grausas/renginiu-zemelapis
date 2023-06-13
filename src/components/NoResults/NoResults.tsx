@@ -6,7 +6,8 @@ export default function NoResults() {
     <Box
       textAlign="center"
       mt="8"
-      border="1px solid #eee"
+      border="1px solid"
+      borderColor="gray.200"
       p="4"
       borderRadius="md"
     >

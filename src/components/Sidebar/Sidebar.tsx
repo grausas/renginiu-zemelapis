@@ -17,6 +17,7 @@ const Sidebar = ({ children }: Sidebar) => {
       bg="brand.white"
       borderRight="1px solid"
       borderColor="gray.200"
+      zIndex="1"
     >
       {children}
     </Box>
