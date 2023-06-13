@@ -1,4 +1,4 @@
-import { Box, Button, useRadio } from "@chakra-ui/react";
+import { Box, Button, useRadio, Flex } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 export default function FilterByDate(props: any) {
@@ -10,9 +10,10 @@ export default function FilterByDate(props: any) {
   return (
     <Box as="label">
       <input {...input} />
-      <Box
+      <Flex
         {...checkbox}
         py={{ base: "1", md: "2" }}
+        align="center"
         border="1px solid"
         borderColor="gray.200"
         borderRadius="md"
@@ -28,7 +29,7 @@ export default function FilterByDate(props: any) {
       >
         {input.checked === true ? <ViewIcon mr="1" /> : <ViewOffIcon mr="1" />}
         {props.children}
-      </Box>
+      </Flex>
     </Box>
   );
 }

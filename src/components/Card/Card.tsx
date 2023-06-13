@@ -1,5 +1,6 @@
-import { Text, Flex } from "@chakra-ui/react";
+import { Text, Flex, Image, Box } from "@chakra-ui/react";
 import { sortByDate } from "../../helpers/sortBydate";
+import { CategoryData } from "../../utils/Category";
 
 export default function Card({ data }: any) {
   const sortedData = sortByDate(data);
@@ -21,9 +22,38 @@ export default function Card({ data }: any) {
         mb="2"
         flexDirection="column"
       >
-        <Text>{feature.attributes.PAVADINIMAS}</Text>
-        <Text>{startDate} - </Text>
-        <Text>{endDate}</Text>
+        {CategoryData.map((category) => {
+          if (category.value === feature.attributes.KATEGORIJA) {
+            return (
+              <Flex justify="center">
+                <Flex
+                  align="center"
+                  justify="center"
+                  bg={category.color}
+                  px="4"
+                  py="0.5"
+                  borderRadius="md"
+                  color="brand.white"
+                >
+                  <Image src={category.icon} h="6" mr="1" />
+                  <Text
+                    fontWeight="500"
+                    letterSpacing="1px"
+                    fontSize="xs"
+                    textTransform="uppercase"
+                  >
+                    {category.text}
+                  </Text>
+                </Flex>
+              </Flex>
+            );
+          }
+        })}
+        <Text textAlign="center" my="2" fontWeight="500">
+          {feature.attributes.PAVADINIMAS}
+        </Text>
+        <Text fontSize="sm">Nuo: {startDate}</Text>
+        <Text fontSize="sm">Iki: {endDate}</Text>
       </Flex>
     );
   });
