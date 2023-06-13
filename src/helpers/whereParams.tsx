@@ -1,4 +1,8 @@
-export const whereParamsChange = (start: number, end: number) => {
+export const whereParamsChange = (
+  start: number,
+  end: number,
+  category: string[]
+) => {
   console.log("start", start);
   const params: string[] = [];
   if (end) {
@@ -7,6 +11,10 @@ export const whereParamsChange = (start: number, end: number) => {
   if (start) {
     params.push(`RENGINIO_PABAIGA >= '${start}'`);
   }
+  if (category.length > 0) {
+    params.push(`KATEGORIJA IN (${category.join(",")})`);
+  }
+
   console.log("params", params.join(" AND "));
   return params.join(" AND ");
 };

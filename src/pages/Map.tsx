@@ -12,31 +12,30 @@ import Search from "../components/Search/Search";
 import Filter from "../components/Filter/Filter";
 import FilterByDate from "../components/FilterByDate/FilterByDate";
 import Card from "../components/Card/Card";
-import { queryFeatures } from "../queries/queryFeatures";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { featureLayerPublic } from "../layers";
+import { useContext, useEffect, useState } from "react";
 import { whereParamsChange } from "../helpers/whereParams";
 
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
 import { MapContext } from "../context/map-context";
-import { layerRenderer } from "../helpers/layerRenderer";
 import { addDays } from "../helpers/addDays";
 
 const todayStart = new Date(new Date().setHours(0, 0, 0)).getTime();
 const todayEnd = new Date(new Date().setHours(23, 59, 59)).getTime();
 const defaultWhereParams = `RENGINIO_PRADZIA <= '${todayEnd}' AND RENGINIO_PABAIGA >= '${todayStart}'`;
+const options = ["dienos", "savaitės", "mėnesio"];
 
 export function Map() {
   const [data, setData] = useState<__esri.Graphic[]>([]);
   const [dateStart, setDateStart] = useState(todayStart);
+  const [category, setCategory] = useState<string[]>([]);
   const [dateEnd, setDateEnd] = useState(todayEnd);
   const [loading, setLoading] = useState(true);
   const [whereParams, setWhereParams] = useState(defaultWhereParams);
   const { view } = useContext(MapContext);
 
   useEffect(() => {
-    setWhereParams(whereParamsChange(dateStart, dateEnd));
-  }, [dateStart, dateEnd]);
+    setWhereParams(whereParamsChange(dateStart, dateEnd, category));
+  }, [dateStart, dateEnd, category]);
 
   // query features
   //   const query = useCallback(
@@ -56,6 +55,7 @@ export function Map() {
   //     query(featureLayerPublic());
   //   }, [query]);
 
+  // query features by where params
   useEffect(() => {
     view
       ?.whenLayerView(view.map.layers.getItemAt(0))
@@ -86,6 +86,7 @@ export function Map() {
       });
   }, [view, whereParams]);
 
+  // filter events by current day, coming week or month
   const handleChangeDate = (value: string) => {
     if (value === "dienos") {
       setWhereParams(defaultWhereParams);
@@ -95,9 +96,6 @@ export function Map() {
       setDateEnd(addDays(todayEnd, 31));
     }
   };
-
-  const options = ["dienos", "savaitės", "mėnesio"];
-
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "dienos",
     defaultValue: "dienos",
@@ -105,15 +103,26 @@ export function Map() {
   });
   const group = getRootProps();
 
+  // filter events by category
+  const handleFilter = (e: string[]) => {
+    // const value = e.target.value;
+    console.log("value", e);
+    setCategory(e);
+  };
+
+  useEffect(() => {
+    console.log("category", category);
+  }, [category]);
+
   return (
     <Box w="100" h="100%">
       <Sidebar>
         <Stack direction={["column", "row"]} spacing="3" px="3" mb="2">
           <Search />
-          <Filter />
+          <Filter handleFilter={handleFilter} />
         </Stack>
         <Box px="3" mb="2">
-          <Text>Rodomi {data.length} renginiai</Text>
+          <Text>Rodomi {data?.length} renginiai</Text>
         </Box>
         <Flex
           px="3"
@@ -123,7 +132,11 @@ export function Map() {
           {...group}
         >
           {options.map((value) => (
-            <FilterByDate key={value} {...getRadioProps({ value })}>
+            <FilterByDate
+              key={value}
+              loading={loading}
+              {...getRadioProps({ value })}
+            >
               {value}
             </FilterByDate>
           ))}

@@ -25,7 +25,7 @@ export default function Card({ data }: any) {
         {CategoryData.map((category) => {
           if (category.value === feature.attributes.KATEGORIJA) {
             return (
-              <Flex justify="center">
+              <Flex justify="center" key={category.id}>
                 <Flex
                   align="center"
                   justify="center"

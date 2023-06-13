@@ -1,15 +1,16 @@
-import { Box, Button, useRadio, Flex } from "@chakra-ui/react";
+import { Box, Button, useRadio, Input, Flex } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
-export default function FilterByDate(props: any) {
+export default function FilterByDate(props: any, loading: boolean) {
   const { getInputProps, getRadioProps } = useRadio(props);
+  // const loading = true;
 
   const input = getInputProps();
   const checkbox = getRadioProps();
 
   return (
     <Box as="label">
-      <input {...input} />
+      <Input isDisabled={loading} {...input} />
       <Flex
         {...checkbox}
         py={{ base: "1", md: "2" }}
