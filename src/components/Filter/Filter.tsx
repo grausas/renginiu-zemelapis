@@ -11,8 +11,9 @@ import {
   ModalCloseButton,
   Checkbox,
   Flex,
+  Icon,
 } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { CategoryData } from "../../utils/Category";
 
 type FilterProps = {
@@ -25,9 +26,7 @@ export default function Filter({ handleFilter }: FilterProps) {
   const [checkedItems, setCheckedItems] = useState(
     CategoryData.map(() => false)
   );
-  console.log("categoryFilter", category);
-  console.log("checkedItems", checkedItems);
-
+  // filter by category, add checkboxes to array to save state after modal closed
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -44,24 +43,31 @@ export default function Filter({ handleFilter }: FilterProps) {
       setCategory(category.filter((item) => item !== event.target.value));
     }
   };
+  // clear checkboxes and all filters
+  const clearFilter = () => {
+    setCategory([]);
+    setCheckedItems(CategoryData.map(() => false));
+  };
   useEffect(() => {
     handleFilter(category);
   }, [category]);
 
   return (
     <>
-      <Button
-        leftIcon={<HamburgerIcon />}
-        color="brand.dark"
-        variant="outline"
-        px="6"
-        fontSize="xs"
-        shadow="md"
-        textTransform="uppercase"
-        onClick={onOpen}
-      >
-        Filtrai
-      </Button>
+      <Flex>
+        <Button
+          leftIcon={<HamburgerIcon />}
+          color="brand.dark"
+          variant="outline"
+          px="6"
+          fontSize="xs"
+          shadow="md"
+          textTransform="uppercase"
+          onClick={onOpen}
+        >
+          {category.length === 0 ? "Filtrai" : category.length + " filtrai"}
+        </Button>
+      </Flex>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -85,7 +91,7 @@ export default function Filter({ handleFilter }: FilterProps) {
             <Button colorScheme="blue" mr={3} size="sm" onClick={onClose}>
               Uždaryti
             </Button>
-            <Button variant="ghost" size="sm">
+            <Button variant="outline" size="sm" onClick={clearFilter}>
               Panikinti filtrus
             </Button>
           </ModalFooter>

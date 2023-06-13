@@ -89,7 +89,7 @@ export function Map() {
   // filter events by current day, coming week or month
   const handleChangeDate = (value: string) => {
     if (value === "dienos") {
-      setWhereParams(defaultWhereParams);
+      setDateEnd(todayEnd);
     } else if (value === "savaitės") {
       setDateEnd(addDays(todayEnd, 7));
     } else {
@@ -121,9 +121,13 @@ export function Map() {
           <Search />
           <Filter handleFilter={handleFilter} />
         </Stack>
-        <Box px="3" mb="2">
-          <Text>Rodomi {data?.length} renginiai</Text>
-        </Box>
+        <Flex px="3" mb="2">
+          Rodomi{" "}
+          <Text mx="1" fontWeight="500">
+            {data?.length}
+          </Text>{" "}
+          renginiai
+        </Flex>
         <Flex
           px="3"
           width="100%"
@@ -141,7 +145,6 @@ export function Map() {
             </FilterByDate>
           ))}
         </Flex>
-        {/* <FilterByDate /> */}
         <Box
           h="calc(100% - 120px)"
           px="3"

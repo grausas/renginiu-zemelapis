@@ -10,7 +10,7 @@ export default function FilterByDate(props: any, loading: boolean) {
 
   return (
     <Box as="label">
-      <Input isDisabled={loading} {...input} />
+      <Input {...input} />
       <Flex
         {...checkbox}
         py={{ base: "1", md: "2" }}
