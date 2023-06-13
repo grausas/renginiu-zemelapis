@@ -18,6 +18,7 @@ import { whereParamsChange } from "../helpers/whereParams";
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
 import { MapContext } from "../context/map-context";
 import { addDays } from "../helpers/addDays";
+import NoResults from "../components/NoResults/NoResults";
 
 const todayStart = new Date(new Date().setHours(0, 0, 0)).getTime();
 const todayEnd = new Date(new Date().setHours(23, 59, 59)).getTime();
@@ -172,8 +173,10 @@ export function Map() {
               left="45%"
               label="loading..."
             />
-          ) : (
+          ) : data.length > 0 ? (
             <Card data={data} />
+          ) : (
+            <NoResults />
           )}
         </Box>
       </Sidebar>
