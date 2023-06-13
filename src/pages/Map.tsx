@@ -15,10 +15,12 @@ import Card from "../components/Card/Card";
 import { queryFeatures } from "../queries/queryFeatures";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { featureLayerPublic } from "../layers";
+import { whereParamsChange } from "../helpers/whereParams";
 
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
 import { MapContext } from "../context/map-context";
 import { layerRenderer } from "../helpers/layerRenderer";
+import { addDays } from "../helpers/addDays";
 
 const todayStart = new Date(new Date().setHours(0, 0, 0)).getTime();
 const todayEnd = new Date(new Date().setHours(23, 59, 59)).getTime();
@@ -32,11 +34,9 @@ export function Map() {
   const [whereParams, setWhereParams] = useState(defaultWhereParams);
   const { view } = useContext(MapContext);
 
-  function addDays(date: number, days: number) {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result.getTime();
-  }
+  useEffect(() => {
+    setWhereParams(whereParamsChange(dateStart, dateEnd));
+  }, [dateStart, dateEnd]);
 
   // query features
   //   const query = useCallback(
@@ -74,6 +74,7 @@ export function Map() {
               })
               .catch(function (error: string) {
                 setLoading(false);
+                console.log("error", error);
               });
           },
           { once: true }
@@ -87,23 +88,11 @@ export function Map() {
 
   const handleChangeDate = (value: string) => {
     if (value === "dienos") {
-      setWhereParams(
-        `RENGINIO_PRADZIA <= '${todayEnd}' AND RENGINIO_PABAIGA >= '${todayStart}'`
-      );
+      setWhereParams(defaultWhereParams);
     } else if (value === "savaitės") {
-      setWhereParams(
-        `RENGINIO_PRADZIA <= '${addDays(
-          todayEnd,
-          7
-        )}' AND RENGINIO_PABAIGA >= '${todayStart}'`
-      );
+      setDateEnd(addDays(todayEnd, 7));
     } else {
-      setWhereParams(
-        `RENGINIO_PRADZIA <= '${addDays(
-          todayEnd,
-          31
-        )}' AND RENGINIO_PABAIGA >= '${todayStart}'`
-      );
+      setDateEnd(addDays(todayEnd, 31));
     }
   };
 
