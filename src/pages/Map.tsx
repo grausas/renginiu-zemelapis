@@ -23,7 +23,7 @@ import NoResults from "../components/NoResults/NoResults";
 const todayStart = new Date(new Date().setHours(0, 0, 0)).getTime();
 const todayEnd = new Date(new Date().setHours(23, 59, 59)).getTime();
 const defaultWhereParams = `RENGINIO_PRADZIA <= '${todayEnd}' AND RENGINIO_PABAIGA >= '${todayStart}'`;
-const options = ["dienos", "savaitės", "mėnesio"];
+const options = ["šiandien", "savaitė", "mėnesis"];
 
 export function Map() {
   const [data, setData] = useState<__esri.Graphic[]>([]);
@@ -93,17 +93,17 @@ export function Map() {
 
   // filter events by current day, coming week or month
   const handleChangeDate = (value: string) => {
-    if (value === "dienos") {
+    if (value === "šiandien") {
       setDateEnd(todayEnd);
-    } else if (value === "savaitės") {
+    } else if (value === "savaitė") {
       setDateEnd(addDays(todayEnd, 7));
     } else {
       setDateEnd(addDays(todayEnd, 31));
     }
   };
   const { getRootProps, getRadioProps } = useRadioGroup({
-    name: "dienos",
-    defaultValue: "dienos",
+    name: "šiandien",
+    defaultValue: "šiandien",
     onChange: handleChangeDate,
   });
   const group = getRootProps();

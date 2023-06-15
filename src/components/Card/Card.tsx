@@ -1,6 +1,7 @@
 import { Text, Flex, Image, Box } from "@chakra-ui/react";
 import { sortByDate } from "../../helpers/sortBydate";
 import { CategoryData } from "../../utils/Category";
+import calendar from "../../assets/calendar.png";
 
 interface CardProps {
   data: __esri.Graphic[];
@@ -73,11 +74,16 @@ export default function Card({ data }: CardProps) {
             );
           }
         })}
-        <Text textAlign="center" my="2" fontWeight="500">
+        <Text textAlign="center" py="3" fontWeight="500">
           {feature.attributes.PAVADINIMAS}
         </Text>
-        <Text fontSize="sm">Nuo: {startDate}</Text>
-        <Text fontSize="sm">Iki: {endDate}</Text>
+        <Flex align="center">
+          <Image src={calendar} alt="calendar" w="20px" mr="2" />
+          <Box>
+            <Text fontSize="sm">Nuo: {startDate}</Text>
+            <Text fontSize="sm">Iki: {endDate}</Text>
+          </Box>
+        </Flex>
       </Flex>
     );
   });
