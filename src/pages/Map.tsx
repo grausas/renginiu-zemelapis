@@ -14,7 +14,7 @@ import FilterByDate from "../components/FilterByDate/FilterByDate";
 import Card from "../components/Card/Card";
 import { useContext, useEffect, useState } from "react";
 import { whereParamsChange } from "../helpers/whereParams";
-
+import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter.js";
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
 import { MapContext } from "../context/map-context";
 import { addDays } from "../helpers/addDays";
@@ -59,9 +59,13 @@ export function Map() {
   // query features by where params
   useEffect(() => {
     view
-      ?.whenLayerView(view.map.layers.getItemAt(0))
-      .then(function (layerView: any) {
-        layerView.filter = { where: whereParams };
+      ?.whenLayerView(view.map.layers.getItemAt(0) as __esri.FeatureLayer)
+      .then((layerView) => {
+        setLoading(true);
+        const filter = new FeatureFilter({
+          where: whereParams,
+        });
+        layerView.filter = filter;
         reactiveUtils.when(
           () => !layerView.updating,
           () => {

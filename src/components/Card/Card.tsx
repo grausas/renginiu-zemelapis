@@ -2,7 +2,11 @@ import { Text, Flex, Image, Box } from "@chakra-ui/react";
 import { sortByDate } from "../../helpers/sortBydate";
 import { CategoryData } from "../../utils/Category";
 
-export default function Card({ data }: any) {
+interface CardProps {
+  data: __esri.Graphic[];
+}
+
+export default function Card({ data }: CardProps) {
   const sortedData = sortByDate(data);
   return sortedData.map((feature: __esri.Graphic) => {
     const startDate = new Date(
