@@ -22,7 +22,7 @@ type FilterProps = {
 
 export default function Filter({ handleFilter }: FilterProps) {
   const [category, setCategory] = useState<string[]>([]);
-  const [checkedItems, setCheckedItems] = useState(
+  const [checkedItems, setCheckedItems] = useState<boolean[]>(
     CategoryData.map(() => false)
   );
   // filter by category, add checkboxes to array to save state after modal closed
