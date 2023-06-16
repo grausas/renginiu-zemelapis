@@ -12,13 +12,15 @@ import Search from "../components/Search/Search";
 import Filter from "../components/Filter/Filter";
 import FilterByDate from "../components/FilterByDate/FilterByDate";
 import Card from "../components/Card/Card";
-import { useContext, useEffect, useState } from "react";
+import Popup from "../components/Popup/Popup";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { whereParamsChange } from "../helpers/whereParams";
 import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter.js";
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
 import { MapContext } from "../context/map-context";
 import { addDays } from "../helpers/addDays";
 import NoResults from "../components/NoResults/NoResults";
+import { getFeatureOnClick } from "../helpers/getFeatureOnClick";
 
 const todayStart = new Date(new Date().setHours(0, 0, 0)).getTime();
 const todayEnd = new Date(new Date().setHours(23, 59, 59)).getTime();
@@ -32,6 +34,7 @@ export function Map() {
   const [dateEnd, setDateEnd] = useState(todayEnd);
   const [loading, setLoading] = useState(true);
   const [whereParams, setWhereParams] = useState(defaultWhereParams);
+  const [popupData, setPopupData] = useState<__esri.ViewHit[]>([]);
   const { view } = useContext(MapContext);
 
   useEffect(() => {
@@ -112,6 +115,27 @@ export function Map() {
   const handleFilter = (e: string[]) => {
     setCategory(e);
   };
+  console.log("popupData", popupData);
+  console.log("view", view);
+
+  useEffect(() => {
+    if (view) {
+      view.on("click", async (event) => {
+        await view
+          .hitTest(event, {
+            include: view.map.layers.getItemAt(0) as __esri.FeatureLayer,
+          })
+          .then(function (response: __esri.HitTestResult) {
+            // if features are returned from the featureLayer, do something with results
+            if (response.results.length) {
+              // do something
+              console.log(response.results, "features returned");
+              setPopupData(response.results);
+            }
+          });
+      });
+    }
+  }, [view]);
 
   return (
     <Box w="100" h="100%">
@@ -179,6 +203,7 @@ export function Map() {
         </Box>
       </Sidebar>
       <ArcGISMap />
+      {popupData.length > 0 && <Popup popupData={popupData} />}
     </Box>
   );
 }

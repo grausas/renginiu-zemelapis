@@ -78,10 +78,10 @@ export default function Card({ data }: CardProps) {
           {feature.attributes.PAVADINIMAS}
         </Text>
         <Flex align="center">
-          <Image src={calendar} alt="calendar" w="20px" mr="2" />
+          <Image src={calendar} alt="calendar" w="20px" mr="3" />
           <Box>
-            <Text fontSize="sm">Nuo: {startDate}</Text>
-            <Text fontSize="sm">Iki: {endDate}</Text>
+            <Text fontSize="sm">{startDate}</Text>
+            <Text fontSize="sm">{endDate}</Text>
           </Box>
         </Flex>
       </Flex>
