@@ -1,4 +1,4 @@
-import { Box, Icon, Button } from "@chakra-ui/react";
+import { Box, Icon, CloseButton } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 
 export default function Popup({ popupData }: any) {
@@ -14,9 +14,9 @@ export default function Popup({ popupData }: any) {
       borderRadius="md"
       shadow="md"
     >
-      <Button position="absolute" top="1" right="1" bg="none" size="xs">
-        <Icon as={CloseIcon} boxSize="2.5" />
-      </Button>
+      <Box position="absolute" top="1" right="1">
+        <CloseButton size="sm" />
+      </Box>
       {data.graphic.attributes.PAVADINIMAS}
     </Box>
   );

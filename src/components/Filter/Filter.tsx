@@ -20,7 +20,16 @@ type FilterProps = {
   handleFilter: (category: string[]) => void;
 };
 
+type CategoryItem = {
+  id: number;
+  value: number;
+  text: string;
+  color: string;
+  icon: string;
+};
+
 export default function Filter({ handleFilter }: FilterProps) {
+  // state to keep track of selected categories and checked checkboxes
   const [category, setCategory] = useState<string[]>([]);
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
     CategoryData.map(() => false)
@@ -30,25 +39,35 @@ export default function Filter({ handleFilter }: FilterProps) {
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    setCheckedItems([
-      ...checkedItems.slice(0, index),
-      event.target.checked,
-      ...checkedItems.slice(index + 1),
-    ]);
-    if (event.target.checked) {
-      setCategory([...category, event.target.value]);
-    } else {
-      setCategory(category.filter((item) => item !== event.target.value));
-    }
+    const newCheckedItems = [...checkedItems];
+    newCheckedItems[index] = event.target.checked;
+    setCheckedItems(newCheckedItems);
+    const newCategory = event.target.checked
+      ? [...category, event.target.value]
+      : category.filter((item) => item !== event.target.value);
+    setCategory(newCategory);
   };
-  // clear checkboxes and all filters
+  // Function to clear all filters and checkboxes
   const clearFilter = () => {
     setCategory([]);
     setCheckedItems(CategoryData.map(() => false));
   };
+  // call handleFilter when category changes
   useEffect(() => {
     handleFilter(category);
   }, [category]);
+
+  const renderCategory = (category: CategoryItem, index: number) => (
+    <Flex key={category.id}>
+      <Checkbox
+        value={category.value}
+        onChange={(e) => handleChange(e, index)}
+        isChecked={checkedItems[index]}
+      >
+        {category.text}
+      </Checkbox>
+    </Flex>
+  );
 
   return (
     <Popover closeOnBlur={false} placement="right-end">
@@ -74,17 +93,7 @@ export default function Filter({ handleFilter }: FilterProps) {
         <PopoverHeader>Filtrai</PopoverHeader>
         <PopoverBody>
           <Text>Kategorijos</Text>
-          {CategoryData.map((category: any, index: number) => (
-            <Flex key={category.id}>
-              <Checkbox
-                value={category.value}
-                onChange={(e) => handleChange(e, index)}
-                isChecked={checkedItems[index]}
-              >
-                {category.text}
-              </Checkbox>
-            </Flex>
-          ))}
+          {CategoryData.map(renderCategory)}
         </PopoverBody>
         <PopoverFooter
           border="0"

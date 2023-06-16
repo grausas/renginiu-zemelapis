@@ -55,15 +55,15 @@ export default function Card({ data }: CardProps) {
                   align="center"
                   justify="center"
                   bg={category.color}
-                  px="4"
+                  px="2"
                   py="0.5"
                   borderRadius="md"
                   color="brand.white"
                 >
-                  <Image src={category.icon} h="6" mr="1" />
+                  <Image src={category.icon} mr="1" boxSize="6" />
                   <Text
                     fontWeight="500"
-                    letterSpacing="1px"
+                    letterSpacing="0.8px"
                     fontSize="xs"
                     textTransform="uppercase"
                   >
