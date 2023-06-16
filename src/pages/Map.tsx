@@ -115,8 +115,6 @@ export function Map() {
   const handleFilter = (e: string[]) => {
     setCategory(e);
   };
-  console.log("popupData", popupData);
-  console.log("view", view);
 
   useEffect(() => {
     if (view) {

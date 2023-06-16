@@ -17,165 +17,41 @@ export const layerRenderer = (view: any) => {
         view.map.layers.getItemAt(0).renderer.uniqueValueInfos;
 
       // create unique render values with icons
+      const symbol = (url: string, width: string, height: string) => ({
+        type: "picture-marker",
+        url,
+        width,
+        height,
+      });
+
+      const uniqueValueInfos = [
+        { value: "1", symbol: symbol(Susirinkimas, "23px", "23px") },
+        { value: "2", symbol: symbol(SportoRenginys, "23px", "23px") },
+        { value: "3", symbol: symbol(Koncertas, "23px", "23px") },
+        { value: "4", symbol: symbol(Filmavimas, "23px", "23px") },
+        { value: "5", symbol: symbol(Muge, "23px", "23px") },
+        { value: "6", symbol: symbol(RenginysSeimai, "23px", "23px") },
+        { value: "7", symbol: symbol(ValstybinisRenginys, "23px", "23px") },
+        { value: "8", symbol: symbol(ViesasisRenginys, "23px", "23px") },
+      ];
+
+      const uniqueValueInfosBig = uniqueValueInfos.map((info) => ({
+        ...info,
+        symbol: symbol(info.symbol.url, "30px", "30px"),
+      }));
+
       const simpleRenderer = {
         type: "unique-value",
         field: "KATEGORIJA",
-        uniqueValueInfos: [
-          {
-            value: "1",
-            symbol: {
-              type: "picture-marker",
-              url: Susirinkimas,
-              width: "23px",
-              height: "23px",
-            },
-          },
-          {
-            value: "2",
-            symbol: {
-              type: "picture-marker",
-              url: SportoRenginys,
-              width: "23px",
-              height: "23px",
-            },
-          },
-          {
-            value: "3",
-            symbol: {
-              type: "picture-marker",
-              url: Koncertas,
-              width: "23px",
-              height: "23px",
-            },
-          },
-          {
-            value: "4",
-            symbol: {
-              type: "picture-marker",
-              url: Filmavimas,
-              width: "23px",
-              height: "23px",
-            },
-          },
-          {
-            value: "5",
-            symbol: {
-              type: "picture-marker",
-              url: Muge,
-              width: "23px",
-              height: "23px",
-            },
-          },
-          {
-            value: "6",
-            symbol: {
-              type: "picture-marker",
-              url: RenginysSeimai,
-              width: "23px",
-              height: "23px",
-            },
-          },
-          {
-            value: "7",
-            symbol: {
-              type: "picture-marker",
-              url: ValstybinisRenginys,
-              width: "23px",
-              height: "23px",
-            },
-          },
-          {
-            value: "8",
-            symbol: {
-              type: "picture-marker",
-              url: ViesasisRenginys,
-              width: "23px",
-              height: "23px",
-            },
-          },
-        ],
+        uniqueValueInfos,
       };
 
       const simpleRendererBig = {
         type: "unique-value",
         field: "KATEGORIJA",
-        uniqueValueInfos: [
-          {
-            value: "1",
-            symbol: {
-              type: "picture-marker",
-              url: Susirinkimas,
-              width: "30px",
-              height: "30px",
-            },
-          },
-          {
-            value: "2",
-            symbol: {
-              type: "picture-marker",
-              url: SportoRenginys,
-              width: "30px",
-              height: "30px",
-            },
-          },
-          {
-            value: "3",
-            symbol: {
-              type: "picture-marker",
-              url: Koncertas,
-              width: "30px",
-              height: "30px",
-            },
-          },
-          {
-            value: "4",
-            symbol: {
-              type: "picture-marker",
-              url: Filmavimas,
-              width: "30px",
-              height: "30px",
-            },
-          },
-          {
-            value: "5",
-            symbol: {
-              type: "picture-marker",
-              url: Muge,
-              width: "30px",
-              height: "30px",
-            },
-          },
-          {
-            value: "6",
-            symbol: {
-              type: "picture-marker",
-              url: RenginysSeimai,
-              width: "30px",
-              height: "30px",
-            },
-          },
-          {
-            value: "7",
-            symbol: {
-              type: "picture-marker",
-              url: ValstybinisRenginys,
-              width: "30px",
-              height: "30px",
-            },
-          },
-          {
-            value: "8",
-            symbol: {
-              type: "picture-marker",
-              url: ViesasisRenginys,
-              width: "30px",
-              height: "30px",
-            },
-          },
-        ],
+        uniqueValueInfos: uniqueValueInfosBig,
       };
 
-      // render polygons
       const simpleRendererPolygon = {
         type: "unique-value",
         field: "KATEGORIJA",
