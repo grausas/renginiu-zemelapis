@@ -1,5 +1,5 @@
-export const addDays = (date: number, days: number) => {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result.getTime();
-};
+// Adds a given number of days to a given date and returns the resulting timestamp.
+
+export function addDays(date: number, days: number): number {
+  return date + days * 86400000;
+}

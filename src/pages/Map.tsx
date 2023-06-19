@@ -13,14 +13,13 @@ import Filter from "../components/Filter/Filter";
 import FilterByDate from "../components/FilterByDate/FilterByDate";
 import Card from "../components/Card/Card";
 import Popup from "../components/Popup/Popup";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { whereParamsChange } from "../helpers/whereParams";
 import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter.js";
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
 import { MapContext } from "../context/map-context";
 import { addDays } from "../helpers/addDays";
 import NoResults from "../components/NoResults/NoResults";
-import { getFeatureOnClick } from "../helpers/getFeatureOnClick";
 
 const todayStart = new Date(new Date().setHours(0, 0, 0)).getTime();
 const todayEnd = new Date(new Date().setHours(23, 59, 59)).getTime();
@@ -41,68 +40,54 @@ export function Map() {
     setWhereParams(whereParamsChange(dateStart, dateEnd, category));
   }, [dateStart, dateEnd, category]);
 
-  // query features
-  //   const query = useCallback(
-  //     async (layer: __esri.FeatureLayer) => {
-  //       setData([]);
-  //       try {
-  //         const features = await queryFeatures(layer, whereParams);
-  //         setData(features);
-  //       } catch (err) {
-  //         console.log("erorr", err);
-  //       }
-  //     },
-  //     [whereParams]
-  //   );
-
-  //   useEffect(() => {
-  //     query(featureLayerPublic());
-  //   }, [query]);
-
   // query features by where params
   useEffect(() => {
+    const featureLayer = view?.map.layers.getItemAt(0) as __esri.FeatureLayer;
+    if (!featureLayer) return;
+
     view
-      ?.whenLayerView(view.map.layers.getItemAt(0) as __esri.FeatureLayer)
+      ?.whenLayerView(featureLayer)
       .then((layerView) => {
         setLoading(true);
-        const filter = new FeatureFilter({
-          where: whereParams,
-        });
-        layerView.filter = filter;
+
+        const featureFilter = new FeatureFilter({ where: whereParams });
+        layerView.filter = featureFilter;
+
         reactiveUtils.when(
           () => !layerView.updating,
           () => {
-            const queryParams = layerView.filter.createQuery();
-            queryParams.geometry = view.extent;
+            const query = layerView.filter.createQuery();
+            query.geometry = view.extent;
+
             layerView
               .queryFeatures({ where: whereParams })
-              .then(function (results: __esri.FeatureSet) {
-                setData(results.features);
+              .then(({ features }) => {
+                setData(features);
                 setLoading(false);
               })
-              .catch(function (error: string) {
+              .catch((error) => {
                 setLoading(false);
-                console.log("error", error);
+                console.error(error);
               });
           },
           { once: true }
         );
       })
-      .catch(function (error: string) {
-        // An error occurred during the layerview creation
-        console.log("error", error);
+      .catch((error) => {
+        console.error(error);
       });
   }, [view, whereParams]);
 
   // filter events by current day, coming week or month
   const handleChangeDate = (value: string) => {
-    if (value === "šiandien") {
-      setDateEnd(todayEnd);
-    } else if (value === "savaitė") {
-      setDateEnd(addDays(todayEnd, 7));
-    } else {
-      setDateEnd(addDays(todayEnd, 31));
-    }
+    const todayEnd = new Date().setHours(23, 59, 59, 999);
+    const dateEnd =
+      value === "šiandien"
+        ? todayEnd
+        : value === "savaitė"
+        ? addDays(todayEnd, 7)
+        : addDays(todayEnd, 31);
+    setDateEnd(dateEnd);
   };
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "šiandien",
@@ -119,18 +104,13 @@ export function Map() {
   useEffect(() => {
     if (view) {
       view.on("click", async (event) => {
-        await view
-          .hitTest(event, {
-            include: view.map.layers.getItemAt(0) as __esri.FeatureLayer,
-          })
-          .then(function (response: __esri.HitTestResult) {
-            // if features are returned from the featureLayer, do something with results
-            if (response.results.length) {
-              // do something
-              console.log(response.results, "features returned");
-              setPopupData(response.results);
-            }
-          });
+        const response = await view.hitTest(event, {
+          include: view.map.layers.getItemAt(0) as __esri.FeatureLayer,
+        });
+        if (response.results.length) {
+          console.log(response.results, "features returned");
+          setPopupData(response.results);
+        }
       });
     }
   }, [view]);
