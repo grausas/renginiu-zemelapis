@@ -12,10 +12,10 @@ export default function Card({ data }: CardProps) {
   return sortedData.map((feature: __esri.Graphic) => {
     const startDate = new Date(
       feature.attributes.RENGINIO_PRADZIA
-    ).toLocaleString();
+    ).toLocaleString("lt-LT");
     const endDate = new Date(
       feature.attributes.RENGINIO_PABAIGA
-    ).toLocaleString();
+    ).toLocaleString("lt-LT");
 
     return (
       <Flex
