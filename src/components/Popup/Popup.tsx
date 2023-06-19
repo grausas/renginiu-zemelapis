@@ -1,5 +1,4 @@
-import { Box, Icon, CloseButton } from "@chakra-ui/react";
-import { CloseIcon } from "@chakra-ui/icons";
+import { Box, CloseButton } from "@chakra-ui/react";
 
 export default function Popup({ popupData }: any) {
   const data = popupData[0];
