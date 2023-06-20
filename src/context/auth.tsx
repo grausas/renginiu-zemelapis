@@ -52,29 +52,32 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       response.userId = users.username;
       esriId.registerToken(response);
       console.log("response", response);
-      esriId
-        .getCredential(
-          "https://services1.arcgis.com/usA3lHW20rGU6glp/ArcGIS/rest/services/Renginiai_Vilniuje_P/FeatureServer/0"
-        )
-        .then((res) => {
-          if (res) {
-            console.log("res", res);
-            const token = res.token;
-            const name = res.userId;
-            const expires = res.expires;
-            setUser({ token, name, expires });
-            localStorage.setItem(
-              "item",
-              JSON.stringify({
-                token,
-                name,
-                expires,
-              })
-            );
-            navigate("/", { replace: true });
-          }
-        });
+      const token = response.token;
+      const name = response.userId;
+      const expires = response.expires;
+      setUser({ token, name, expires });
+      localStorage.setItem(
+        "item",
+        JSON.stringify({
+          token,
+          name,
+          expires,
+        })
+      );
+      navigate("/", { replace: true });
     });
+  };
+
+  const logout = async () => {
+    const esriId = await importIdentifyManager;
+    esriId.destroyCredentials();
+    localStorage.removeItem("item");
+    setUser({
+      token: "",
+      name: "",
+      expires: 0,
+    });
+    navigate("/", { replace: true });
   };
 
   const loadUserFromLocalStorage = async () => {
@@ -117,7 +120,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

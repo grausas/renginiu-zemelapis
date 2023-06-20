@@ -10,6 +10,8 @@ import {
   InputRightElement,
   Image,
   FormLabel,
+  Text,
+  Box,
 } from "@chakra-ui/react";
 import { AuthContext } from "../context/auth";
 
@@ -59,12 +61,29 @@ export function Login() {
               variant={"solid"}
               onClick={handleLogin}
             >
-              prisijungti
+              Prisijungti
             </Button>
           </Stack>
         </Stack>
       </Flex>
-      <Flex flex={1}>
+      <Flex flex={1} position="relative">
+        {/* <Box
+          position="absolute"
+          bg="brand.white"
+          left="-35%"
+          top="10%"
+          boxShadow="md"
+          px="2"
+          opacity={0.8}
+        >
+          <Text
+            fontSize={{ base: "md", md: "5xl" }}
+            textTransform="uppercase"
+            color="brand.dark"
+          >
+            Vilniaus miesto renginių žemėlapis
+          </Text>
+        </Box> */}
         <Image
           alt={"Login Image"}
           objectFit={"cover"}

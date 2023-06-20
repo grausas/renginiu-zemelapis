@@ -1,11 +1,16 @@
-import { Text, Flex, Image } from "@chakra-ui/react";
+import { useContext } from "react";
+import { Text, Flex, Image, Button, Box } from "@chakra-ui/react";
 import logo from "../../assets/vilnius_logo.png";
+import { AuthContext } from "../../context/auth";
 
 export default function Header() {
+  const auth: any = useContext(AuthContext);
+
   return (
     <Flex
       as="header"
       position="relative"
+      justifyContent="space-between"
       align="center"
       w="100%"
       bg="brand.dark"
@@ -15,10 +20,15 @@ export default function Header() {
       height="60px"
       shadow="base"
     >
-      <Image src={logo} maxW="40px" mr="4" />
-      <Text fontSize={{ base: "md", md: "xl" }} textTransform="uppercase">
-        Vilniaus miesto renginių žemėlapis
-      </Text>
+      <Flex align="center">
+        <Image src={logo} maxW="40px" mr="4" />
+        <Text fontSize={{ base: "md", md: "xl" }} textTransform="uppercase">
+          Vilniaus miesto renginių žemėlapis
+        </Text>
+      </Flex>
+      {auth.user.token && (
+        <Button onClick={() => auth.logout()}>Atsijungti</Button>
+      )}
     </Flex>
   );
 }

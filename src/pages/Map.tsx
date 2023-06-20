@@ -38,7 +38,7 @@ export function Map() {
   const [whereParams, setWhereParams] = useState(defaultWhereParams);
   const [popupData, setPopupData] = useState<__esri.ViewHit[]>([]);
   const { view } = useContext(MapContext);
-  const { user } = useContext(AuthContext);
+  const auth: any = useContext(AuthContext);
 
   useEffect(() => {
     setWhereParams(whereParamsChange(dateStart, dateEnd, category));
@@ -186,7 +186,7 @@ export function Map() {
       </Sidebar>
       <ArcGISMap />
       {popupData.length > 0 && <Popup popupData={popupData} />}
-      {user.token && <Form />}
+      {auth.user.token && <Form />}
     </Box>
   );
 }
