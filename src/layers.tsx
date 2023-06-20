@@ -15,3 +15,15 @@ export const featureLayerPublic = () => {
   });
   return layer;
 };
+
+export const featureLayerPrivate = () => {
+  const layer = new FeatureLayer({
+    url: "https://services1.arcgis.com/usA3lHW20rGU6glp/ArcGIS/rest/services/Renginiai_Vilniuje_P/FeatureServer/0",
+    outFields: ["*"],
+    title: "Renginiai",
+    id: "private",
+    definitionExpression: `RENGINIO_PABAIGA > '${publicDate}'`,
+    effect: "drop-shadow(0px, 0px, 3px)",
+  });
+  return layer;
+};

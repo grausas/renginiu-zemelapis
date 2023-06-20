@@ -1,4 +1,5 @@
 import React, { useState, createContext, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Create the context
 export const AuthContext = createContext({});
@@ -27,6 +28,7 @@ const serverInfo: any = {
 };
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState<User>({
     token: "",
     name: "",
@@ -69,6 +71,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
                 expires,
               })
             );
+            navigate("/", { replace: true });
           }
         });
     });

@@ -1,3 +1,4 @@
+import React from "react";
 import { ArcGISMap } from "../components/Map/Map";
 import {
   Box,
@@ -20,6 +21,8 @@ import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
 import { MapContext } from "../context/map-context";
 import { addDays } from "../helpers/addDays";
 import NoResults from "../components/NoResults/NoResults";
+const Form = React.lazy(() => import("../components/admin/Form/Form"));
+import { AuthContext } from "../context/auth";
 
 const todayStart = new Date(new Date().setHours(0, 0, 0)).getTime();
 const todayEnd = new Date(new Date().setHours(23, 59, 59)).getTime();
@@ -35,6 +38,7 @@ export function Map() {
   const [whereParams, setWhereParams] = useState(defaultWhereParams);
   const [popupData, setPopupData] = useState<__esri.ViewHit[]>([]);
   const { view } = useContext(MapContext);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     setWhereParams(whereParamsChange(dateStart, dateEnd, category));
@@ -182,6 +186,7 @@ export function Map() {
       </Sidebar>
       <ArcGISMap />
       {popupData.length > 0 && <Popup popupData={popupData} />}
+      {user.token && <Form />}
     </Box>
   );
 }
