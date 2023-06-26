@@ -12,9 +12,11 @@ import {
   PopoverArrow,
   PopoverCloseButton,
   Text,
+  Image,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { CategoryData } from "../../utils/Category";
+import CategoryIcon from "../../assets/categories.png";
 
 type FilterProps = {
   handleFilter: (category: string[]) => void;
@@ -57,12 +59,82 @@ export default function Filter({ handleFilter }: FilterProps) {
     handleFilter(category);
   }, [category]);
 
+  const COLORS_SMOOTH = {
+    bg: "#ececef",
+    bgHovered: "#F5FAF5",
+    borderColor: "#76A9FF",
+    hoverBorderColor: "#C4DAFF",
+    controlColorChecked: "#cf2300",
+    controlColor: "#9696A0",
+    focusColor: "#A9D3AB",
+  };
+
   const renderCategory = (category: CategoryItem, index: number) => (
-    <Flex key={category.id}>
+    <Flex
+      key={category.id}
+      // borderRadius="md"
+      // px={4}
+      borderColor="gray.300"
+      borderRadius="md"
+      borderWidth="1px"
+      align="center"
+      mb="2px"
+    >
+      <Image
+        src={category.icon}
+        boxSize="6"
+        mr="1"
+        position="absolute"
+        zIndex="1"
+        left="5"
+      />
       <Checkbox
+        sx={{
+          h: "auto",
+          pr: 3,
+          pl: 8,
+          py: 1.5,
+          w: "100%",
+          // flexDirection: "row-reverse",
+          // justifyContent: "space-between",
+
+          // bg: "brand.grey",
+          transition: "all 150ms",
+          _checked: {
+            bg: COLORS_SMOOTH.bg,
+          },
+          "span[class*='checkbox__control']:not([data-disabled])": {
+            display: "none",
+            borderColor: "gray.300",
+            borderRadius: "99px",
+            borderWidth: "2px",
+            h: "20px",
+            w: "20px",
+            "& svg": {
+              w: "1.6em",
+            },
+            _checked: {
+              bg: COLORS_SMOOTH.controlColorChecked,
+              borderColor: COLORS_SMOOTH.controlColorChecked,
+            },
+            _focus: {
+              boxShadow: `0 0 0 2px ${COLORS_SMOOTH.focusColor}`,
+              _checked: {
+                boxShadow: `0 0 0 2px ${COLORS_SMOOTH.focusColor}`,
+              },
+            },
+          },
+          _hover: {
+            transition: "all 350ms",
+            bg: COLORS_SMOOTH.bgHovered,
+            _checked: {
+              bg: COLORS_SMOOTH.bg,
+            },
+          },
+        }}
         value={category.value}
-        onChange={(e) => handleChange(e, index)}
         isChecked={checkedItems[index]}
+        onChange={(e) => handleChange(e, index)}
       >
         {category.text}
       </Checkbox>
@@ -93,7 +165,10 @@ export default function Filter({ handleFilter }: FilterProps) {
         <PopoverCloseButton />
         <PopoverHeader>Filtrai</PopoverHeader>
         <PopoverBody>
-          <Text>Kategorijos</Text>
+          <Flex py="1" mb="1">
+            <Image src={CategoryIcon} boxSize="6" mr="1" />
+            <Text textTransform="uppercase">Kategorijos</Text>
+          </Flex>
           {CategoryData.map(renderCategory)}
         </PopoverBody>
         <PopoverFooter
