@@ -6,7 +6,6 @@ import {
   FormControl,
   FormLabel,
   InputGroup,
-  Flex,
   InputLeftAddon,
   Select,
 } from "@chakra-ui/react";
@@ -35,7 +34,7 @@ export default function Form() {
     formState: { errors },
   } = useForm<FormValues>();
 
-  const handleChangle = (e: { target: { name: string; value: string } }) => {
+  const handleChange = (e: { target: { name: string; value: string } }) => {
     console.log("e", e);
     const name = e.target.name;
     const value = e.target.value;
@@ -50,7 +49,6 @@ export default function Form() {
   const onSubmit = handleSubmit((data) => AddFeature(data));
 
   return (
-    /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
     <Box
       position="absolute"
       bottom="75px"
@@ -62,8 +60,6 @@ export default function Form() {
       borderRadius="md"
       shadow="md"
     >
-      {/* register your input into the hook by invoking the "register" function */}
-
       <FormControl>
         <FormLabel>Renginio pradžia</FormLabel>
         <Input
@@ -99,7 +95,7 @@ export default function Form() {
           {...register("PAVADINIMAS", {
             required: "Pavadinimas yra būtinas",
           })}
-          onChange={handleChangle}
+          onChange={handleChange}
         />
         <Box color="red">
           {errors?.PAVADINIMAS && <p>{errors.PAVADINIMAS.message}</p>}
@@ -123,10 +119,6 @@ export default function Form() {
           <Input {...register("WEBPAGE")} />
         </InputGroup>
       </FormControl>
-
-      {/* include validation with required or other standard HTML validation rules */}
-
-      {/* errors will return when field validation fails  */}
       <Button mt="2" onClick={onSubmit}>
         Submit
       </Button>
