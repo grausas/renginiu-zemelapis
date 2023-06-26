@@ -28,6 +28,7 @@ const theme = extendTheme({
     brand: {
       white: "#FFFFFF",
       dark: "#302B27",
+      grey: "#f3f1f3",
     },
   },
   components: {

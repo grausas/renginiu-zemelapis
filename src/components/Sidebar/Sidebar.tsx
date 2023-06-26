@@ -14,7 +14,7 @@ const Sidebar = ({ children }: Sidebar) => {
       pt="4"
       w={{ base: "100%", md: "400px" }}
       h={{ base: "calc(100% - 120px)", md: "calc(100% - 60px)" }}
-      bg="brand.white"
+      bg="brand.grey"
       borderRight="1px solid"
       borderColor="gray.200"
       zIndex="1"

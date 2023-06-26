@@ -22,6 +22,7 @@ export default function Card({ data }: CardProps) {
         key={feature.attributes.OBJECTID}
         border="1px solid"
         borderColor="gray.200"
+        bg="brand.white"
         p="3"
         borderRadius="md"
         shadow="base"

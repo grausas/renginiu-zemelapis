@@ -10,8 +10,6 @@ import {
   InputRightElement,
   Image,
   FormLabel,
-  Text,
-  Box,
 } from "@chakra-ui/react";
 import { AuthContext } from "../context/auth";
 
@@ -30,9 +28,21 @@ export function Login() {
   const handleShowClick = () => setShowPassword(!showPassword);
 
   return (
-    <Stack minH={"100vh"} direction={{ base: "column", md: "row" }}>
+    <Stack
+      minH={"100vh"}
+      direction={{ base: "column", md: "row" }}
+      bg={"brand.grey"}
+    >
       <Flex p={8} flex={1} align={"center"} justify={"center"}>
-        <Stack spacing={4} w={"full"} maxW={"md"}>
+        <Stack
+          spacing={4}
+          w={"full"}
+          maxW={"md"}
+          bg="brand.white"
+          p="6"
+          borderRadius="md"
+          shadow="md"
+        >
           <Heading fontSize={"2xl"}>Prisijungti prie savo paskyros</Heading>
           <FormControl id="email">
             <FormLabel>Prisijungimo vardas</FormLabel>
@@ -67,23 +77,6 @@ export function Login() {
         </Stack>
       </Flex>
       <Flex flex={1} position="relative">
-        {/* <Box
-          position="absolute"
-          bg="brand.white"
-          left="-35%"
-          top="10%"
-          boxShadow="md"
-          px="2"
-          opacity={0.8}
-        >
-          <Text
-            fontSize={{ base: "md", md: "5xl" }}
-            textTransform="uppercase"
-            color="brand.dark"
-          >
-            Vilniaus miesto renginių žemėlapis
-          </Text>
-        </Box> */}
         <Image
           alt={"Login Image"}
           objectFit={"cover"}

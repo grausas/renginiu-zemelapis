@@ -24,6 +24,7 @@ export default function FilterByDate(
         align="center"
         border="1px solid"
         borderColor="gray.200"
+        bg="brand.white"
         borderRadius="md"
         px={{ base: "5", md: "7" }}
         fontSize="xs"

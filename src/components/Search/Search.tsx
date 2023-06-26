@@ -12,6 +12,7 @@ export default function Search() {
         placeholder="Ieškoti renginio"
         fontSize="sm"
         shadow="md"
+        bg="brand.white"
       />
     </InputGroup>
   );

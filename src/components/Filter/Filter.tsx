@@ -70,12 +70,13 @@ export default function Filter({ handleFilter }: FilterProps) {
   );
 
   return (
-    <Popover closeOnBlur={false} placement="right-end">
+    <Popover closeOnBlur={false} placement="right-end" isLazy>
       <PopoverTrigger>
         <Flex>
           <Button
             leftIcon={<HamburgerIcon />}
             color="brand.dark"
+            bg="brand.white"
             variant="outline"
             px="6"
             fontSize="xs"
