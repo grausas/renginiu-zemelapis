@@ -3,7 +3,13 @@ import { featureLayerPrivate } from "../layers";
 
 interface Feature {
   PAVADINIMAS: string;
+  ORGANIZATORIUS: string;
   PASTABOS: string;
+  APRASYMAS: string;
+  WEBPAGE: string;
+  RENGINIO_PRADZIA: string;
+  RENGINIO_PABAIGA: string;
+  KATEGORIJA: number;
 }
 
 export const AddFeature = (feature: Feature) => {
@@ -19,16 +25,16 @@ export const AddFeature = (feature: Feature) => {
 
   console.log("add", add);
 
-  featureLayerPrivate()
-    .applyEdits(add)
-    .then((response) => {
-      if (response) {
-        console.log("response", response);
-      }
-    })
-    .catch((error) => {
-      if (error) {
-        console.log("error", error);
-      }
-    });
+  // featureLayerPrivate()
+  //   .applyEdits(add)
+  //   .then((response) => {
+  //     if (response) {
+  //       console.log("response", response);
+  //     }
+  //   })
+  //   .catch((error) => {
+  //     if (error) {
+  //       console.log("error", error);
+  //     }
+  //   });
 };
