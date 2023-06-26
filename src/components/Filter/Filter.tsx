@@ -82,7 +82,7 @@ export default function Filter({ handleFilter }: FilterProps) {
     >
       <Image
         src={category.icon}
-        boxSize="6"
+        boxSize="5"
         mr="1"
         position="absolute"
         zIndex="1"
@@ -93,7 +93,7 @@ export default function Filter({ handleFilter }: FilterProps) {
           h: "auto",
           pr: 3,
           pl: 8,
-          py: 1.5,
+          py: 1,
           w: "100%",
           // flexDirection: "row-reverse",
           // justifyContent: "space-between",
@@ -163,7 +163,7 @@ export default function Filter({ handleFilter }: FilterProps) {
       <PopoverContent ml="5px">
         <PopoverArrow />
         <PopoverCloseButton />
-        <PopoverHeader>Filtrai</PopoverHeader>
+        {/* <PopoverHeader>Filtrai</PopoverHeader> */}
         <PopoverBody>
           <Flex py="1" mb="1">
             <Image src={CategoryIcon} boxSize="6" mr="1" />
