@@ -8,6 +8,7 @@ import {
   InputGroup,
   InputLeftAddon,
   Select,
+  Flex,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { AddFeature } from "../../../helpers/addFeature";
@@ -61,25 +62,26 @@ export default function Form() {
       shadow="md"
     >
       <FormControl>
-        <FormLabel>Renginio pradžia</FormLabel>
+        <FormLabel fontSize="sm">Renginio pradžia *</FormLabel>
         <Input
           lang="lt-LT"
           type="datetime-local"
           {...register("RENGINIO_PRADZIA", {
             required: "Renginio pradžia yra būtina",
           })}
+          size="sm"
         />
-        <Box color="red">
+        <Box color="red" fontSize="sm">
           {errors?.RENGINIO_PRADZIA && <p>{errors.RENGINIO_PRADZIA.message}</p>}
         </Box>
-        <FormLabel>Renginio pabaiga</FormLabel>
+        <FormLabel>Renginio pabaiga *</FormLabel>
         <Input
           type="datetime-local"
           {...register("RENGINIO_PABAIGA", {
             required: "Renginio pabaiga yra būtina",
           })}
         />
-        <Box color="red">
+        <Box color="red" fontSize="sm">
           {errors?.RENGINIO_PABAIGA && <p>{errors.RENGINIO_PABAIGA.message}</p>}
         </Box>
         <FormLabel>Kategorija</FormLabel>
@@ -90,23 +92,23 @@ export default function Form() {
             </option>
           ))}
         </Select>
-        <FormLabel>Pavadinimas</FormLabel>
+        <FormLabel>Pavadinimas *</FormLabel>
         <Input
           {...register("PAVADINIMAS", {
             required: "Pavadinimas yra būtinas",
           })}
           onChange={handleChange}
         />
-        <Box color="red">
+        <Box color="red" fontSize="sm">
           {errors?.PAVADINIMAS && <p>{errors.PAVADINIMAS.message}</p>}
         </Box>
-        <FormLabel>Organizatorius</FormLabel>
+        <FormLabel>Organizatorius *</FormLabel>
         <Input
           {...register("ORGANIZATORIUS", {
             required: "Organizatorius yra būtinas",
           })}
         />
-        <Box color="red">
+        <Box color="red" fontSize="sm">
           {errors?.ORGANIZATORIUS && <p>{errors.ORGANIZATORIUS.message}</p>}
         </Box>
         <FormLabel>Gauta</FormLabel>
@@ -119,9 +121,14 @@ export default function Form() {
           <Input {...register("WEBPAGE")} />
         </InputGroup>
       </FormControl>
-      <Button mt="2" onClick={onSubmit}>
-        Submit
-      </Button>
+      <Flex justify="space-between">
+        <Button mt="2" onClick={onSubmit} variant="outline">
+          Atšaukti
+        </Button>
+        <Button mt="2" onClick={onSubmit}>
+          Pridėti
+        </Button>
+      </Flex>
     </Box>
   );
 }

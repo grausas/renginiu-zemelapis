@@ -122,7 +122,7 @@ export function Map() {
   return (
     <Box w="100" h="100%">
       <Sidebar>
-        <Stack direction={["column", "row"]} spacing="3" px="3" mb="2">
+        <Stack direction={["column", "row"]} spacing="1" px="3" mb="2">
           <Search />
           <Filter handleFilter={handleFilter} />
         </Stack>
@@ -150,6 +150,7 @@ export function Map() {
             </FilterByDate>
           ))}
         </Flex>
+
         <Box
           h="calc(100% - 120px)"
           px="3"

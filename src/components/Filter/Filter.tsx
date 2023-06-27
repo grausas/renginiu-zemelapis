@@ -165,7 +165,7 @@ export default function Filter({ handleFilter }: FilterProps) {
         <PopoverCloseButton />
         {/* <PopoverHeader>Filtrai</PopoverHeader> */}
         <PopoverBody>
-          <Flex py="1" mb="1">
+          <Flex py="1" mb="1" align="center">
             <Image src={CategoryIcon} boxSize="6" mr="1" />
             <Text textTransform="uppercase">Kategorijos</Text>
           </Flex>
