@@ -26,8 +26,10 @@ export default function Card({ data }: CardProps) {
         p="3"
         borderRadius="md"
         shadow="base"
-        mb="2"
+        mb={{ base: "0", md: "2" }}
+        mr={{ base: "1", md: "0" }}
         flexDirection="column"
+        // h="100%"
         // position="relative"
       >
         {CategoryData.map((category) => {
@@ -60,6 +62,7 @@ export default function Card({ data }: CardProps) {
                   py="0.5"
                   borderRadius="md"
                   color="brand.white"
+                  w={{ base: "70vw", md: "auto" }}
                 >
                   <Image src={category.icon} mr="1" boxSize="6" />
                   <Text

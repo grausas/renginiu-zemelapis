@@ -1,45 +1,26 @@
-import {
-  Box,
-  CloseButton,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-} from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 
 export default function Popup({ popupData }: any) {
   // const data = popupData[0];
   // console.log("data", data);
-  return (
-    <Accordion
-      position="absolute"
-      top="75px"
-      maxW="400px"
-      right="50px"
+  return popupData?.map((item: any) => (
+    <Flex
+      key={item.graphic.attributes.OBJECTID}
+      flexDirection="column"
       bg="brand.white"
-      p="5"
-      borderRadius="md"
+      mb="2"
+      mr={{ base: "2", md: "0" }}
       shadow="md"
     >
-      <Box position="absolute" top="1" right="1">
-        <CloseButton size="sm" />
-      </Box>
-      {popupData?.map((item: any) => (
-        <AccordionItem key={item.graphic.attributes.OBJECTID}>
-          <h2>
-            <AccordionButton>
-              <Box as="span" flex="1" textAlign="left">
-                {item.graphic.attributes.PAVADINIMAS}
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            {item.graphic.attributes.KATEGORIJA}
-          </AccordionPanel>
-        </AccordionItem>
-      ))}
-    </Accordion>
-  );
+      <h5>{item.graphic.attributes.PAVADINIMAS}</h5>
+      <h5>{item.graphic.attributes.ORGANIZATORIUS}</h5>
+      <Text w={{ base: "70vw", md: "auto" }}>
+        {item.graphic.attributes.KATEGORIJA}
+      </Text>
+      <Text>{item.graphic.attributes.RENGINIO_PRADZIA}</Text>
+      <Text>{item.graphic.attributes.RENGINIO_PABAIGA}</Text>
+      <Text>{item.graphic.attributes.PASTABOS}</Text>
+      <Text>{item.graphic.attributes.APRASYMAS}</Text>
+    </Flex>
+  ));
 }

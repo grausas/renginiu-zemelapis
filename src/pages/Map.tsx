@@ -44,10 +44,10 @@ export function Map() {
     setWhereParams(whereParamsChange(dateStart, dateEnd, category));
   }, [dateStart, dateEnd, category]);
 
-  // query features by where params
-  useEffect(() => {
+  const queryFeatures = () => {
     const featureLayer = view?.map.layers.getItemAt(0) as __esri.FeatureLayer;
     if (!featureLayer) return;
+    // console.log("view", view);
 
     view
       ?.whenLayerView(featureLayer)
@@ -61,7 +61,7 @@ export function Map() {
           () => !layerView.updating,
           () => {
             const query = layerView.filter.createQuery();
-            query.geometry = view.extent;
+            // query.geometry = view.extent;
 
             layerView
               .queryFeatures({ where: whereParams })
@@ -80,6 +80,11 @@ export function Map() {
       .catch((error) => {
         console.error(error);
       });
+  };
+
+  // query features by where params
+  useEffect(() => {
+    queryFeatures();
   }, [view, whereParams]);
 
   // filter events by current day, coming week or month
@@ -91,6 +96,7 @@ export function Map() {
         : value === "savaitė"
         ? addDays(todayEnd, 7)
         : addDays(todayEnd, 31);
+    setPopupData([]);
     setDateEnd(dateEnd);
   };
   const { getRootProps, getRadioProps } = useRadioGroup({
@@ -131,9 +137,9 @@ export function Map() {
   }, [view]);
 
   return (
-    <Box w="100" h="100%">
+    <Flex w="100" h="100%" flexDirection={{ base: "column", md: "row" }}>
       <Sidebar>
-        <Stack direction={["column", "row"]} spacing="1" px="3" mb="2">
+        <Stack direction={"row"} spacing="1" px="3" mb="2">
           <Search />
           <Filter handleFilter={handleFilter} />
         </Stack>
@@ -148,7 +154,8 @@ export function Map() {
           px="3"
           width="100%"
           direction="row"
-          justify="space-between"
+          justify="space-evenly"
+          gap="1"
           {...group}
         >
           {options.map((value) => (
@@ -162,13 +169,18 @@ export function Map() {
           ))}
         </Flex>
 
-        <Box
-          h="calc(100% - 120px)"
+        <Flex
+          flexDirection={{ base: "row", md: "column" }}
+          position="relative"
+          w="100%"
+          h={{ base: "auto", md: "calc(100% - 160px)" }}
+          maxH="100%"
           px="3"
           overflow="auto"
           mt="2"
           css={{
             "&::-webkit-scrollbar": {
+              height: "8px",
               width: "4px",
             },
             "&::-webkit-scrollbar-track": {
@@ -190,15 +202,19 @@ export function Map() {
               label="loading..."
             />
           ) : data.length > 0 ? (
-            <Card data={data} />
+            popupData.length > 0 ? (
+              <Popup popupData={popupData} />
+            ) : (
+              <Card data={data} />
+            )
           ) : (
             <NoResults />
           )}
-        </Box>
+        </Flex>
       </Sidebar>
       <ArcGISMap />
-      {popupData.length > 0 && <Popup popupData={popupData} />}
+      {/* {popupData.length > 0 && <Popup popupData={popupData} />} */}
       {auth.user.token && <Form />}
-    </Box>
+    </Flex>
   );
 }
