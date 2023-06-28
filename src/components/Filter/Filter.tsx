@@ -6,7 +6,6 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverHeader,
   PopoverBody,
   PopoverFooter,
   PopoverArrow,
@@ -60,12 +59,8 @@ export default function Filter({ handleFilter }: FilterProps) {
   }, [category]);
 
   const COLORS_SMOOTH = {
-    bg: "#ececef",
     bgHovered: "#F5FAF5",
-    borderColor: "#76A9FF",
-    hoverBorderColor: "#C4DAFF",
     controlColorChecked: "#cf2300",
-    controlColor: "#9696A0",
     focusColor: "#A9D3AB",
   };
 
@@ -74,34 +69,34 @@ export default function Filter({ handleFilter }: FilterProps) {
       key={category.id}
       // borderRadius="md"
       // px={4}
+      position="relative"
       borderColor="gray.300"
       borderRadius="md"
       borderWidth="1px"
       align="center"
-      mb="2px"
+      mb="1"
     >
       <Image
         src={category.icon}
-        boxSize="5"
-        mr="1"
+        boxSize="4"
         position="absolute"
+        left="1"
         zIndex="1"
-        left="5"
       />
       <Checkbox
         sx={{
           h: "auto",
-          pr: 3,
-          pl: 8,
+          pr: 2,
+          pl: 4,
           py: 1,
           w: "100%",
-          // flexDirection: "row-reverse",
-          // justifyContent: "space-between",
-
-          // bg: "brand.grey",
           transition: "all 150ms",
           _checked: {
-            bg: COLORS_SMOOTH.bg,
+            bg: category.color,
+            color: "brand.white",
+          },
+          span: {
+            fontSize: "sm",
           },
           "span[class*='checkbox__control']:not([data-disabled])": {
             display: "none",
@@ -128,7 +123,7 @@ export default function Filter({ handleFilter }: FilterProps) {
             transition: "all 350ms",
             bg: COLORS_SMOOTH.bgHovered,
             _checked: {
-              bg: COLORS_SMOOTH.bg,
+              bg: category.color,
             },
           },
         }}
@@ -150,24 +145,24 @@ export default function Filter({ handleFilter }: FilterProps) {
             color="brand.dark"
             bg="brand.white"
             variant="outline"
-            px="6"
+            size={{ base: "sm", md: "md" }}
+            fontWeight="400"
             fontSize="xs"
             shadow="md"
             textTransform="uppercase"
             w="100%"
           >
-            {category.length === 0 ? "Filtrai" : category.length + " filtrai"}
+            {category.length === 0 ? "Filtrai" : category.length + " Filtrai"}
           </Button>
         </Flex>
       </PopoverTrigger>
       <PopoverContent ml="5px">
         <PopoverArrow />
         <PopoverCloseButton />
-        {/* <PopoverHeader>Filtrai</PopoverHeader> */}
         <PopoverBody>
           <Flex py="1" mb="1" align="center">
-            <Image src={CategoryIcon} boxSize="6" mr="1" />
-            <Text textTransform="uppercase">Kategorijos</Text>
+            <Image src={CategoryIcon} boxSize="4" mr="1" />
+            <Text fontSize="sm">Kategorijos</Text>
           </Flex>
           {CategoryData.map(renderCategory)}
         </PopoverBody>
@@ -175,11 +170,11 @@ export default function Filter({ handleFilter }: FilterProps) {
           border="0"
           display="flex"
           alignItems="center"
-          justifyContent="space-between"
-          pb={4}
+          justifyContent="flex-end"
+          pb={2}
         >
           <Button variant="outline" size="sm" onClick={clearFilter}>
-            Panaikinti filtrus
+            Panaikinti {category.length > 0 ? category.length : ""} filtrus
           </Button>
         </PopoverFooter>
       </PopoverContent>

@@ -112,8 +112,19 @@ export function Map() {
           include: view.map.layers.getItemAt(0) as __esri.FeatureLayer,
         });
         if (response.results.length) {
-          console.log(response.results, "features returned");
-          setPopupData(response.results);
+          const results = response.results;
+          console.log(results[0], "features returned");
+          view.goTo(
+            {
+              center: [
+                results[0].mapPoint.longitude,
+                results[0].mapPoint.latitude,
+              ],
+              zoom: 18,
+            },
+            { duration: 400 }
+          );
+          setPopupData(results);
         }
       });
     }

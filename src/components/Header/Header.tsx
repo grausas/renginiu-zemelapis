@@ -17,11 +17,11 @@ export default function Header() {
       color="brand.white"
       px="3"
       zIndex="22"
-      height="60px"
+      height={{ base: "40px", md: "60px" }}
       shadow="base"
     >
       <Flex align="center">
-        <Image src={logo} maxW="40px" mr="4" />
+        <Image src={logo} maxW="30px" mr="4" />
         <Text fontSize={{ base: "md", md: "xl" }} textTransform="uppercase">
           Vilniaus miesto renginių žemėlapis
         </Text>
