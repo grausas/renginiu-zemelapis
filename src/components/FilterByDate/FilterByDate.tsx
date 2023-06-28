@@ -16,10 +16,11 @@ export default function FilterByDate(
   const checkbox = getRadioProps();
 
   return (
-    <Box as="label">
+    <Box as="label" w="100%">
       <Input {...input} disabled={loading} />
       <Flex
         {...checkbox}
+        justify="center"
         py={{ base: "1", md: "2" }}
         align="center"
         border="1px solid"

@@ -35,6 +35,7 @@ export default function Filter({ handleFilter }: FilterProps) {
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
     CategoryData.map(() => false)
   );
+
   // filter by category, add checkboxes to array to save state after modal closed
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -139,22 +140,20 @@ export default function Filter({ handleFilter }: FilterProps) {
   return (
     <Popover closeOnBlur={false} placement="right-end" isLazy>
       <PopoverTrigger>
-        <Flex>
-          <Button
-            leftIcon={<HamburgerIcon />}
-            color="brand.dark"
-            bg="brand.white"
-            variant="outline"
-            size={{ base: "sm", md: "md" }}
-            fontWeight="400"
-            fontSize="xs"
-            shadow="md"
-            textTransform="uppercase"
-            w="100%"
-          >
-            {category.length === 0 ? "Filtrai" : category.length + " Filtrai"}
-          </Button>
-        </Flex>
+        <Button
+          leftIcon={<HamburgerIcon />}
+          color="brand.dark"
+          bg="brand.white"
+          variant="outline"
+          // size={{ base: "sm", md: "16px" }}
+          fontSize="sm"
+          fontWeight="400"
+          shadow="md"
+          textTransform="uppercase"
+          w={{ md: "40%" }}
+        >
+          {category.length === 0 ? "Filtrai" : category.length + " Filtrai"}
+        </Button>
       </PopoverTrigger>
       <PopoverContent ml="5px">
         <PopoverArrow />

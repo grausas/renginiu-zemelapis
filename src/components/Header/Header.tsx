@@ -9,7 +9,7 @@ export default function Header() {
   return (
     <Flex
       as="header"
-      position="relative"
+      position="fixed"
       justifyContent="space-between"
       align="center"
       w="100%"

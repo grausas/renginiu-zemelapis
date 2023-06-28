@@ -46,7 +46,7 @@ export default function Form() {
   };
 
   console.log("suggestions", suggestions);
-
+  console.log("errors", errors);
   const onSubmit = handleSubmit((data) => AddFeature(data));
 
   return (
@@ -62,14 +62,13 @@ export default function Form() {
       shadow="md"
     >
       <FormControl>
-        <FormLabel fontSize="sm">Renginio pradžia *</FormLabel>
+        <FormLabel>Renginio pradžia *</FormLabel>
         <Input
           lang="lt-LT"
           type="datetime-local"
           {...register("RENGINIO_PRADZIA", {
             required: "Renginio pradžia yra būtina",
           })}
-          size="sm"
         />
         <Box color="red" fontSize="sm">
           {errors?.RENGINIO_PRADZIA && <p>{errors.RENGINIO_PRADZIA.message}</p>}
