@@ -15,9 +15,8 @@ const Sidebar = ({ children }: Sidebar) => {
       w={{ base: "100%", md: "400px" }}
       h={{ base: "auto", md: "100%" }}
       bg="brand.grey"
-      borderRight={{ base: "none", md: "1px solid" }}
-      borderColor="gray.200"
       zIndex="1"
+      boxShadow={{ base: "md", md: "2xl" }}
     >
       {children}
     </Box>

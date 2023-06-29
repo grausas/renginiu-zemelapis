@@ -12,6 +12,7 @@ const theme = extendTheme({
         height: "100%",
         overflow: "hidden",
       },
+
       body: {
         textRendering: "optimizeSpeed",
         lineHeight: "1.5",

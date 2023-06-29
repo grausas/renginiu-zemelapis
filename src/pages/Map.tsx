@@ -1,20 +1,14 @@
 import React from "react";
 import { ArcGISMap } from "../components/Map/Map";
-import {
-  Box,
-  Flex,
-  Stack,
-  Text,
-  useRadioGroup,
-  Spinner,
-  Button,
-} from "@chakra-ui/react";
+import { Flex, Stack, Text, useRadioGroup } from "@chakra-ui/react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Search from "../components/Search/Search";
 import Filter from "../components/Filter/Filter";
 import FilterByDate from "../components/FilterByDate/FilterByDate";
 import Card from "../components/Card/Card";
 import Popup from "../components/Popup/Popup";
+import BackButton from "../components/BackButton/BackButton";
+import Spinner from "../components/Spinner/Spinner";
 import { useContext, useEffect, useState } from "react";
 import { whereParamsChange } from "../helpers/whereParams";
 import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter.js";
@@ -24,8 +18,6 @@ import { addDays } from "../helpers/addDays";
 import NoResults from "../components/NoResults/NoResults";
 const Form = React.lazy(() => import("../components/admin/Form/Form"));
 import { AuthContext } from "../context/auth";
-import { ArrowBackIcon } from "@chakra-ui/icons";
-
 const todayStart = new Date(new Date().setHours(0, 0, 0)).getTime();
 const todayEnd = new Date(new Date().setHours(23, 59, 59)).getTime();
 const defaultWhereParams = `RENGINIO_PRADZIA <= '${todayEnd}' AND RENGINIO_PABAIGA >= '${todayStart}'`;
@@ -64,9 +56,8 @@ export function Map() {
         reactiveUtils.when(
           () => !layerView.updating,
           () => {
-            // const query = layerView.filter.createQuery();
-            // query.geometry = view.extent;
-
+            const query = layerView.filter.createQuery();
+            query.geometry = view.extent;
             layerView
               .queryFeatures({ where: whereParams })
               .then(({ features }) => {
@@ -166,7 +157,6 @@ export function Map() {
             </FilterByDate>
           ))}
         </Flex>
-
         <Flex
           flexDirection={{ base: "row", md: "column" }}
           position="relative"
@@ -192,31 +182,17 @@ export function Map() {
           }}
         >
           {loading ? (
-            <Spinner
-              color="orange"
-              size="xl"
-              position="absolute"
-              top="calc(50% - 25px)"
-              left="calc(50% - 25px)"
-              label="loading..."
-              zIndex={2}
-            />
+            <Spinner />
           ) : data.length > 0 ? (
             popupData.length > 0 ? (
               <>
-                <Button
-                  leftIcon={<ArrowBackIcon />}
-                  variant="outline"
-                  bg="brand.white"
-                  mb="1"
-                  size="sm"
-                  onClick={() => {
+                <BackButton
+                  handleClick={() => {
                     setPopupData([]);
                     queryFeatures();
                   }}
-                >
-                  Grižti
-                </Button>
+                />
+
                 <Popup popupData={popupData} />
               </>
             ) : (
