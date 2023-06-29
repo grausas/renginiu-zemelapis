@@ -16,7 +16,7 @@ export function ArcGISMap() {
     <Box
       w={{ base: "100%", md: "calc(100% - 400px)" }}
       h="100%"
-      pt={{ base: "20px", md: "60px" }}
+      mt={{ base: "20px", md: "60px" }}
       ref={mapRef}
     ></Box>
   );

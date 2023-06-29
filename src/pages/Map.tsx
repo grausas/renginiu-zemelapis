@@ -7,6 +7,7 @@ import {
   Text,
   useRadioGroup,
   Spinner,
+  Button,
 } from "@chakra-ui/react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Search from "../components/Search/Search";
@@ -23,6 +24,7 @@ import { addDays } from "../helpers/addDays";
 import NoResults from "../components/NoResults/NoResults";
 const Form = React.lazy(() => import("../components/admin/Form/Form"));
 import { AuthContext } from "../context/auth";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
 const todayStart = new Date(new Date().setHours(0, 0, 0)).getTime();
 const todayEnd = new Date(new Date().setHours(23, 59, 59)).getTime();
@@ -201,7 +203,22 @@ export function Map() {
             />
           ) : data.length > 0 ? (
             popupData.length > 0 ? (
-              <Popup popupData={popupData} />
+              <>
+                <Button
+                  leftIcon={<ArrowBackIcon />}
+                  variant="outline"
+                  bg="brand.white"
+                  mb="1"
+                  size="sm"
+                  onClick={() => {
+                    setPopupData([]);
+                    queryFeatures();
+                  }}
+                >
+                  Grižti
+                </Button>
+                <Popup popupData={popupData} />
+              </>
             ) : (
               <Card data={data} />
             )
@@ -211,7 +228,6 @@ export function Map() {
         </Flex>
       </Sidebar>
       <ArcGISMap />
-      {/* {popupData.length > 0 && <Popup popupData={popupData} />} */}
       {auth.user.token && <Form />}
     </Flex>
   );

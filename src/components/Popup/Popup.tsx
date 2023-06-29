@@ -5,17 +5,30 @@ export default function Popup({ popupData }: any) {
   return popupData?.map((item: any) => (
     <Flex
       key={item.graphic.attributes.OBJECTID}
-      flexDirection="column"
+      flexDirection={"column"}
       bg="brand.white"
       mb="2"
       mr={{ base: "2", md: "0" }}
       shadow="md"
       p="3"
+      borderRadius="md"
+      overflow="auto"
+      w={{
+        base: popupData.length > 1 ? "calc(100%-40px)" : "100vw",
+        md: "auto",
+      }}
     >
       {CategoryData.map((category) => {
         if (category.value === item.graphic.attributes.KATEGORIJA) {
           return (
-            <Flex justify="center" key={category.id}>
+            <Flex
+              justify="center"
+              key={category.id}
+              w={{
+                base: popupData.length > 1 ? "calc(100%-40px)" : "100vw",
+                md: "auto",
+              }}
+            >
               <Flex
                 justify="center"
                 bg={category.color}
@@ -24,7 +37,6 @@ export default function Popup({ popupData }: any) {
                 py="0.5"
                 borderRadius="md"
                 color="brand.white"
-                w={{ base: "70vw", md: "auto" }}
               >
                 <Image src={category.icon} mr="1" boxSize="6" />
                 <Text
