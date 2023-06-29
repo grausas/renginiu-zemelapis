@@ -114,7 +114,7 @@ export default function Form() {
         <Input {...register("PASTABOS")} />
         <FormLabel>Aprašymas</FormLabel>
         <Input {...register("PASTABOS")} />
-        <FormLabel>Renginio puslapis</FormLabel>
+        <FormLabel>Renginio tinklapis</FormLabel>
         <InputGroup>
           <InputLeftAddon children="https://" />
           <Input {...register("WEBPAGE")} />

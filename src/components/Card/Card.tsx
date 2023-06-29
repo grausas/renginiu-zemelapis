@@ -29,8 +29,6 @@ export default function Card({ data }: CardProps) {
         mb={{ base: "0", md: "2" }}
         mr={{ base: "1", md: "0" }}
         flexDirection="column"
-        // h="100%"
-        // position="relative"
       >
         {CategoryData.map((category) => {
           if (category.value === feature.attributes.KATEGORIJA) {

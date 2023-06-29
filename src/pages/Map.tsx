@@ -55,17 +55,20 @@ export function Map() {
         setLoading(true);
 
         const featureFilter = new FeatureFilter({ where: whereParams });
+        console.log(featureFilter);
+        console.log("view", view.extent);
         layerView.filter = featureFilter;
 
         reactiveUtils.when(
           () => !layerView.updating,
           () => {
-            const query = layerView.filter.createQuery();
+            // const query = layerView.filter.createQuery();
             // query.geometry = view.extent;
 
             layerView
               .queryFeatures({ where: whereParams })
               .then(({ features }) => {
+                console.log("features", features);
                 setData(features);
                 setLoading(false);
               })
@@ -89,6 +92,7 @@ export function Map() {
 
   // filter events by current day, coming week or month
   const handleChangeDate = (value: string) => {
+    setPopupData([]);
     const todayEnd = new Date().setHours(23, 59, 59, 999);
     const dateEnd =
       value === "šiandien"
@@ -96,7 +100,6 @@ export function Map() {
         : value === "savaitė"
         ? addDays(todayEnd, 7)
         : addDays(todayEnd, 31);
-    setPopupData([]);
     setDateEnd(dateEnd);
   };
   const { getRootProps, getRadioProps } = useRadioGroup({
@@ -150,14 +153,7 @@ export function Map() {
           </Text>{" "}
           renginiai
         </Flex>
-        <Flex
-          px="3"
-          width="100%"
-          direction="row"
-          justify="space-evenly"
-          gap="1"
-          {...group}
-        >
+        <Flex px="3" justify="space-around" gap="1" {...group}>
           {options.map((value) => (
             <FilterByDate
               key={value}
@@ -173,10 +169,10 @@ export function Map() {
           flexDirection={{ base: "row", md: "column" }}
           position="relative"
           w="100%"
-          h={{ base: "auto", md: "calc(100% - 160px)" }}
+          h={{ base: "180px", md: "calc(100% - 160px)" }}
           maxH="100%"
           px="3"
-          overflow="auto"
+          overflowY="hidden"
           mt="2"
           css={{
             "&::-webkit-scrollbar": {
@@ -197,9 +193,10 @@ export function Map() {
               color="orange"
               size="xl"
               position="absolute"
-              top="30%"
-              left="45%"
+              top="calc(50% - 25px)"
+              left="calc(50% - 25px)"
               label="loading..."
+              zIndex={2}
             />
           ) : data.length > 0 ? (
             popupData.length > 0 ? (

@@ -150,7 +150,7 @@ export default function Filter({ handleFilter }: FilterProps) {
           fontWeight="400"
           shadow="md"
           textTransform="uppercase"
-          w={{ md: "40%" }}
+          w={{ base: "30%", md: "40%" }}
         >
           {category.length === 0 ? "Filtrai" : category.length + " Filtrai"}
         </Button>
