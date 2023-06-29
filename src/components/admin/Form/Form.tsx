@@ -9,10 +9,12 @@ import {
   InputLeftAddon,
   Select,
   Flex,
+  Checkbox,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { AddFeature } from "../../../helpers/addFeature";
 import { CategoryData } from "../../../utils/Category";
+import { weekDays } from "../../../utils/WeekDays";
 import { queryFeatures } from "../../../queries/queryFeatures";
 import { featureLayerPrivate } from "../../../layers";
 
@@ -25,10 +27,12 @@ type FormValues = {
   RENGINIO_PRADZIA: string;
   RENGINIO_PABAIGA: string;
   KATEGORIJA: number;
+  Savaites_dienos: string[] | string;
 };
 
 export default function Form() {
   const [suggestions, setSuggestions] = useState<__esri.Graphic[]>([]);
+
   const {
     register,
     handleSubmit,
@@ -47,7 +51,11 @@ export default function Form() {
 
   console.log("suggestions", suggestions);
   console.log("errors", errors);
-  const onSubmit = handleSubmit((data) => AddFeature(data));
+  const onSubmit = handleSubmit((data) => {
+    const dataToSubmit = data.Savaites_dienos.toString();
+    data.Savaites_dienos = dataToSubmit;
+    AddFeature(data);
+  });
 
   return (
     <Box
@@ -83,6 +91,19 @@ export default function Form() {
         <Box color="red" fontSize="sm">
           {errors?.RENGINIO_PABAIGA && <p>{errors.RENGINIO_PABAIGA.message}</p>}
         </Box>
+        <FormLabel>Savaitės dienos</FormLabel>
+        <Flex flexWrap="wrap">
+          {weekDays.map((day) => (
+            <Checkbox
+              {...register("Savaites_dienos")}
+              key={day.id}
+              value={day.id}
+              mr="2"
+            >
+              {day.name}
+            </Checkbox>
+          ))}
+        </Flex>
         <FormLabel>Kategorija</FormLabel>
         <Select {...register("KATEGORIJA")}>
           {CategoryData.map((category) => (
