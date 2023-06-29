@@ -172,7 +172,8 @@ export function Map() {
           h={{ base: "180px", md: "calc(100% - 160px)" }}
           maxH="100%"
           px="3"
-          overflowY="hidden"
+          overflow="auto"
+          overflowY={{ base: "hidden", md: "auto" }}
           mt="2"
           css={{
             "&::-webkit-scrollbar": {

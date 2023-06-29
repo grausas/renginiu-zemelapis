@@ -27,7 +27,9 @@ export default function Header() {
         </Text>
       </Flex>
       {auth.user.token && (
-        <Button onClick={() => auth.logout()}>Atsijungti</Button>
+        <Button onClick={() => auth.logout()} size={{ base: "sm", md: "md" }}>
+          Atsijungti
+        </Button>
       )}
     </Flex>
   );

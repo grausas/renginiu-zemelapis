@@ -13,9 +13,9 @@ import {
   Text,
   Image,
 } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
 import { CategoryData } from "../../utils/Category";
 import CategoryIcon from "../../assets/categories.png";
+import FilterIcon from "../../assets/filter.png";
 
 type FilterProps = {
   handleFilter: (category: string[]) => void;
@@ -68,8 +68,6 @@ export default function Filter({ handleFilter }: FilterProps) {
   const renderCategory = (category: CategoryItem, index: number) => (
     <Flex
       key={category.id}
-      // borderRadius="md"
-      // px={4}
       position="relative"
       borderColor="gray.300"
       borderRadius="md"
@@ -141,17 +139,16 @@ export default function Filter({ handleFilter }: FilterProps) {
     <Popover closeOnBlur={false} placement="right-end" isLazy>
       <PopoverTrigger>
         <Button
-          leftIcon={<HamburgerIcon />}
           color="brand.dark"
           bg="brand.white"
           variant="outline"
-          // size={{ base: "sm", md: "16px" }}
           fontSize="sm"
           fontWeight="400"
           shadow="md"
           textTransform="uppercase"
           w={{ base: "30%", md: "40%" }}
         >
+          <Image src={FilterIcon} boxSize="3" mr="1" />
           {category.length === 0 ? "Filtrai" : category.length + " Filtrai"}
         </Button>
       </PopoverTrigger>

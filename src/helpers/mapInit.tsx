@@ -84,7 +84,7 @@ export function init(container: HTMLDivElement) {
   });
 
   view.ui.add(searchExpand, {
-    position: "top-right",
+    position: "top-left",
     index: 2,
   });
 
@@ -99,7 +99,7 @@ export function init(container: HTMLDivElement) {
     expandTooltip: "Legenda",
   });
 
-  view.ui.add(legendExpand, "top-right");
+  view.ui.add(legendExpand, "top-left");
   const zoom = new Zoom({
     view: view,
   });
