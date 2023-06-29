@@ -97,7 +97,8 @@ export default function Form() {
         bg="brand.white"
         shadow="md"
         right="3"
-        top="280px"
+        top="130px"
+        size="sm"
         onClick={onOpen}
       >
         Užpildyti formą

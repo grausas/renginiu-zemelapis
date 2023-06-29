@@ -100,19 +100,20 @@ export function init(container: HTMLDivElement) {
   });
 
   view.ui.add(legendExpand, "top-left");
-  const zoom = new Zoom({
-    view: view,
-  });
-
-  view.ui.add(zoom, {
-    position: "top-right",
-  });
   const home = new Home({
     view: view,
   });
 
   view.ui.add(home, {
-    position: "top-right",
+    position: "bottom-right",
+  });
+
+  const zoom = new Zoom({
+    view: view,
+  });
+
+  view.ui.add(zoom, {
+    position: "bottom-right",
   });
 
   return view;

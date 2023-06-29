@@ -3,3 +3,11 @@
 .esri-view .esri-view-surface--inset-outline:focus::after {
   outline: none !important;
 }
+
+.esri-ui-corner {
+  flex-direction: column;
+}
+
+.esri-ui-bottom-right .esri-component {
+  margin-top: 10px;
+}
