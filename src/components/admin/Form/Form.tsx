@@ -4,12 +4,14 @@ import {
   Input,
   Button,
   FormControl,
+  CloseButton,
   FormLabel,
   InputGroup,
   InputLeftAddon,
   Select,
   Flex,
   Checkbox,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { AddFeature } from "../../../helpers/addFeature";
@@ -31,6 +33,7 @@ type FormValues = {
 };
 
 export default function Form() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [suggestions, setSuggestions] = useState<__esri.Graphic[]>([]);
   const [checkedAll, setCheckedAll] = useState(false);
   const [days, setDays] = useState<string[]>([]);
@@ -43,6 +46,7 @@ export default function Form() {
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
   } = useForm<FormValues>();
 
   const handleChange = (e: { target: { name: string; value: string } }) => {
@@ -87,106 +91,142 @@ export default function Form() {
   });
 
   return (
-    <Box
-      position="absolute"
-      bottom="75px"
-      maxW="500px"
-      w="100%"
-      right="50px"
-      bg="brand.white"
-      p="5"
-      borderRadius="md"
-      shadow="md"
-    >
-      <FormControl>
-        <FormLabel>Renginio pradžia *</FormLabel>
-        <Input
-          lang="lt-LT"
-          type="datetime-local"
-          {...register("RENGINIO_PRADZIA", {
-            required: "Renginio pradžia yra būtina",
-          })}
-        />
-        <Box color="red" fontSize="sm">
-          {errors?.RENGINIO_PRADZIA && <p>{errors.RENGINIO_PRADZIA.message}</p>}
+    <>
+      <Button
+        position="absolute"
+        bg="brand.white"
+        shadow="md"
+        right="3"
+        top="280px"
+        onClick={onOpen}
+      >
+        Užpildyti formą
+      </Button>
+      {isOpen && (
+        <Box
+          position="absolute"
+          bottom="5"
+          maxW="500px"
+          w="100%"
+          right="3"
+          bg="brand.white"
+          p="5"
+          borderRadius="md"
+          shadow="md"
+        >
+          <CloseButton
+            position="absolute"
+            right="0"
+            top="0"
+            onClick={onClose}
+          />
+          <FormControl>
+            <FormLabel>Renginio pradžia *</FormLabel>
+            <Input
+              lang="lt-LT"
+              type="datetime-local"
+              {...register("RENGINIO_PRADZIA", {
+                required: "Renginio pradžia yra būtina",
+              })}
+            />
+            <Box color="red" fontSize="sm">
+              {errors?.RENGINIO_PRADZIA && (
+                <p>{errors.RENGINIO_PRADZIA.message}</p>
+              )}
+            </Box>
+            <FormLabel>Renginio pabaiga *</FormLabel>
+            <Input
+              type="datetime-local"
+              {...register("RENGINIO_PABAIGA", {
+                required: "Renginio pabaiga yra būtina",
+              })}
+              min={watch().RENGINIO_PRADZIA}
+            />
+            <Box color="red" fontSize="sm">
+              {errors?.RENGINIO_PABAIGA && (
+                <p>{errors.RENGINIO_PABAIGA.message}</p>
+              )}
+            </Box>
+            <FormLabel>Savaitės dienos</FormLabel>
+            <Flex flexWrap="wrap">
+              <Checkbox
+                isChecked={checkedAll}
+                onChange={(e) => handleSelectAll(e)}
+                mr="2"
+              >
+                Visos
+              </Checkbox>
+              {weekDays.map((day, index) => (
+                <Checkbox
+                  {...register("Savaites_dienos", {
+                    required: "Savaitės dienos yra privalomos",
+                  })}
+                  key={day.id}
+                  value={day.id}
+                  mr="2"
+                  isChecked={checkedItems[index]}
+                  onChange={(e) => handleChangeSelect(e, index)}
+                >
+                  {day.name}
+                </Checkbox>
+              ))}
+            </Flex>
+            <Box color="red" fontSize="sm">
+              {errors?.Savaites_dienos && (
+                <p>{errors.Savaites_dienos.message}</p>
+              )}
+            </Box>
+            <FormLabel>Kategorija</FormLabel>
+            <Select {...register("KATEGORIJA")}>
+              {CategoryData.map((category) => (
+                <option
+                  typeof="number"
+                  value={category.value}
+                  key={category.id}
+                >
+                  {category.text}
+                </option>
+              ))}
+            </Select>
+            <FormLabel>Pavadinimas *</FormLabel>
+            <Input
+              {...register("PAVADINIMAS", {
+                required: "Pavadinimas yra būtinas",
+              })}
+              onChange={handleChange}
+            />
+            <Box color="red" fontSize="sm">
+              {errors?.PAVADINIMAS && <p>{errors.PAVADINIMAS.message}</p>}
+            </Box>
+            <FormLabel>Organizatorius *</FormLabel>
+            <Input
+              {...register("ORGANIZATORIUS", {
+                required: "Organizatorius yra būtinas",
+              })}
+            />
+            <Box color="red" fontSize="sm">
+              {errors?.ORGANIZATORIUS && <p>{errors.ORGANIZATORIUS.message}</p>}
+            </Box>
+            <FormLabel>Gauta</FormLabel>
+            <Input {...register("PASTABOS")} />
+            <FormLabel>Aprašymas</FormLabel>
+            <Input {...register("PASTABOS")} />
+            <FormLabel>Renginio tinklapis</FormLabel>
+            <InputGroup>
+              <InputLeftAddon children="https://" />
+              <Input {...register("WEBPAGE")} />
+            </InputGroup>
+          </FormControl>
+          <Flex justify="space-between">
+            <Button mt="2" onClick={onSubmit} variant="outline">
+              Atšaukti
+            </Button>
+            <Button mt="2" onClick={onSubmit}>
+              Pridėti
+            </Button>
+          </Flex>
         </Box>
-        <FormLabel>Renginio pabaiga *</FormLabel>
-        <Input
-          type="datetime-local"
-          {...register("RENGINIO_PABAIGA", {
-            required: "Renginio pabaiga yra būtina",
-          })}
-        />
-        <Box color="red" fontSize="sm">
-          {errors?.RENGINIO_PABAIGA && <p>{errors.RENGINIO_PABAIGA.message}</p>}
-        </Box>
-        <FormLabel>Savaitės dienos</FormLabel>
-        <Flex flexWrap="wrap">
-          <Checkbox
-            isChecked={checkedAll}
-            onChange={(e) => handleSelectAll(e)}
-            mr="2"
-          >
-            Visos
-          </Checkbox>
-          {weekDays.map((day, index) => (
-            <Checkbox
-              {...register("Savaites_dienos")}
-              key={day.id}
-              value={day.id}
-              mr="2"
-              isChecked={checkedItems[index]}
-              onChange={(e) => handleChangeSelect(e, index)}
-            >
-              {day.name}
-            </Checkbox>
-          ))}
-        </Flex>
-        <FormLabel>Kategorija</FormLabel>
-        <Select {...register("KATEGORIJA")}>
-          {CategoryData.map((category) => (
-            <option typeof="number" value={category.value} key={category.id}>
-              {category.text}
-            </option>
-          ))}
-        </Select>
-        <FormLabel>Pavadinimas *</FormLabel>
-        <Input
-          {...register("PAVADINIMAS", {
-            required: "Pavadinimas yra būtinas",
-          })}
-          onChange={handleChange}
-        />
-        <Box color="red" fontSize="sm">
-          {errors?.PAVADINIMAS && <p>{errors.PAVADINIMAS.message}</p>}
-        </Box>
-        <FormLabel>Organizatorius *</FormLabel>
-        <Input
-          {...register("ORGANIZATORIUS", {
-            required: "Organizatorius yra būtinas",
-          })}
-        />
-        <Box color="red" fontSize="sm">
-          {errors?.ORGANIZATORIUS && <p>{errors.ORGANIZATORIUS.message}</p>}
-        </Box>
-        <FormLabel>Gauta</FormLabel>
-        <Input {...register("PASTABOS")} />
-        <FormLabel>Aprašymas</FormLabel>
-        <Input {...register("PASTABOS")} />
-        <FormLabel>Renginio tinklapis</FormLabel>
-        <InputGroup>
-          <InputLeftAddon children="https://" />
-          <Input {...register("WEBPAGE")} />
-        </InputGroup>
-      </FormControl>
-      <Flex justify="space-between">
-        <Button mt="2" onClick={onSubmit} variant="outline">
-          Atšaukti
-        </Button>
-        <Button mt="2" onClick={onSubmit}>
-          Pridėti
-        </Button>
-      </Flex>
-    </Box>
+      )}
+    </>
   );
 }
