@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
   Input,
@@ -32,21 +32,50 @@ type FormValues = {
 
 export default function Form() {
   const [suggestions, setSuggestions] = useState<__esri.Graphic[]>([]);
+  const [checkedAll, setCheckedAll] = useState(false);
+  const [days, setDays] = useState<string[]>([]);
+  const [checkedItems, setCheckedItems] = useState<boolean[]>(
+    weekDays.map(() => false)
+  );
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<FormValues>();
 
   const handleChange = (e: { target: { name: string; value: string } }) => {
-    console.log("e", e);
     const name = e.target.name;
     const value = e.target.value;
     const whereParams = `${name} LIKE '%${value}%'`;
     queryFeatures(featureLayerPrivate(), whereParams).then((data) => {
       setSuggestions(data);
     });
+  };
+
+  const handleChangeSelect = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    setCheckedAll(false);
+    const newCheckedItems = [...checkedItems];
+    newCheckedItems[index] = event.target.checked;
+    setCheckedItems(newCheckedItems);
+    const newCategory = event.target.checked
+      ? [...days, event.target.value]
+      : days.filter((item) => item !== event.target.value);
+    setDays(newCategory);
+  };
+
+  const handleSelectAll = (e: ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
+    const all = weekDays.map((day) => day.id.toString());
+    setCheckedAll(isChecked);
+    setValue("Savaites_dienos", isChecked ? all : []);
+    setCheckedItems(
+      isChecked ? weekDays.map(() => true) : weekDays.map(() => false)
+    );
   };
 
   console.log("suggestions", suggestions);
@@ -93,12 +122,21 @@ export default function Form() {
         </Box>
         <FormLabel>Savaitės dienos</FormLabel>
         <Flex flexWrap="wrap">
-          {weekDays.map((day) => (
+          <Checkbox
+            isChecked={checkedAll}
+            onChange={(e) => handleSelectAll(e)}
+            mr="2"
+          >
+            Visos
+          </Checkbox>
+          {weekDays.map((day, index) => (
             <Checkbox
               {...register("Savaites_dienos")}
               key={day.id}
               value={day.id}
               mr="2"
+              isChecked={checkedItems[index]}
+              onChange={(e) => handleChangeSelect(e, index)}
             >
               {day.name}
             </Checkbox>
