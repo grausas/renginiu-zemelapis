@@ -86,6 +86,7 @@ export default function Card({ data }: CardProps) {
             <Text fontSize="sm">{endDate}</Text>
           </Box>
         </Flex>
+        <Text textAlign="center">{feature.attributes.Savaites_dienos}</Text>
       </Flex>
     );
   });
