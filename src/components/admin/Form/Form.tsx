@@ -19,6 +19,7 @@ import { CategoryData } from "../../../utils/Category";
 import { weekDays } from "../../../utils/WeekDays";
 import { queryFeatures } from "../../../queries/queryFeatures";
 import { featureLayerPrivate } from "../../../layers";
+import FileUpload from "../FileUpload/FileUpload";
 
 type FormValues = {
   PAVADINIMAS: string;
@@ -30,13 +31,13 @@ type FormValues = {
   RENGINIO_PABAIGA: string;
   KATEGORIJA: number;
   Savaites_dienos: string[] | string;
+  Att: HTMLInputElement;
 };
 
 export default function Form() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [suggestions, setSuggestions] = useState<__esri.Graphic[]>([]);
   const [checkedAll, setCheckedAll] = useState(false);
-  const [days, setDays] = useState<string[]>([]);
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
     weekDays.map(() => false)
   );
@@ -66,10 +67,6 @@ export default function Form() {
     const newCheckedItems = [...checkedItems];
     newCheckedItems[index] = event.target.checked;
     setCheckedItems(newCheckedItems);
-    const newCategory = event.target.checked
-      ? [...days, event.target.value]
-      : days.filter((item) => item !== event.target.value);
-    setDays(newCategory);
   };
 
   const handleSelectAll = (e: ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +84,9 @@ export default function Form() {
   const onSubmit = handleSubmit((data) => {
     const dataToSubmit = data.Savaites_dienos.toString();
     data.Savaites_dienos = dataToSubmit;
-    AddFeature(data);
+    const att = data.Att;
+    delete data.Att;
+    AddFeature(data, att);
   });
 
   return (
@@ -211,12 +210,15 @@ export default function Form() {
             <FormLabel>Gauta</FormLabel>
             <Input {...register("PASTABOS")} />
             <FormLabel>Aprašymas</FormLabel>
-            <Input {...register("PASTABOS")} />
+            <Input {...register("WEBPAGE")} />
             <FormLabel>Renginio tinklapis</FormLabel>
             <InputGroup>
               <InputLeftAddon children="https://" />
               <Input {...register("WEBPAGE")} />
             </InputGroup>
+            <FormLabel>Priedai</FormLabel>
+            {/* <FileUpload /> */}
+            <Input type="file" {...register("Att")} />
           </FormControl>
           <Flex justify="space-between">
             <Button mt="2" onClick={onSubmit} variant="outline">

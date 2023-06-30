@@ -33,6 +33,50 @@ export function Map() {
   const [popupData, setPopupData] = useState<__esri.ViewHit[]>([]);
   const { view } = useContext(MapContext);
   const auth: any = useContext(AuthContext);
+  const array: __esri.Geometry[] = [];
+
+  useEffect(() => {
+    if (auth.user.token) {
+      const load = async () => {
+        const sketch = await (
+          await import("@arcgis/core/widgets/Sketch.js")
+        ).default;
+        const graphicLayer = await (
+          await import("@arcgis/core/layers/GraphicsLayer.js")
+        ).default;
+        const layer = new graphicLayer({
+          title: "graphics",
+        });
+        view?.map.layers.add(layer);
+        const home = new sketch({
+          view: view,
+          layer: layer,
+        });
+        view?.ui.add(home, {
+          position: "top-right",
+        });
+
+        home.on("create", function (event) {
+          // check if the create event's state has changed to complete indicating
+          // the graphic create operation is completed.
+          if (event.state === "complete") {
+            if (array.length > 0) {
+              array[0].rings.push(event.graphic.geometry.rings[0]);
+            } else {
+              array.push(event.graphic.geometry);
+            }
+            console.log("event.graphic", array);
+            // remove the graphic from the layer. Sketch adds
+            // the completed graphic to the layer by default.
+            console.log(event.graphic);
+
+            // use the graphic.geometry to query features that intersect it
+          }
+        });
+      };
+      load();
+    }
+  }, [auth.user.token, view]);
 
   useEffect(() => {
     setWhereParams(whereParamsChange(dateStart, dateEnd, category));
@@ -110,12 +154,29 @@ export function Map() {
   useEffect(() => {
     if (view) {
       view.on("click", async (event) => {
+        const featureLayer = view?.map.layers.getItemAt(
+          0
+        ) as __esri.FeatureLayer;
         const response = await view.hitTest(event, {
-          include: view.map.layers.getItemAt(0) as __esri.FeatureLayer,
+          include: featureLayer,
         });
         if (response.results.length) {
           const results = response.results;
-          console.log(results[0], "features returned");
+          const objectIds = results.map(
+            (result) => result.graphic.attributes.OBJECTID
+          );
+          const attachmentQuery = {
+            objectIds: objectIds,
+            attachmentTypes: ["image/jpeg", "image/png"],
+          };
+          console.log("objectIds", objectIds);
+          featureLayer.queryAttachments(attachmentQuery).then((attachments) => {
+            if (attachments) {
+              console.log("attachments", attachments);
+            }
+          });
+
+          console.log(results, "features returned");
           view.goTo(
             {
               center: [
