@@ -18,6 +18,7 @@ export function ArcGISMap() {
       h="100%"
       pt={{ base: "20px", md: "60px" }}
       ref={mapRef}
+      overflow="hidden"
     ></Box>
   );
 }

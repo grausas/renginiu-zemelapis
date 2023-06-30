@@ -100,7 +100,6 @@ export default function Filter({ handleFilter }: FilterProps) {
           "span[class*='checkbox__control']:not([data-disabled])": {
             display: "none",
             borderColor: "gray.300",
-            borderRadius: "99px",
             borderWidth: "2px",
             h: "20px",
             w: "20px",
@@ -120,6 +119,7 @@ export default function Filter({ handleFilter }: FilterProps) {
           },
           _hover: {
             transition: "all 350ms",
+            borderRadius: "md",
             bg: COLORS_SMOOTH.bgHovered,
             _checked: {
               bg: category.color,
@@ -147,6 +147,8 @@ export default function Filter({ handleFilter }: FilterProps) {
           shadow="md"
           textTransform="uppercase"
           w={{ base: "30%", md: "40%" }}
+          h="0"
+          py="4"
         >
           <Image src={FilterIcon} boxSize="3" mr="1" />
           {category.length === 0 ? "Filtrai" : category.length + " Filtrai"}

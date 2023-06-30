@@ -10,6 +10,7 @@ import {
   InputRightElement,
   Image,
   FormLabel,
+  Box,
 } from "@chakra-ui/react";
 import { AuthContext } from "../context/auth";
 
@@ -26,6 +27,21 @@ export function Login() {
   };
 
   const handleShowClick = () => setShowPassword(!showPassword);
+
+  const basicBoxStyles = {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    marginTop: "50px",
+    justifyContent: "center",
+    textAlign: "center",
+    color: "brand.white",
+    textShadow: "0 0 20px black",
+    fontWeight: "bold",
+    fontSize: { base: "4xl", md: "6xl" },
+    px: 4,
+  };
 
   return (
     <Stack
@@ -77,6 +93,9 @@ export function Login() {
         </Stack>
       </Flex>
       <Flex flex={1} position="relative">
+        <Box sx={basicBoxStyles} filter="auto" brightness="80%">
+          Vilniaus miesto renginių žemėlapis
+        </Box>
         <Image
           alt={"Login Image"}
           objectFit={"cover"}

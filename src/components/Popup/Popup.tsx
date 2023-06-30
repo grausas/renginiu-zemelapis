@@ -12,7 +12,6 @@ export default function Popup({ popupData }: any) {
       shadow="md"
       p="3"
       borderRadius="md"
-      overflow="auto"
       w={{
         base: popupData.length > 1 ? "calc(100%-40px)" : "100vw",
         md: "auto",
