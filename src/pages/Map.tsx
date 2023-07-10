@@ -91,7 +91,6 @@ export function Map() {
       ?.whenLayerView(featureLayer)
       .then((layerView) => {
         setLoading(true);
-
         const featureFilter = new FeatureFilter({ where: whereParams });
         console.log(featureFilter);
         console.log("view", view.extent);
@@ -103,7 +102,11 @@ export function Map() {
             const query = layerView.filter.createQuery();
             query.geometry = view.extent;
             layerView
-              .queryFeatures({ where: whereParams })
+              .queryFeatures({
+                where: whereParams,
+                returnGeometry: true,
+                returnM: true,
+              })
               .then(({ features }) => {
                 console.log("features", features);
                 setData(features);
@@ -161,6 +164,7 @@ export function Map() {
           include: featureLayer,
         });
         if (response.results.length) {
+          console.log("response", response);
           const results = response.results;
           const objectIds = results.map(
             (result) => result.graphic.attributes.OBJECTID
@@ -257,7 +261,7 @@ export function Map() {
                 <Popup popupData={popupData} />
               </>
             ) : (
-              <Card data={data} />
+              <Card data={data} handleClick={(e) => console.log(e)} />
             )
           ) : (
             <NoResults />

@@ -4,7 +4,7 @@ export async function queryFeatures(
 ) {
   const params = {
     where: whereParams,
-    returnGeometry: false,
+    returnGeometry: true,
     outFields: ["*"],
   };
 

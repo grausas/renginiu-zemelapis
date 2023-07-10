@@ -1,5 +1,6 @@
 import Graphic from "@arcgis/core/Graphic";
 import { featureLayerPrivate } from "../layers";
+import { getDates } from "./getDates";
 
 interface Feature {
   PAVADINIMAS: string;
@@ -10,11 +11,25 @@ interface Feature {
   RENGINIO_PRADZIA: string;
   RENGINIO_PABAIGA: string;
   KATEGORIJA: number;
+  Savaites_dienos: string;
 }
 
-export const AddFeature = (feature: Feature, att: any) => {
+export const AddFeature = (feature: Feature, att: BlobPart[] | undefined) => {
   console.log("feature", feature);
   console.log("att", att);
+  console.log(
+    "feature.RENGINIO_PRADZIA,",
+    new Date(feature.RENGINIO_PRADZIA).getTime()
+  );
+  console.log("savaites_dienos", feature.Savaites_dienos);
+  console.log("getDay", new Date(feature.RENGINIO_PRADZIA).getDay());
+
+  const dates = getDates(
+    feature.RENGINIO_PRADZIA,
+    feature.RENGINIO_PABAIGA,
+    feature.Savaites_dienos
+  );
+  console.log("dates", dates);
 
   const addFeature = new Graphic({
     attributes: feature,
@@ -25,19 +40,11 @@ export const AddFeature = (feature: Feature, att: any) => {
     globalIdUsed: true,
   };
 
-  // const deleteFeatures = [
-  //   { objectId: 7355 },
-  //   { objectId: 7354 },
-  //   { objectId: 7353 },
-  //   { objectId: 7352 },
-  //   { objectId: 7339 },
-  //   { objectId: 7338 },
-  //   { objectId: 7337 },
-  // ];
+  const deleteFeatures = [{ objectId: 7396 }];
 
   const edits = {
     // addFeatures: [addFeature],
-    // deleteFeatures: deleteFeatures,
+    deleteFeatures: deleteFeatures,
   };
 
   console.log("edits", edits);
@@ -64,7 +71,7 @@ export const AddFeature = (feature: Feature, att: any) => {
           },
         };
 
-        const editsAtt: any = {
+        const editsAtt: __esri.EditsProperties = {
           addAttachments: [attachments],
         };
 

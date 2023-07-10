@@ -1,7 +1,11 @@
 import { Flex, Text, Image } from "@chakra-ui/react";
 import { CategoryData } from "../../utils/Category";
 
-export default function Popup({ popupData }: any) {
+interface Popup {
+  popupData: __esri.Graphic[];
+}
+
+export default function Popup({ popupData }: Popup) {
   return popupData?.map((item: any) => (
     <Flex
       key={item.graphic.attributes.OBJECTID}
