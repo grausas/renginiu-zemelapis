@@ -93,9 +93,6 @@ export function Login() {
         </Stack>
       </Flex>
       <Flex flex={1} position="relative">
-        <Box sx={basicBoxStyles} filter="auto" brightness="80%">
-          Vilniaus miesto renginių žemėlapis
-        </Box>
         <Image
           alt={"Login Image"}
           objectFit={"cover"}
