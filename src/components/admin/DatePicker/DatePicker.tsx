@@ -1,11 +1,13 @@
 import { forwardRef } from "react";
-import ReactDatePicker from "react-datepicker";
+import ReactDatePicker, { registerLocale } from "react-datepicker";
+import lt from "date-fns/locale/lt";
 // import { useColorMode } from "@chakra-ui/react";
 import { InputGroup, Input, InputRightElement } from "@chakra-ui/react";
 import { CalendarIcon, TimeIcon } from "@chakra-ui/icons";
 
 import "react-datepicker/dist/react-datepicker.css";
 import "./datepicker.css";
+registerLocale("lt", lt);
 
 const customDateInput = (
   { onClick, value, onChange, props }: any,
@@ -24,13 +26,6 @@ const customDateInput = (
 customDateInput.displayName = "DateInput";
 
 const CustomInput = forwardRef(customDateInput);
-
-// const icon =
-//   inputType === "date" ? (
-//     <CalendarIcon fontSize="sm" />
-//   ) : (
-//     <TimeIcon fontSize="sm" />
-//   );
 
 interface Props {
   isClearable?: boolean;
@@ -54,6 +49,8 @@ export default function DatePicker({
           className="react-datapicker__input-text"
           customInput={inputType === "date" ? <CustomInput /> : <Input />}
           showPopperArrow={false}
+          locale="lt"
+          timeCaption="Laikas"
           {...props}
         />
         <InputRightElement

@@ -141,7 +141,7 @@ export default function Form() {
           <>
             {/* <div>Pradžios data: {startDate ? startDate.toISOString() : ""}</div>
             <div>Pabaigos data: {endDate ? endDate.toISOString() : ""}</div> */}
-            <Flex alignItems="center" w="100%" mb="2" gap="2">
+            <Flex alignItems="flex-start" w="100%" mb="2" gap="2">
               <Box zIndex="4">
                 <FormLabel m="0" name="RENGINIO_PRADZIA">
                   Pradžios data
@@ -175,6 +175,7 @@ export default function Form() {
                       showTimeSelect
                       showTimeSelectOnly
                       timeFormat="HH:mm"
+                      timeIntervals={5}
                       selectedDate={startDate}
                       onChange={(date) => setStartDate(date)}
                     />
@@ -235,6 +236,7 @@ export default function Form() {
                       showTimeSelect
                       showTimeSelectOnly
                       timeFormat="HH:mm"
+                      timeIntervals={5}
                       selectedDate={endDate}
                       onChange={(date) => setEndDate(date)}
                     />
@@ -242,31 +244,6 @@ export default function Form() {
                 />
               </Box>
             </Flex>
-            {/* <Input
-              lang="lt-LT"
-              type="datetime-local"
-              {...register("RENGINIO_PRADZIA", {
-                required: "Renginio pradžia yra būtina",
-              })}
-            /> */}
-            {/* <Box color="red" fontSize="sm">
-              {errors?.RENGINIO_PRADZIA && (
-                <p>{errors.RENGINIO_PRADZIA.message}</p>
-              )}
-            </Box> */}
-            {/* <FormLabel>Renginio pabaiga *</FormLabel>
-            <Input
-              type="datetime-local"
-              {...register("RENGINIO_PABAIGA", {
-                required: "Renginio pabaiga yra būtina",
-              })}
-              min={watch().RENGINIO_PRADZIA}
-            /> */}
-            {/* <Box color="red" fontSize="sm">
-              {errors?.RENGINIO_PABAIGA && (
-                <p>{errors.RENGINIO_PABAIGA.message}</p>
-              )}
-            </Box> */}
             <Box mb="2">
               <FormLabel m="0">Savaitės dienos</FormLabel>
               <Flex flexWrap="wrap">
