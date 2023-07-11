@@ -60,6 +60,7 @@ export const AddFeature = (feature: Feature, att: BlobPart[] | undefined) => {
           type: "image/jpeg",
         });
 
+        if (blob.size === 0) return;
         console.log("blob", blob);
 
         const attachments = {

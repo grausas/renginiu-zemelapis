@@ -2,7 +2,7 @@ import { Flex, Text, Image } from "@chakra-ui/react";
 import { CategoryData } from "../../utils/Category";
 
 interface Popup {
-  popupData: __esri.Graphic[];
+  popupData: __esri.ViewHit[];
 }
 
 export default function Popup({ popupData }: Popup) {
@@ -57,6 +57,7 @@ export default function Popup({ popupData }: Popup) {
       })}
 
       <Text fontWeight="500" my="2">
+        {console.log("item", item)}
         {item.graphic.attributes.PAVADINIMAS}
       </Text>
       <Text>Organizatorius: {item.graphic.attributes.ORGANIZATORIUS}</Text>

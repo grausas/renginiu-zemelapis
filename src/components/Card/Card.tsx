@@ -5,9 +5,10 @@ import calendar from "../../assets/calendar.png";
 
 interface CardProps {
   data: __esri.Graphic[];
+  handleClick: (feature: __esri.Graphic) => void;
 }
 
-export default function Card({ data }: CardProps) {
+export default function Card({ data, handleClick }: CardProps) {
   const sortedData = sortByDate(data);
   return sortedData.map((feature: __esri.Graphic) => {
     const startDate = new Date(
@@ -29,6 +30,9 @@ export default function Card({ data }: CardProps) {
         mb={{ base: "0", md: "2" }}
         mr={{ base: "1", md: "0" }}
         flexDirection="column"
+        onClick={() => {
+          handleClick(feature);
+        }}
       >
         {CategoryData.map((category) => {
           if (category.value === feature.attributes.KATEGORIJA) {
