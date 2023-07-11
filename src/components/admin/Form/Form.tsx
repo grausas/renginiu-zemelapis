@@ -141,9 +141,14 @@ export default function Form() {
           <FormControl>
             <div>Pradžios data: {startDate ? startDate.toISOString() : ""}</div>
             <div>Pabaigos data: {endDate ? endDate.toISOString() : ""}</div>
-            <Flex alignItems="flex-start" justify="space-between" w="100%">
+            <Flex
+              alignItems="flex-start"
+              justify="space-between"
+              w="100%"
+              mb="2"
+            >
               <Box zIndex="4">
-                <FormLabel>Pradžios data</FormLabel>
+                <FormLabel m="0">Pradžios data</FormLabel>
                 <Controller
                   control={control}
                   name="RENGINIO_PRADZIA"
@@ -162,7 +167,7 @@ export default function Form() {
                 />
               </Box>
               <Box zIndex="3">
-                <FormLabel>Pradžios laikas</FormLabel>
+                <FormLabel m="0">Pradžios laikas</FormLabel>
                 <Controller
                   control={control}
                   name="RENGINIO_PRADZIA"
@@ -180,9 +185,14 @@ export default function Form() {
                 />
               </Box>
             </Flex>
-            <Flex alignItems="flex-start" justify="space-between" w="100%">
+            <Flex
+              alignItems="flex-start"
+              justify="space-between"
+              w="100%"
+              mb="2"
+            >
               <Box zIndex="2">
-                <FormLabel>Pabaigos data</FormLabel>
+                <FormLabel m="0">Pabaigos data</FormLabel>
                 <Controller
                   control={control}
                   name="RENGINIO_PABAIGA"
@@ -202,7 +212,7 @@ export default function Form() {
                 />
               </Box>
               <Box zIndex="1">
-                <FormLabel>Pabaigos laikas</FormLabel>
+                <FormLabel m="0">Pabaigos laikas</FormLabel>
                 <Controller
                   control={control}
                   name="RENGINIO_PABAIGA"
@@ -227,11 +237,11 @@ export default function Form() {
                 required: "Renginio pradžia yra būtina",
               })}
             /> */}
-            <Box color="red" fontSize="sm">
+            {/* <Box color="red" fontSize="sm">
               {errors?.RENGINIO_PRADZIA && (
                 <p>{errors.RENGINIO_PRADZIA.message}</p>
               )}
-            </Box>
+            </Box> */}
             {/* <FormLabel>Renginio pabaiga *</FormLabel>
             <Input
               type="datetime-local"
@@ -240,86 +250,97 @@ export default function Form() {
               })}
               min={watch().RENGINIO_PRADZIA}
             /> */}
-            <Box color="red" fontSize="sm">
+            {/* <Box color="red" fontSize="sm">
               {errors?.RENGINIO_PABAIGA && (
                 <p>{errors.RENGINIO_PABAIGA.message}</p>
               )}
-            </Box>
-            <FormLabel>Savaitės dienos</FormLabel>
-            <Flex flexWrap="wrap">
-              <Checkbox
-                isChecked={checkedAll}
-                onChange={(e) => handleSelectAll(e)}
-                mr="2"
-              >
-                Visos
-              </Checkbox>
-              {weekDays.map((day, index) => (
+            </Box> */}
+            <Box mb="2">
+              <FormLabel m="0">Savaitės dienos</FormLabel>
+              <Flex flexWrap="wrap">
                 <Checkbox
-                  {...register("Savaites_dienos", {
-                    required: "Savaitės dienos yra privalomos",
-                  })}
-                  key={day.id}
-                  value={day.id}
+                  isChecked={checkedAll}
+                  onChange={(e) => handleSelectAll(e)}
                   mr="2"
-                  isChecked={checkedItems[index]}
-                  onChange={(e) => handleChangeSelect(e, index)}
                 >
-                  {day.name}
+                  Visos
                 </Checkbox>
-              ))}
-            </Flex>
-            <Box color="red" fontSize="sm">
-              {errors?.Savaites_dienos && (
-                <p>{errors.Savaites_dienos.message}</p>
-              )}
+                {weekDays.map((day, index) => (
+                  <Checkbox
+                    {...register("Savaites_dienos", {
+                      required: "Savaitės dienos yra privalomos",
+                    })}
+                    key={day.id}
+                    value={day.id}
+                    mr="2"
+                    isChecked={checkedItems[index]}
+                    onChange={(e) => handleChangeSelect(e, index)}
+                  >
+                    {day.name}
+                  </Checkbox>
+                ))}
+              </Flex>
+              <Box color="red" fontSize="sm">
+                {errors?.Savaites_dienos && (
+                  <p>{errors.Savaites_dienos.message}</p>
+                )}
+              </Box>
             </Box>
-            <FormLabel>Kategorija</FormLabel>
-            <Select {...register("KATEGORIJA")}>
-              {CategoryData.map((category) => (
-                <option
-                  typeof="number"
-                  value={category.value}
-                  key={category.id}
-                >
-                  {category.text}
-                </option>
-              ))}
-            </Select>
-            <FormLabel>Pavadinimas *</FormLabel>
-            <Input
-              {...register("PAVADINIMAS", {
-                required: "Pavadinimas yra būtinas",
-              })}
-              onChange={handleChange}
-            />
-            <Box color="red" fontSize="sm">
-              {errors?.PAVADINIMAS && <p>{errors.PAVADINIMAS.message}</p>}
+            <Box mb="2">
+              <FormLabel m="0">Kategorija</FormLabel>
+              <Select {...register("KATEGORIJA")}>
+                {CategoryData.map((category) => (
+                  <option
+                    typeof="number"
+                    value={category.value}
+                    key={category.id}
+                  >
+                    {category.text}
+                  </option>
+                ))}
+              </Select>
             </Box>
-            <FormLabel>Organizatorius *</FormLabel>
-            <Input
-              {...register("ORGANIZATORIUS", {
-                required: "Organizatorius yra būtinas",
-              })}
-            />
-            <Box color="red" fontSize="sm">
-              {errors?.ORGANIZATORIUS && <p>{errors.ORGANIZATORIUS.message}</p>}
+            <Box mb="2">
+              <FormLabel m="0">Pavadinimas *</FormLabel>
+              <Input
+                {...register("PAVADINIMAS", {
+                  required: "Pavadinimas yra būtinas",
+                })}
+                onChange={handleChange}
+              />
+              <Box color="red" fontSize="sm">
+                {errors?.PAVADINIMAS && <p>{errors.PAVADINIMAS.message}</p>}
+              </Box>
             </Box>
-            <FormLabel>Gauta</FormLabel>
-            <Input {...register("PASTABOS")} />
-            <FormLabel>Aprašymas</FormLabel>
-            <Input {...register("WEBPAGE")} />
-            <FormLabel>Renginio tinklapis</FormLabel>
-            <InputGroup>
+            <Box mb="2">
+              <FormLabel m="0">Organizatorius *</FormLabel>
+              <Input
+                {...register("ORGANIZATORIUS", {
+                  required: "Organizatorius yra būtinas",
+                })}
+              />
+              <Box color="red" fontSize="sm">
+                {errors?.ORGANIZATORIUS && (
+                  <p>{errors.ORGANIZATORIUS.message}</p>
+                )}
+              </Box>
+            </Box>
+            <FormLabel m="0">Gauta</FormLabel>
+            <Input {...register("PASTABOS")} mb="2" />
+            <FormLabel m="0">Aprašymas</FormLabel>
+            <Input {...register("WEBPAGE")} mb="2" />
+            <FormLabel m="0">Renginio tinklapis</FormLabel>
+            <InputGroup mb="2">
               <InputLeftAddon children="https://" />
               <Input {...register("WEBPAGE")} />
             </InputGroup>
-            <FormLabel>Priedai</FormLabel>
+            <FormLabel m="0">Priedai</FormLabel>
             {/* <FileUpload props={...register("Att")} /> */}
             <Input
               type="file"
               multiple
               {...register("Att")}
+              mb="2"
               sx={{
                 "::file-selector-button": {
                   height: 10,
