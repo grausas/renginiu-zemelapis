@@ -124,7 +124,7 @@ export default function Form() {
         <Box
           position="absolute"
           bottom="5"
-          maxW="500px"
+          maxW="700px"
           w="100%"
           right="3"
           bg="brand.white"
@@ -138,17 +138,14 @@ export default function Form() {
             top="0"
             onClick={onClose}
           />
-          <FormControl>
-            <div>Pradžios data: {startDate ? startDate.toISOString() : ""}</div>
-            <div>Pabaigos data: {endDate ? endDate.toISOString() : ""}</div>
-            <Flex
-              alignItems="flex-start"
-              justify="space-between"
-              w="100%"
-              mb="2"
-            >
+          <>
+            {/* <div>Pradžios data: {startDate ? startDate.toISOString() : ""}</div>
+            <div>Pabaigos data: {endDate ? endDate.toISOString() : ""}</div> */}
+            <Flex alignItems="center" w="100%" mb="2" gap="2">
               <Box zIndex="4">
-                <FormLabel m="0">Pradžios data</FormLabel>
+                <FormLabel m="0" name="RENGINIO_PRADZIA">
+                  Pradžios data
+                </FormLabel>
                 <Controller
                   control={control}
                   name="RENGINIO_PRADZIA"
@@ -184,13 +181,28 @@ export default function Form() {
                   )}
                 />
               </Box>
+              <Flex flexDirection="column">
+                <Box>
+                  <Checkbox
+                    // isChecked={checkedAll}
+                    // onChange={(e) => handleSelectAll(e)}
+                    mr="2"
+                  >
+                    Kasmetinis renginys
+                  </Checkbox>
+                </Box>
+                <Box>
+                  <Checkbox
+                    // isChecked={checkedAll}
+                    // onChange={(e) => handleSelectAll(e)}
+                    mr="2"
+                  >
+                    Ilgalaikis renginys
+                  </Checkbox>
+                </Box>
+              </Flex>
             </Flex>
-            <Flex
-              alignItems="flex-start"
-              justify="space-between"
-              w="100%"
-              mb="2"
-            >
+            <Flex alignItems="center" w="100%" mb="2" gap="2">
               <Box zIndex="2">
                 <FormLabel m="0">Pabaigos data</FormLabel>
                 <Controller
@@ -286,54 +298,67 @@ export default function Form() {
                 )}
               </Box>
             </Box>
-            <Box mb="2">
-              <FormLabel m="0">Kategorija</FormLabel>
-              <Select {...register("KATEGORIJA")}>
-                {CategoryData.map((category) => (
-                  <option
-                    typeof="number"
-                    value={category.value}
-                    key={category.id}
-                  >
-                    {category.text}
-                  </option>
-                ))}
-              </Select>
-            </Box>
-            <Box mb="2">
-              <FormLabel m="0">Pavadinimas *</FormLabel>
-              <Input
-                {...register("PAVADINIMAS", {
-                  required: "Pavadinimas yra būtinas",
-                })}
-                onChange={handleChange}
-              />
-              <Box color="red" fontSize="sm">
-                {errors?.PAVADINIMAS && <p>{errors.PAVADINIMAS.message}</p>}
+            <Flex gap="2">
+              <Box mb="2" w="100%">
+                <FormLabel m="0">Kategorija</FormLabel>
+                <Select {...register("KATEGORIJA")}>
+                  {CategoryData.map((category) => (
+                    <option
+                      typeof="number"
+                      value={category.value}
+                      key={category.id}
+                    >
+                      {category.text}
+                    </option>
+                  ))}
+                </Select>
               </Box>
-            </Box>
-            <Box mb="2">
-              <FormLabel m="0">Organizatorius *</FormLabel>
-              <Input
-                {...register("ORGANIZATORIUS", {
-                  required: "Organizatorius yra būtinas",
-                })}
-              />
-              <Box color="red" fontSize="sm">
-                {errors?.ORGANIZATORIUS && (
-                  <p>{errors.ORGANIZATORIUS.message}</p>
-                )}
+              <Box w="100%">
+                <FormLabel m="0">Renginio tinklapis</FormLabel>
+                <InputGroup mb="2">
+                  <InputLeftAddon children="https://" />
+                  <Input {...register("WEBPAGE")} />
+                </InputGroup>
               </Box>
-            </Box>
-            <FormLabel m="0">Gauta</FormLabel>
-            <Input {...register("PASTABOS")} mb="2" />
-            <FormLabel m="0">Aprašymas</FormLabel>
-            <Input {...register("WEBPAGE")} mb="2" />
-            <FormLabel m="0">Renginio tinklapis</FormLabel>
-            <InputGroup mb="2">
-              <InputLeftAddon children="https://" />
-              <Input {...register("WEBPAGE")} />
-            </InputGroup>
+            </Flex>
+            <Flex gap="2">
+              <Box mb="2" w="100%">
+                <FormLabel m="0">Pavadinimas *</FormLabel>
+                <Input
+                  {...register("PAVADINIMAS", {
+                    required: "Pavadinimas yra būtinas",
+                  })}
+                  onChange={handleChange}
+                />
+                <Box color="red" fontSize="sm">
+                  {errors?.PAVADINIMAS && <p>{errors.PAVADINIMAS.message}</p>}
+                </Box>
+              </Box>
+              <Box mb="2" w="100%">
+                <FormLabel m="0">Organizatorius *</FormLabel>
+                <Input
+                  {...register("ORGANIZATORIUS", {
+                    required: "Organizatorius yra būtinas",
+                  })}
+                />
+                <Box color="red" fontSize="sm">
+                  {errors?.ORGANIZATORIUS && (
+                    <p>{errors.ORGANIZATORIUS.message}</p>
+                  )}
+                </Box>
+              </Box>
+            </Flex>
+            <Flex mb="2" gap="2">
+              <Box w="100%">
+                <FormLabel m="0">Gauta</FormLabel>
+                <Input {...register("PASTABOS")} />
+              </Box>
+              <Box w="100%">
+                <FormLabel m="0">Aprašymas</FormLabel>
+                <Input {...register("APRASYMAS")} />
+              </Box>
+            </Flex>
+
             <FormLabel m="0">Priedai</FormLabel>
             {/* <FileUpload props={...register("Att")} /> */}
             <Input
@@ -352,7 +377,7 @@ export default function Form() {
                 },
               }}
             />
-          </FormControl>
+          </>
           <Flex justify="space-between">
             <Button mt="2" onClick={onSubmit} variant="outline">
               Atšaukti
