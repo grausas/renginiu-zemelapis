@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import {
   Box,
   Input,
@@ -13,13 +13,14 @@ import {
   Checkbox,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { AddFeature } from "../../../helpers/addFeature";
 import { CategoryData } from "../../../utils/Category";
 import { weekDays } from "../../../utils/WeekDays";
 import { queryFeatures } from "../../../queries/queryFeatures";
 import { featureLayerPrivate } from "../../../layers";
-import FileUpload from "../FileUpload/FileUpload";
+import { getWeekDays } from "../../../helpers/getWeekDays";
+import DatePicker from "../DatePicker/DatePicker";
 
 type FormValues = {
   PAVADINIMAS: string;
@@ -41,10 +42,13 @@ export default function Form() {
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
     weekDays.map(() => false)
   );
+  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(new Date());
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     setValue,
     watch,
@@ -69,6 +73,18 @@ export default function Form() {
     setCheckedItems(newCheckedItems);
   };
 
+  useEffect(() => {
+    setCheckedAll(false);
+    const dates = getWeekDays(startDate, endDate);
+
+    const newCheckedItems = weekDays.map(() => false);
+    dates.map((day) => {
+      console.log("day", day);
+      newCheckedItems[day === 0 ? 6 : day - 1] = true;
+      setCheckedItems(newCheckedItems);
+    });
+  }, [endDate, startDate]);
+
   const handleSelectAll = (e: ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked;
     const all = weekDays.map((day) => day.id.toString());
@@ -84,6 +100,8 @@ export default function Form() {
   const onSubmit = handleSubmit((data) => {
     const dataToSubmit = data.Savaites_dienos.toString();
     data.Savaites_dienos = dataToSubmit;
+    data.RENGINIO_PRADZIA = startDate.toISOString();
+    data.RENGINIO_PABAIGA = endDate.toISOString();
     const att = data.Att;
     delete data.Att;
     AddFeature(data, att);
@@ -121,27 +139,107 @@ export default function Form() {
             onClick={onClose}
           />
           <FormControl>
-            <FormLabel>Renginio pradžia *</FormLabel>
-            <Input
+            <div>Pradžios data: {startDate ? startDate.toISOString() : ""}</div>
+            <div>Pabaigos data: {endDate ? endDate.toISOString() : ""}</div>
+            <Flex alignItems="flex-start" justify="space-between" w="100%">
+              <Box zIndex="4">
+                <FormLabel>Pradžios data</FormLabel>
+                <Controller
+                  control={control}
+                  name="RENGINIO_PRADZIA"
+                  render={() => (
+                    <DatePicker
+                      dateFormat="dd/MM/yyyy"
+                      showMonthDropdown
+                      showMonth
+                      showYearDropdown
+                      dropdownMode="select"
+                      selectedDate={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      inputType="date"
+                    />
+                  )}
+                />
+              </Box>
+              <Box zIndex="3">
+                <FormLabel>Pradžios laikas</FormLabel>
+                <Controller
+                  control={control}
+                  name="RENGINIO_PRADZIA"
+                  render={() => (
+                    <DatePicker
+                      dateFormat="HH:mm"
+                      showTimeDropdown
+                      showTimeSelect
+                      showTimeSelectOnly
+                      timeFormat="HH:mm"
+                      selectedDate={startDate}
+                      onChange={(date) => setStartDate(date)}
+                    />
+                  )}
+                />
+              </Box>
+            </Flex>
+            <Flex alignItems="flex-start" justify="space-between" w="100%">
+              <Box zIndex="2">
+                <FormLabel>Pabaigos data</FormLabel>
+                <Controller
+                  control={control}
+                  name="RENGINIO_PABAIGA"
+                  render={() => (
+                    <DatePicker
+                      dateFormat="dd/MM/yyyy"
+                      showMonthDropdown
+                      showMonth
+                      showYearDropdown
+                      dropdownMode="select"
+                      selectedDate={endDate}
+                      onChange={(date) => setEndDate(date)}
+                      inputType="date"
+                      minDate={startDate}
+                    />
+                  )}
+                />
+              </Box>
+              <Box zIndex="1">
+                <FormLabel>Pabaigos laikas</FormLabel>
+                <Controller
+                  control={control}
+                  name="RENGINIO_PABAIGA"
+                  render={() => (
+                    <DatePicker
+                      dateFormat="HH:mm"
+                      showTimeDropdown
+                      showTimeSelect
+                      showTimeSelectOnly
+                      timeFormat="HH:mm"
+                      selectedDate={endDate}
+                      onChange={(date) => setEndDate(date)}
+                    />
+                  )}
+                />
+              </Box>
+            </Flex>
+            {/* <Input
               lang="lt-LT"
               type="datetime-local"
               {...register("RENGINIO_PRADZIA", {
                 required: "Renginio pradžia yra būtina",
               })}
-            />
+            /> */}
             <Box color="red" fontSize="sm">
               {errors?.RENGINIO_PRADZIA && (
                 <p>{errors.RENGINIO_PRADZIA.message}</p>
               )}
             </Box>
-            <FormLabel>Renginio pabaiga *</FormLabel>
+            {/* <FormLabel>Renginio pabaiga *</FormLabel>
             <Input
               type="datetime-local"
               {...register("RENGINIO_PABAIGA", {
                 required: "Renginio pabaiga yra būtina",
               })}
               min={watch().RENGINIO_PRADZIA}
-            />
+            /> */}
             <Box color="red" fontSize="sm">
               {errors?.RENGINIO_PABAIGA && (
                 <p>{errors.RENGINIO_PABAIGA.message}</p>
@@ -217,8 +315,22 @@ export default function Form() {
               <Input {...register("WEBPAGE")} />
             </InputGroup>
             <FormLabel>Priedai</FormLabel>
-            {/* <FileUpload /> */}
-            <Input type="file" {...register("Att")} />
+            {/* <FileUpload props={...register("Att")} /> */}
+            <Input
+              type="file"
+              multiple
+              {...register("Att")}
+              sx={{
+                "::file-selector-button": {
+                  height: 10,
+                  padding: 0,
+                  mr: 4,
+                  background: "none",
+                  border: "none",
+                  fontWeight: "bold",
+                },
+              }}
+            />
           </FormControl>
           <Flex justify="space-between">
             <Button mt="2" onClick={onSubmit} variant="outline">
