@@ -2,7 +2,7 @@ import React, { useState, createContext, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Create the context
-export const AuthContext = createContext({});
+export const AuthContext = createContext<any>({});
 
 // Define the user object type
 interface User {
@@ -77,7 +77,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       name: "",
       expires: 0,
     });
-    navigate("/", { replace: true });
+    window.location.reload();
   };
 
   const loadUserFromLocalStorage = async () => {

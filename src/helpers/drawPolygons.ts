@@ -15,7 +15,7 @@ export const drawPolygon = async (view) => {
     position: "top-right",
   });
 
-  let arr;
+  let arr: any;
   home.on("create", function (event) {
     // check if the create event's state has changed to complete indicating
     // the graphic create operation is completed.

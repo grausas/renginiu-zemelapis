@@ -51,7 +51,6 @@ export default function Form() {
     control,
     formState: { errors },
     setValue,
-    watch,
   } = useForm<FormValues>();
 
   const handleChange = (e: { target: { name: string; value: string } }) => {
