@@ -5,6 +5,8 @@ import { BrowserRouter } from "react-router-dom";
 import { MapProvider } from "./context/map-context";
 import AuthProvider from "./context/auth";
 import App from "./App.tsx";
+import "./Main.css";
+
 
 import theme from "./theme";
 

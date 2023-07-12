@@ -1,7 +1,6 @@
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { Map } from "./pages/Map";
 import { Login } from "./pages/login";
-import "./App.css";
 import Header from "./components/Header/Header";
 
 function App() {
