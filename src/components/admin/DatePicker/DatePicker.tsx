@@ -28,10 +28,21 @@ customDateInput.displayName = "DateInput";
 const CustomInput = forwardRef(customDateInput);
 
 interface Props {
-  isClearable?: boolean;
+  showMonthDropdown?: boolean;
+  showMonth?: boolean;
+  showYearDropdown?: boolean;
+  showTimeDropdown?: boolean;
+  showTimeSelect?: boolean;
+  showTimeSelectOnly?: boolean;
+  dropdownMode?: string;
+  timeFormat?: string;
+  timeIntervals?: number;
+  dateFormat: string;
+  minDate?: Date;
   onChange: (date: Date) => any;
   selectedDate: Date | undefined;
   showPopperArrow?: boolean;
+  inputType?: string;
 }
 
 export default function DatePicker({
@@ -55,6 +66,7 @@ export default function DatePicker({
         />
         <InputRightElement
           color="gray.500"
+          bg={"white"}
           children={
             inputType === "date" ? (
               <CalendarIcon fontSize="sm" />

@@ -1,4 +1,4 @@
-export const getWeekDays = (startDate: string, endDate: string) => {
+export const getWeekDays = (startDate: Date, endDate: Date) => {
   const days = [];
 
   // Set both start and end dates to the beginning of the day
