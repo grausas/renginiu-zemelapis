@@ -10,38 +10,28 @@ import {
   InputRightElement,
   Image,
   FormLabel,
-  Box,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import { AuthContext } from "../context/auth";
 
 export function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(false);
   const [user, setUser] = useState({
     username: "",
     password: "",
   });
-  const auth: any = useContext(AuthContext);
+  const auth = useContext(AuthContext);
 
   const handleLogin = () => {
+    if (!user.username || !user.password) {
+      setError(true);
+      return;
+    }
     auth.login(user);
   };
 
   const handleShowClick = () => setShowPassword(!showPassword);
-
-  const basicBoxStyles = {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    marginTop: "50px",
-    justifyContent: "center",
-    textAlign: "center",
-    color: "brand.white",
-    textShadow: "0 0 20px black",
-    fontWeight: "bold",
-    fontSize: { base: "4xl", md: "6xl" },
-    px: 4,
-  };
 
   return (
     <Stack
@@ -60,19 +50,37 @@ export function Login() {
           shadow="md"
         >
           <Heading fontSize={"2xl"}>Prisijungti prie savo paskyros</Heading>
-          <FormControl id="email">
+          <FormControl
+            id="email"
+            isRequired
+            isInvalid={error && !user.username}
+          >
             <FormLabel>Prisijungimo vardas</FormLabel>
             <Input
               type="username"
               onChange={(e) => setUser({ ...user, username: e.target.value })}
             />
+            {error && user.username === "" && (
+              <FormErrorMessage>
+                Prisijungimo vardas reikalingas
+              </FormErrorMessage>
+            )}
           </FormControl>
-          <FormControl id="password">
+          <FormControl
+            id="password"
+            isRequired
+            isInvalid={error && !user.password}
+          >
             <FormLabel>Slaptažodis</FormLabel>
             <InputGroup>
               <Input
                 type={showPassword ? "text" : "password"}
                 onChange={(e) => setUser({ ...user, password: e.target.value })}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    handleLogin();
+                  }
+                }}
               />
               <InputRightElement width="4.5rem">
                 <Button h="1.75rem" size="sm" onClick={handleShowClick}>
@@ -80,6 +88,9 @@ export function Login() {
                 </Button>
               </InputRightElement>
             </InputGroup>
+            {error && (
+              <FormErrorMessage>Slaptažodis reikalingas</FormErrorMessage>
+            )}
           </FormControl>
           <Stack spacing={6}>
             <Button
