@@ -24,7 +24,7 @@ export default function Card({ data, handleClick }: CardProps) {
         border="1px solid"
         borderColor="gray.200"
         bg="brand.white"
-        p="3"
+        p={{ base: "2", md: "3" }}
         borderRadius="md"
         shadow="base"
         mb={{ base: "0", md: "2" }}
@@ -80,7 +80,7 @@ export default function Card({ data, handleClick }: CardProps) {
             );
           }
         })}
-        <Text textAlign="center" py="3" fontWeight="500">
+        <Text textAlign="center" py={{ base: "1", md: "3" }} fontWeight="500" fontSize={{ base: "sm", md: "md" }}>
           {feature.attributes.PAVADINIMAS}
         </Text>
         <Flex align="center">

@@ -10,6 +10,23 @@ export const drawPolygon = async (view) => {
   const home = new sketch({
     view: view,
     layer: layer,
+    visibleElements: {
+      createTools: {
+        circle: false,
+        polyline: false,
+        rectangle: false,
+        point: false,
+      },
+      selectionTools: {
+        "lasso-selection": false,
+        "rectangle-selection": false,
+      },
+      settingsMenu: false,
+    },
+    defaultUpdateOptions: {
+      tool: "reshape",
+      toggleToolOnClick: false,
+    },
   });
   view?.ui.add(home, {
     position: "top-right",

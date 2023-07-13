@@ -6,8 +6,10 @@ interface Popup {
 }
 
 export default function Popup({ popupData }: Popup) {
+  console.log("popupData", popupData);
   return popupData?.map((item: any) => (
     <Flex
+      overflowY="auto"
       key={item.graphic.attributes.OBJECTID}
       flexDirection={"column"}
       bg="brand.white"
@@ -61,11 +63,16 @@ export default function Popup({ popupData }: Popup) {
         {item.graphic.attributes.PAVADINIMAS}
       </Text>
       <Text>Organizatorius: {item.graphic.attributes.ORGANIZATORIUS}</Text>
-      <Text>Pradžia: {item.graphic.attributes.RENGINIO_PRADZIA}</Text>
-      <Text>Pabaiga: {item.graphic.attributes.RENGINIO_PABAIGA}</Text>
+      <Text>Pradžia: {new Date(
+        item.graphic.attributes.RENGINIO_PRADZIA
+      ).toLocaleString("lt-LT")}</Text>
+      <Text>Pabaiga: {new Date(
+        item.graphic.attributes.RENGINIO_PABAIGA
+      ).toLocaleString("lt-LT")} </Text>
       <Text>{item.graphic.attributes.APRASYMAS}</Text>
       <Text>Gauta {item.graphic.attributes.PASTABOS}</Text>
       <Text>{item.graphic.attributes.WEBSITE}</Text>
+      <Image src={item.graphic.attachments[0].url} mr="1" />
     </Flex>
   ));
 }
