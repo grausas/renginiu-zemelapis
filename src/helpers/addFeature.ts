@@ -40,11 +40,11 @@ export const AddFeature = (feature: Feature, att: BlobPart[] | undefined) => {
     globalIdUsed: true,
   };
 
-  const deleteFeatures = [{ objectId: 7406 }];
+  const deleteFeatures = [{ objectId: 7410 }];
 
   const edits = {
     // addFeatures: [addFeature],
-    deleteFeatures: deleteFeatures,
+    // deleteFeatures: deleteFeatures,
   };
 
   console.log("edits", edits);

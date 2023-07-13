@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useEffect } from "react";
+import React, { ChangeEvent, useState, useEffect, useRef } from "react";
 import {
     Box,
     Input,
@@ -35,6 +35,7 @@ type FormValues = {
 };
 
 export default function Form() {
+    const ref = useRef<HTMLInputElement>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [suggestions, setSuggestions] = useState<__esri.Graphic[]>([]);
     const [checkedAll, setCheckedAll] = useState(false);
@@ -153,7 +154,12 @@ export default function Form() {
                                             showYearDropdown
                                             dropdownMode="select"
                                             selectedDate={startDate}
-                                            onChange={(date) => setStartDate(date)}
+                                            onChange={(date) => {
+                                                setStartDate(date);
+                                                if (date > endDate) {
+                                                    setEndDate(date);
+                                                }
+                                            }}
                                             inputType="date"
                                         />
                                     )}
@@ -331,9 +337,9 @@ export default function Form() {
                             <Box w="100%">
                                 <FormLabel m="0">Priedai</FormLabel>
                                 {/* <FileUpload props={...register("Att")} /> */}
+
                                 <Input
                                     type="file"
-                                    multiple
                                     {...register("Attachments")}
                                     mb="2"
                                     sx={{
@@ -354,7 +360,7 @@ export default function Form() {
                         <Button mt="2" onClick={onSubmit} variant="outline">
                             Atšaukti
                         </Button>
-                        <Button mt="2" onClick={onSubmit}>
+                        <Button mt="2" onClick={onClose}>
                             Pridėti
                         </Button>
                     </Flex>

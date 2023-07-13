@@ -80,8 +80,8 @@ export function Map() {
         reactiveUtils.when(
           () => !layerView.updating,
           () => {
-            const query = layerView.filter.createQuery();
-            query.geometry = view.extent;
+            // const query = layerView.filter.createQuery();
+            // query.geometry = view.extent;
             layerView
               .queryFeatures({
                 where: whereParams,
@@ -172,8 +172,8 @@ export function Map() {
           view.goTo(
             {
               center: [
-                results[0].mapPoint.longitude,
-                results[0].mapPoint.latitude,
+                results[0].graphic.geometry.centroid.longitude,
+                results[0].graphic.geometry.centroid.latitude,
               ],
               zoom: 18,
             },
