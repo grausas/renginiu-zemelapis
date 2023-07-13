@@ -38,11 +38,13 @@ interface Props {
   timeFormat?: string;
   timeIntervals?: number;
   dateFormat: string;
-  minDate?: Date;
+  minDate?: Date | number;
+  maxDate?: Date | number;
   onChange: (date: Date) => any;
   selectedDate: Date | undefined;
   showPopperArrow?: boolean;
   inputType?: string;
+  adjustDateOnChange?: boolean;
 }
 
 export default function DatePicker({
@@ -53,7 +55,18 @@ export default function DatePicker({
 }: Props) {
   return (
     <>
-      <InputGroup className="light-theme">
+      <InputGroup className="light-theme" zIndex="11"
+      >
+        <InputRightElement
+          color="gray.500"
+          children={
+            inputType === "date" ? (
+              <CalendarIcon fontSize="sm" />
+            ) : (
+              <TimeIcon fontSize="sm" />
+            )
+          }
+        />
         <ReactDatePicker
           selected={selectedDate}
           onChange={onChange}
@@ -62,18 +75,8 @@ export default function DatePicker({
           showPopperArrow={false}
           locale="lt"
           timeCaption="Laikas"
+          adjustDateOnChange
           {...props}
-        />
-        <InputRightElement
-          color="gray.500"
-          bg={"white"}
-          children={
-            inputType === "date" ? (
-              <CalendarIcon fontSize="sm" />
-            ) : (
-              <TimeIcon fontSize="sm" />
-            )
-          }
         />
       </InputGroup>
     </>

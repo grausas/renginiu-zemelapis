@@ -167,3 +167,10 @@
 .react-datepicker__close-icon::after:hover {
   color: var(--gray);
 }
+
+.react-datepicker__day--disabled,
+.react-datepicker__month-text--disabled,
+.react-datepicker__quarter-text--disabled,
+.react-datepicker__year-text--disabled {
+  color: var(--light-gray);
+}
