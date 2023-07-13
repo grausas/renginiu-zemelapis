@@ -157,11 +157,12 @@ export function Map() {
           };
           console.log("objectIds", objectIds);
           await featureLayer.queryAttachments(attachmentQuery).then((attachments) => {
+            console.log("attachments", attachments);
             if (Object.keys(attachments).length > 0) {
               results.map((result) => {
                 const resultId = result.graphic.attributes.OBJECTID;
                 if (attachments[resultId]) {
-                  console.log("attachments", attachments);
+                  console.log("attachmentsAdd", attachments);
                   result.graphic.set("attachments", attachments[resultId]);
                 }
               })

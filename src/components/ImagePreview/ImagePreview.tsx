@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Image } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Image, Flex, Box } from '@chakra-ui/react';
 
 export default function ImagePreview({ url }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +14,7 @@ export default function ImagePreview({ url }) {
 
     return (
         <>
-            <Image src={url} alt="Preview" onClick={handleImageClick} />
+            <Image src={url} alt="Preview" onClick={handleImageClick} objectFit={"contain"} w="50%" />
             <Modal isOpen={isOpen} onClose={handleClose} isCentered >
                 <ModalOverlay />
                 <ModalContent
