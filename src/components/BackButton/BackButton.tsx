@@ -1,4 +1,4 @@
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowLeftIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
 import React from "react";
 
@@ -9,12 +9,18 @@ interface ButtonProps {
 export default function BackButton({ handleClick }: ButtonProps) {
   return (
     <Button
-      leftIcon={<ArrowBackIcon />}
+      leftIcon={<ArrowLeftIcon boxSize="3" />}
       variant="outline"
       bg="brand.white"
-      mb="1"
       size="sm"
+      shadow="sm"
+      color="brand.dark"
+      fontSize="xs"
+      fontWeight="400"
+      textTransform="uppercase"
       onClick={handleClick}
+      margin="0 auto"
+      mb="1"
     >
       Grižti
     </Button>

@@ -110,7 +110,7 @@ export default function Form() {
                 bg="brand.white"
                 shadow="md"
                 right="3"
-                top="130px"
+                top="170px"
                 size="sm"
                 onClick={onOpen}
             >
@@ -323,25 +323,32 @@ export default function Form() {
                                 <Input {...register("APRASYMAS")} />
                             </Box>
                         </Flex>
-
-                        <FormLabel m="0">Priedai</FormLabel>
-                        {/* <FileUpload props={...register("Att")} /> */}
-                        <Input
-                            type="file"
-                            multiple
-                            {...register("Attachments")}
-                            mb="2"
-                            sx={{
-                                "::file-selector-button": {
-                                    height: 10,
-                                    padding: 0,
-                                    mr: 4,
-                                    background: "none",
-                                    border: "none",
-                                    fontWeight: "bold",
-                                },
-                            }}
-                        />
+                        <Flex mb="2" gap="2">
+                            <Box w="100%">
+                                <FormLabel m="0">Papildoma informacija</FormLabel>
+                                <Input {...register("KAINA")} />
+                            </Box>
+                            <Box w="100%">
+                                <FormLabel m="0">Priedai</FormLabel>
+                                {/* <FileUpload props={...register("Att")} /> */}
+                                <Input
+                                    type="file"
+                                    multiple
+                                    {...register("Attachments")}
+                                    mb="2"
+                                    sx={{
+                                        "::file-selector-button": {
+                                            height: 10,
+                                            padding: 0,
+                                            mr: 4,
+                                            background: "none",
+                                            border: "none",
+                                            fontWeight: "bold",
+                                        },
+                                    }}
+                                />
+                            </Box>
+                        </Flex>
                     </>
                     <Flex justify="space-between">
                         <Button mt="2" onClick={onSubmit} variant="outline">
