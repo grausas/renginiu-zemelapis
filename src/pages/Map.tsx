@@ -12,6 +12,7 @@ import Spinner from "../components/Spinner/Spinner";
 import { useContext, useEffect, useState } from "react";
 import { whereParamsChange } from "../helpers/whereParams";
 import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter.js";
+import FeatureEffect from "@arcgis/core/layers/support/FeatureEffect.js";
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
 import { MapContext } from "../context/map-context";
 import { addDays } from "../helpers/addDays";
@@ -26,6 +27,7 @@ import { drawPolygon } from "../helpers/drawPolygons";
 
 export function Map() {
   const [data, setData] = useState<__esri.Graphic[]>([]);
+  const [featureLayer, setFeatureLayer] = useState<__esri.FeatureLayer | undefined>();
   const [dateStart, setDateStart] = useState(todayStart);
   const [category, setCategory] = useState<string[]>([]);
   const [dateEnd, setDateEnd] = useState(todayEnd);
@@ -35,6 +37,15 @@ export function Map() {
   const { view } = useContext(MapContext);
   const auth = useContext(AuthContext);
   const array: __esri.Geometry[] = [];
+
+  const removeFilterEffect = () => {
+    const effect = new FeatureEffect({
+      excludedEffect: "opacity(100%) ",
+    });
+    if (featureLayer !== undefined) {
+      featureLayer.featureEffect = effect;
+    }
+  }
 
   useEffect(() => {
     if (auth.user.token) {
@@ -49,16 +60,17 @@ export function Map() {
   }, [dateStart, dateEnd, category]);
 
   const queryFeatures = () => {
-    const featureLayer = view?.map.layers.getItemAt(0) as __esri.FeatureLayer;
-    if (!featureLayer) return;
+    const layer = view?.map.layers.getItemAt(0) as __esri.FeatureLayer;
+    if (!layer) return;
+    setFeatureLayer(layer);
     // console.log("view", view);
 
     view
-      ?.whenLayerView(featureLayer)
+      ?.whenLayerView(layer)
       .then((layerView) => {
         setLoading(true);
         const featureFilter = new FeatureFilter({ where: whereParams });
-        console.log(featureFilter);
+        console.log(layer);
         console.log("view", view.extent);
         layerView.filter = featureFilter;
 
@@ -98,14 +110,15 @@ export function Map() {
 
   // filter events by current day, coming week or month
   const handleChangeDate = (value: string) => {
+    removeFilterEffect();
     setPopupData([]);
     const todayEnd = new Date().setHours(23, 59, 59, 999);
     const dateEnd =
       value === "šiandien"
         ? todayEnd
         : value === "savaitė"
-        ? addDays(todayEnd, 7)
-        : addDays(todayEnd, 31);
+          ? addDays(todayEnd, 7)
+          : addDays(todayEnd, 31);
     setDateEnd(dateEnd);
   };
   const { getRootProps, getRadioProps } = useRadioGroup({
@@ -121,11 +134,8 @@ export function Map() {
   };
 
   useEffect(() => {
-    if (view) {
+    if (view && featureLayer) {
       view.on("click", async (event) => {
-        const featureLayer = view?.map.layers.getItemAt(
-          0
-        ) as __esri.FeatureLayer;
         const response = await view.hitTest(event, {
           include: featureLayer,
         });
@@ -157,11 +167,25 @@ export function Map() {
             },
             { duration: 400 }
           );
+          const filterObjectids = results.map((result) => result.graphic.attributes.OBJECTID);
+          const featureFilter = new FeatureFilter({
+            objectIds: filterObjectids,
+          });
+          featureLayer.featureEffect = new FeatureEffect({
+            filter: featureFilter,
+            excludedEffect: "opacity(20%) ",
+          });
           setPopupData(results);
         }
       });
     }
-  }, [view]);
+  }, [featureLayer, view]);
+
+  const handleBack = () => {
+    setPopupData([]);
+    queryFeatures();
+    removeFilterEffect();
+  }
 
   return (
     <Flex w="100" h="100%" flexDirection={{ base: "column", md: "row" }}>
@@ -218,12 +242,8 @@ export function Map() {
             popupData.length > 0 ? (
               <>
                 <BackButton
-                  handleClick={() => {
-                    setPopupData([]);
-                    queryFeatures();
-                  }}
+                  handleClick={handleBack}
                 />
-
                 <Popup popupData={popupData} />
               </>
             ) : (
