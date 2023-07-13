@@ -137,8 +137,8 @@ export default function Form() {
                     <>
                         {/* <div>Pradžios data: {startDate ? startDate.toISOString() : ""}</div>
             <div>Pabaigos data: {endDate ? endDate.toISOString() : ""}</div> */}
-                        <Flex alignItems="flex-start" w="100%" mb="2" gap="2">
-                            <Box zIndex="4">
+                        <Flex alignItems="flex-start" mb="2" gap="2" >
+                            <Box zIndex="22">
                                 <FormLabel m="0" >
                                     Pradžios data
                                 </FormLabel>
@@ -159,7 +159,7 @@ export default function Form() {
                                     )}
                                 />
                             </Box>
-                            <Box zIndex="3">
+                            <Box zIndex="22">
                                 <FormLabel m="0">Pradžios laikas</FormLabel>
                                 <Controller
                                     control={control}
@@ -192,7 +192,7 @@ export default function Form() {
                             </Flex>
                         </Flex>
                         <Flex alignItems="center" w="100%" mb="2" gap="2">
-                            <Box zIndex="2">
+                            <Box>
                                 <FormLabel m="0">Pabaigos data</FormLabel>
                                 <Controller
                                     control={control}
@@ -212,7 +212,7 @@ export default function Form() {
                                     )}
                                 />
                             </Box>
-                            <Box zIndex="1">
+                            <Box>
                                 <FormLabel m="0">Pabaigos laikas</FormLabel>
                                 <Controller
                                     control={control}

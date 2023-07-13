@@ -12,13 +12,15 @@ import {
   PopoverCloseButton,
   Text,
   Image,
+  Box,
 } from "@chakra-ui/react";
 import { CategoryData } from "../../utils/Category";
 import CategoryIcon from "../../assets/categories.png";
 import FilterIcon from "../../assets/filter.png";
+import DatePicker from "../admin/DatePicker/DatePicker";
 
 type FilterProps = {
-  handleFilter: (category: string[]) => void;
+  handleFilter: (category: string[], startDate: number, endDate: number) => void;
 };
 
 type CategoryItem = {
@@ -32,9 +34,13 @@ type CategoryItem = {
 export default function Filter({ handleFilter }: FilterProps) {
   // state to keep track of selected categories and checked checkboxes
   const [category, setCategory] = useState<string[]>([]);
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
     CategoryData.map(() => false)
   );
+
+  console.log("startDate", startDate);
 
   // filter by category, add checkboxes to array to save state after modal closed
   const handleChange = (
@@ -56,8 +62,10 @@ export default function Filter({ handleFilter }: FilterProps) {
   };
   // call handleFilter when category changes
   useEffect(() => {
-    handleFilter(category);
-  }, [category]);
+    const formatStartDate = new Date(startDate.setHours(0, 0, 0)).getTime()
+    const formatEndDate = new Date(endDate.setHours(23, 59, 59)).getTime()
+    handleFilter(category, formatStartDate, formatEndDate);
+  }, [category, startDate, endDate]);
 
   const COLORS_SMOOTH = {
     bgHovered: "#F5FAF5",
@@ -158,6 +166,38 @@ export default function Filter({ handleFilter }: FilterProps) {
         <PopoverArrow />
         <PopoverCloseButton />
         <PopoverBody>
+          <Flex w="100%" gap="2" >
+            <Box>
+              <Text fontSize="sm">Data nuo:</Text>
+              <DatePicker
+                dateFormat="dd/MM/yyyy"
+                showMonthDropdown
+                showMonth
+                showYearDropdown
+                dropdownMode="select"
+                selectedDate={startDate}
+                onChange={(date) => setStartDate(date)}
+                inputType="date"
+                minDate={new Date().setDate(new Date().getDate() - 30)}
+                maxDate={new Date().setDate(new Date().getFullYear() + 1)}
+              />
+            </Box>
+            <Box>
+              <Text fontSize="sm">Data iki</Text>
+              <DatePicker
+                dateFormat="dd/MM/yyyy"
+                showMonthDropdown
+                showMonth
+                showYearDropdown
+                dropdownMode="select"
+                selectedDate={endDate}
+                onChange={(date) => setEndDate(date)}
+                inputType="date"
+                minDate={startDate}
+                maxDate={new Date().setDate(new Date().getFullYear() + 1)}
+              />
+            </Box>
+          </Flex>
           <Flex py="1" mb="1" align="center">
             <Image src={CategoryIcon} boxSize="4" mr="1" />
             <Text fontSize="sm">Kategorijos</Text>

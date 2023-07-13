@@ -38,6 +38,9 @@ export function Map() {
   const auth = useContext(AuthContext);
   const array: __esri.Geometry[] = [];
 
+  console.log("dateStart", dateStart);
+
+
   const removeFilterEffect = () => {
     const effect = new FeatureEffect({
       excludedEffect: "opacity(100%) ",
@@ -63,7 +66,6 @@ export function Map() {
     const layer = view?.map.layers.getItemAt(0) as __esri.FeatureLayer;
     if (!layer) return;
     setFeatureLayer(layer);
-    // console.log("view", view);
 
     view
       ?.whenLayerView(layer)
@@ -110,6 +112,7 @@ export function Map() {
 
   // filter events by current day, coming week or month
   const handleChangeDate = (value: string) => {
+    setDateStart(todayStart);
     removeFilterEffect();
     setPopupData([]);
     const todayEnd = new Date().setHours(23, 59, 59, 999);
@@ -129,8 +132,10 @@ export function Map() {
   const group = getRootProps();
 
   // filter events by category
-  const handleFilter = (e: string[]) => {
-    setCategory(e);
+  const handleFilter = (category: string[], startDate: number, endDate: number) => {
+    setDateStart(startDate);
+    setDateEnd(endDate);
+    setCategory(category);
   };
 
   useEffect(() => {
