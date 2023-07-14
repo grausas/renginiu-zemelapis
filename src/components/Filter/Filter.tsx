@@ -41,7 +41,7 @@ export default function Filter({ handleFilter }: FilterProps) {
   );
 
   // console.log("startDate", startDate);
-  // console.log("Filter rerenders")
+  console.log("Filter rerenders")
 
   // filter by category, add checkboxes to array to save state after modal closed
   const handleChange = (
@@ -66,7 +66,7 @@ export default function Filter({ handleFilter }: FilterProps) {
     const formatStartDate = new Date(startDate.setHours(0, 0, 0)).getTime()
     const formatEndDate = new Date(endDate.setHours(23, 59, 59)).getTime()
     handleFilter(category, formatStartDate, formatEndDate);
-  }, [category, startDate, endDate, handleFilter]);
+  }, [category, startDate, endDate]);
 
   const COLORS_SMOOTH = {
     bgHovered: "#F5FAF5",
@@ -98,7 +98,6 @@ export default function Filter({ handleFilter }: FilterProps) {
           pl: 4,
           py: 1,
           w: "100%",
-          transition: "all 150ms",
           _checked: {
             bg: category.color,
             color: "brand.white",
