@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useEffect, useRef } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import {
     Box,
     Input,
@@ -30,18 +30,22 @@ type FormValues = {
     RENGINIO_PRADZIA: string;
     RENGINIO_PABAIGA: string;
     KATEGORIJA: number;
+    KASMETINIS: number;
+    ILGALAIKIS: number;
     Savaites_dienos: string;
+    PAPILD_INF: string;
     Attachments?: BlobPart[];
 };
 
 export default function Form() {
-    const ref = useRef<HTMLInputElement>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [suggestions, setSuggestions] = useState<__esri.Graphic[]>([]);
     const [checkedAll, setCheckedAll] = useState(false);
     const [checkedItems, setCheckedItems] = useState<boolean[]>(
         weekDays.map(() => false)
     );
+    const [checkedLong, setCheckedLong] = useState(false);
+    const [checkedEveryYear, setCheckedEveryYear] = useState(false);
     const [endDate, setEndDate] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date());
 
@@ -51,7 +55,12 @@ export default function Form() {
         control,
         formState: { errors },
         setValue,
-    } = useForm<FormValues>();
+    } = useForm<FormValues>({
+        defaultValues: {
+            ILGALAIKIS: 2,
+            KASMETINIS: 2
+        }
+    });
 
     const handleChange = (e: { target: { name: string; value: string } }) => {
         const name = e.target.name;
@@ -186,12 +195,23 @@ export default function Form() {
                             </Box>
                             <Flex flexDirection="column">
                                 <Box>
-                                    <Checkbox mr="2">
+                                    <Checkbox
+                                        onChange={(e) => {
+                                            setValue("KASMETINIS", e.target.checked ? 1 : 2);
+                                            console.log(e.target.checked)
+                                            setCheckedEveryYear(!checkedEveryYear)
+                                        }}
+                                        mr="2">
                                         Kasmetinis renginys
                                     </Checkbox>
                                 </Box>
                                 <Box>
-                                    <Checkbox mr="2">
+                                    <Checkbox
+                                        onChange={(e) => {
+                                            setValue("ILGALAIKIS", e.target.checked ? 1 : 2);
+                                            setCheckedLong(!checkedLong)
+                                        }}
+                                        mr="2">
                                         Ilgalaikis renginys
                                     </Checkbox>
                                 </Box>
@@ -272,7 +292,7 @@ export default function Form() {
                         <Flex gap="2">
                             <Box mb="2" w="100%">
                                 <FormLabel m="0">Kategorija</FormLabel>
-                                <Select {...register("KATEGORIJA")}>
+                                <Select {...register("KATEGORIJA", { valueAsNumber: true, })}>
                                     {CategoryData.map((category) => (
                                         <option
                                             typeof="number"
@@ -332,7 +352,7 @@ export default function Form() {
                         <Flex mb="2" gap="2">
                             <Box w="100%">
                                 <FormLabel m="0">Papildoma informacija</FormLabel>
-                                <Input {...register("KAINA")} />
+                                <Input {...register("PAPILD_INF")} />
                             </Box>
                             <Box w="100%">
                                 <FormLabel m="0">Priedai</FormLabel>
@@ -357,10 +377,10 @@ export default function Form() {
                         </Flex>
                     </>
                     <Flex justify="space-between">
-                        <Button mt="2" onClick={onSubmit} variant="outline">
+                        <Button mt="2" onClick={onClose} variant="outline">
                             Atšaukti
                         </Button>
-                        <Button mt="2" onClick={onClose}>
+                        <Button mt="2" onClick={onSubmit}>
                             Pridėti
                         </Button>
                     </Flex>
