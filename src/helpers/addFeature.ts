@@ -31,63 +31,67 @@ export const AddFeature = (feature: Feature, att: BlobPart[] | undefined) => {
   );
   console.log("dates", dates);
 
-  const addFeature = new Graphic({
-    attributes: feature,
+  const addFeature: Graphic[] = dates.map((date) => {
+    const newFeature = { ...feature };
+    newFeature.RENGINIO_PRADZIA = date.startDate;
+    newFeature.RENGINIO_PABAIGA = date.endDate;
+    return new Graphic({
+      attributes: newFeature,
+    });
   });
   console.log("addFeature", addFeature);
 
-  const options = {
-    globalIdUsed: true,
-  };
-
-  const deleteFeatures = [{ objectId: 7410 }];
+  const deleteFeatures = [{ objectId: 7440 }];
 
   const edits = {
-    // addFeatures: [addFeature],
-    // deleteFeatures: deleteFeatures,
+    // addFeatures: addFeature,
+    deleteFeatures: deleteFeatures,
   };
 
   console.log("edits", edits);
+
+  const attachFeatures = (response: __esri.EditsResult) => {
+    if (response) {
+      const blob = new Blob(att, {
+        type: "image/jpeg",
+      });
+
+      if (blob.size === 0) return;
+
+      const attachments = {
+        feature: response.addFeatureResults[0],
+        attachment: {
+          globalId: response.addFeatureResults[0].globalId,
+          name: feature.PAVADINIMAS,
+          data: blob,
+        },
+      };
+
+      const editsAtt: __esri.EditsProperties = {
+        addAttachments: [attachments],
+      };
+
+      featureLayerPrivate()
+        .applyEdits(editsAtt, { globalIdUsed: true })
+        .then((response) => {
+          if (response) {
+            console.log("responseAtt", response);
+          }
+        })
+        .catch((error) => {
+          console.log("errorAtt", error);
+        });
+    }
+  };
 
   featureLayerPrivate()
     .applyEdits(edits)
     .then((response) => {
       if (response) {
-        console.log("response", response);
-        console.log("feature", feature);
-
-        const blob = new Blob(att, {
-          type: "image/jpeg",
-        });
-
-        if (blob.size === 0) return;
-        console.log("blob", blob);
-
-        const attachments = {
-          feature: response.addFeatureResults[0],
-          attachment: {
-            globalId: response.addFeatureResults[0].globalId,
-            name: feature.PAVADINIMAS,
-            data: blob,
-          },
-        };
-
-        const editsAtt: __esri.EditsProperties = {
-          addAttachments: [attachments],
-        };
-
-        console.log("editsAtt", editsAtt);
-
-        featureLayerPrivate()
-          .applyEdits(editsAtt, options)
-          .then((response) => {
-            if (response) {
-              console.log("responseAtt", response);
-            }
-          })
-          .catch((error) => {
-            console.log("errorAtt", error);
-          });
+        if (response) {
+          console.log("responseAddFeature", response);
+          attachFeatures(response);
+        }
       }
     })
     .catch((error) => {
