@@ -4,19 +4,22 @@ export const getDates = (
   endDate: string,
   weekDays: string
 ) => {
-  console.log("weekDays", weekDays);
-  const dates: string[] = [];
+  const dates: { startDate: string; endDate: string }[] = [];
   const d1 = new Date(startDate);
   const d2 = new Date(endDate);
   const weekDaysArray = weekDays.split(",");
-  console.log("weekDaysArray", weekDaysArray.length);
   if (weekDaysArray.length === 7) {
     return dates;
   }
   while (d1 <= d2) {
     const newDate = new Date(d1);
     if (weekDaysArray.includes(newDate.getDay().toString())) {
-      dates.push(newDate.toISOString());
+      const date = newDate.getDate();
+      const end = new Date(d2);
+      dates.push({
+        startDate: newDate.toISOString(),
+        endDate: new Date(end.setDate(date)).toISOString(),
+      });
     }
     d1.setDate(d1.getDate() + 1);
   }
