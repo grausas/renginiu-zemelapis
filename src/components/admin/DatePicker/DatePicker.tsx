@@ -40,6 +40,8 @@ interface Props {
   dateFormat: string;
   minDate?: Date | number;
   maxDate?: Date | number;
+  minTime?: Date | number;
+  maxTime?: Date | number;
   onChange: (date: Date) => any;
   selectedDate: Date | undefined;
   showPopperArrow?: boolean;
@@ -55,8 +57,7 @@ export default function DatePicker({
 }: Props) {
   return (
     <>
-      <InputGroup className="light-theme" zIndex="11"
-      >
+      <InputGroup className="light-theme" zIndex="11">
         <InputRightElement
           color="gray.500"
           children={
