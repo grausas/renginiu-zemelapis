@@ -24,7 +24,8 @@ import { queryFeatures } from "../../../queries/queryFeatures";
 import { featureLayerPrivate } from "../../../layers";
 import { getWeekDays } from "../../../helpers/getWeekDays";
 import DatePicker from "../DatePicker/DatePicker";
-import Suggestions from "../Suggestions/Suggestions";
+import FileUpload from "../FileUpload/FileUpload";
+import { AttachmentIcon } from "@chakra-ui/icons";
 
 type FormValues = {
   PAVADINIMAS: string;
@@ -70,6 +71,7 @@ export default function Form() {
     control,
     formState: { errors },
     setValue,
+    watch,
   } = useForm<FormValues>({
     defaultValues: {
       ILGALAIKIS: 2,
@@ -133,6 +135,9 @@ export default function Form() {
     delete data.Attachments;
     AddFeature(data, attachments);
   });
+
+  const files = watch("Attachments");
+  console.log("files", files);
 
   return (
     <>
@@ -207,7 +212,12 @@ export default function Form() {
                       timeFormat="HH:mm"
                       timeIntervals={5}
                       selectedDate={startDate}
-                      onChange={(date) => setStartDate(date)}
+                      onChange={(date) => {
+                        setStartDate(date);
+                        if (date > endDate) {
+                          setEndDate(date);
+                        }
+                      }}
                     />
                   )}
                 />
@@ -274,6 +284,13 @@ export default function Form() {
                       timeIntervals={5}
                       selectedDate={endDate}
                       onChange={(date) => setEndDate(date)}
+                      minTime={
+                        endDate.getDate() ===
+                        new Date(startDate ?? new Date().getTime()).getDate()
+                          ? startDate
+                          : new Date().setHours(0, 0, 0)
+                      }
+                      maxTime={new Date().setHours(23, 59, 59)}
                     />
                   )}
                 />
@@ -420,7 +437,26 @@ export default function Form() {
               <Box w="100%">
                 <FormLabel m="0">Priedai</FormLabel>
                 {/* <FileUpload props={...register("Att")} /> */}
-
+                <FileUpload
+                  accept={"image/*"}
+                  multiple
+                  register={register("Attachments")}
+                >
+                  <Button
+                    leftIcon={<AttachmentIcon />}
+                    variant="outline"
+                    w="100%"
+                  >
+                    Pridėti nuotraukas
+                  </Button>
+                </FileUpload>
+                <Box>
+                  {files &&
+                    [...files].map((file, index) => (
+                      <p key={index}>{file.name}</p>
+                    ))}
+                </Box>
+                {/* 
                 <Input
                   type="file"
                   {...register("Attachments")}
@@ -435,7 +471,7 @@ export default function Form() {
                       fontWeight: "bold",
                     },
                   }}
-                />
+                /> */}
               </Box>
             </Flex>
           </>
