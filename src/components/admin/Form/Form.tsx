@@ -342,36 +342,48 @@ export default function Form() {
                   })}
                   onChange={handleChange}
                 />
-                <List
-                  ref={ref}
-                  position="absolute"
-                  bg="brand.white"
-                  zIndex="2"
-                  border="1px solid"
-                  borderColor="gray.200"
-                  borderRadius="md"
-                  overflow="auto"
-                  maxH="220px"
-                >
-                  {isOpenSuggestions &&
-                    suggestions.slice(0, 5).map((suggestion) => (
-                      <ListItem
-                        _hover={{ bg: "gray.200" }}
-                        py="1"
-                        px="2"
-                        key={suggestion.attributes.OBJECTID}
-                        onClick={() => {
-                          onCloseSuggestions();
-                          setValue(
-                            "PAVADINIMAS",
-                            suggestion.attributes.PAVADINIMAS
-                          );
-                        }}
-                      >
-                        {suggestion.attributes.PAVADINIMAS}
-                      </ListItem>
-                    ))}
-                </List>
+                {isOpenSuggestions && (
+                  <List
+                    ref={ref}
+                    position="absolute"
+                    bg="brand.white"
+                    zIndex="2"
+                    border="1px solid"
+                    borderColor="gray.200"
+                    borderRadius="md"
+                    overflow="auto"
+                    maxH="220px"
+                    w="100%"
+                  >
+                    {suggestions
+                      .filter(
+                        (obj, index) =>
+                          suggestions.findIndex(
+                            (item) =>
+                              item.attributes.PAVADINIMAS ===
+                              obj.attributes.PAVADINIMAS
+                          ) === index
+                      )
+                      .slice(0, 5)
+                      .map((suggestion) => (
+                        <ListItem
+                          _hover={{ bg: "gray.200" }}
+                          py="1"
+                          px="2"
+                          key={suggestion.attributes.OBJECTID}
+                          onClick={() => {
+                            onCloseSuggestions();
+                            setValue(
+                              "PAVADINIMAS",
+                              suggestion.attributes.PAVADINIMAS
+                            );
+                          }}
+                        >
+                          {suggestion.attributes.PAVADINIMAS}
+                        </ListItem>
+                      ))}
+                  </List>
+                )}
                 <Box color="red" fontSize="sm">
                   {errors?.PAVADINIMAS && <p>{errors.PAVADINIMAS.message}</p>}
                 </Box>
