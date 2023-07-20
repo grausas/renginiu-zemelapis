@@ -14,7 +14,11 @@ interface Feature {
   Savaites_dienos: string;
 }
 
-export const AddFeature = (feature: Feature, att: BlobPart[] | undefined) => {
+export const AddFeature = (
+  feature: Feature,
+  att: BlobPart[] | undefined,
+  geometry: any
+) => {
   console.log("feature", feature);
   console.log("att", att);
   console.log(
@@ -37,11 +41,12 @@ export const AddFeature = (feature: Feature, att: BlobPart[] | undefined) => {
     newFeature.RENGINIO_PABAIGA = date.endDate;
     return new Graphic({
       attributes: newFeature,
+      geometry: geometry,
     });
   });
   console.log("addFeature", addFeature);
 
-  const deleteFeatures = [{ objectId: 7440 }];
+  const deleteFeatures = [{ objectId: 7447 }];
 
   const edits = {
     // addFeatures: addFeature,

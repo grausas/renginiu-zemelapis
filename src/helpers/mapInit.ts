@@ -43,7 +43,7 @@ export function init(container: HTMLDivElement) {
     map,
     container,
     center: [25.28093, 54.681],
-    zoom: 12,
+    zoom: 13,
     ui: {
       components: ["attribution"],
     },

@@ -1,4 +1,7 @@
-export const drawPolygon = async (view) => {
+export const drawPolygon = async (
+  view: __esri.MapView | undefined,
+  setGeometry
+) => {
   const sketch = await (await import("@arcgis/core/widgets/Sketch.js")).default;
   const graphicLayer = await (
     await import("@arcgis/core/layers/GraphicsLayer.js")
@@ -33,20 +36,19 @@ export const drawPolygon = async (view) => {
   });
 
   let arr: any;
-  home.on("create", function (event) {
+  home.on("create", function ({ graphic, state }) {
     // check if the create event's state has changed to complete indicating
     // the graphic create operation is completed.
-    if (event.state === "complete") {
-      console.log("arr", arr);
+    if (state === "complete") {
       if (arr) {
         console.log("heheh");
-        arr.addRing(event.graphic.geometry.rings[0]);
+        arr.addRing(graphic.geometry.rings[0]);
       } else {
-        arr = event.graphic.geometry;
+        arr = graphic.geometry;
       }
       // remove the graphic from the layer. Sketch adds
       // the completed graphic to the layer by default.
-      console.log(event);
+      setGeometry(arr);
 
       // use the graphic.geometry to query features that intersect it
     }
@@ -72,4 +74,5 @@ export const drawPolygon = async (view) => {
     //   (arr) => !arr.includes(event.graphics[0].geometry.rings[0])
     // );
   });
+  console.log("arr", arr);
 };

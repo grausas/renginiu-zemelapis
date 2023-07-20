@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useState, useEffect, useRef } from "react";
 import {
   Box,
-  Text,
   Input,
   Button,
   CloseButton,
@@ -43,7 +42,7 @@ type FormValues = {
   Attachments?: BlobPart[];
 };
 
-export default function Form() {
+export default function Form({ geometry }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenSuggestions,
@@ -107,10 +106,9 @@ export default function Form() {
   useEffect(() => {
     setCheckedAll(false);
     const dates = getWeekDays(startDate, endDate);
-
+    setValue("Savaites_dienos", dates.toString());
     const newCheckedItems = weekDays.map(() => false);
     dates.map((day) => {
-      console.log("day", day);
       newCheckedItems[day === 0 ? 6 : day - 1] = true;
       setCheckedItems(newCheckedItems);
     });
@@ -133,7 +131,7 @@ export default function Form() {
     data.RENGINIO_PABAIGA = endDate.toISOString();
     const attachments = data.Attachments;
     delete data.Attachments;
-    AddFeature(data, attachments);
+    AddFeature(data, attachments, geometry);
   });
 
   const files = watch("Attachments");

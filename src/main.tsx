@@ -7,18 +7,17 @@ import AuthProvider from "./context/auth";
 import App from "./App.tsx";
 import "./Main.css";
 
-
 import theme from "./theme";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <ChakraProvider theme={theme} resetCSS={true}>
-          <MapProvider>
+        <MapProvider>
+          <ChakraProvider theme={theme} resetCSS={true}>
             <App />
-          </MapProvider>
-        </ChakraProvider>
+          </ChakraProvider>
+        </MapProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

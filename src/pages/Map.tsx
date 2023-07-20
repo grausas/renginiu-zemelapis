@@ -1,15 +1,13 @@
-import React from "react";
-import { ArcGISMap } from "../components/Map/Map";
-import { Box, Flex, Stack, Text, useRadioGroup } from "@chakra-ui/react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
+import ArcGISMap from "../components/Map/Map";
+import { Flex, Stack, Text, useRadioGroup } from "@chakra-ui/react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Search from "../components/Search/Search";
-// import Filter from "../components/Filter/Filter";
 import FilterByDate from "../components/FilterByDate/FilterByDate";
 import Card from "../components/Card/Card";
 import Popup from "../components/Popup/Popup";
 import BackButton from "../components/BackButton/BackButton";
 import Spinner from "../components/Spinner/Spinner";
-import { useContext, useEffect, useState } from "react";
 import { whereParamsChange } from "../helpers/whereParams";
 import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter.js";
 import FeatureEffect from "@arcgis/core/layers/support/FeatureEffect.js";
@@ -28,19 +26,20 @@ import { drawPolygon } from "../helpers/drawPolygons";
 
 export function Map() {
   const [data, setData] = useState<__esri.Graphic[]>([]);
-  const [featureLayer, setFeatureLayer] = useState<__esri.FeatureLayer | undefined>();
+  const [featureLayer, setFeatureLayer] = useState<
+    __esri.FeatureLayer | undefined
+  >();
   const [dateStart, setDateStart] = useState(todayStart);
   const [category, setCategory] = useState<string[]>([]);
   const [dateEnd, setDateEnd] = useState(todayEnd);
   const [loading, setLoading] = useState(true);
   const [whereParams, setWhereParams] = useState(defaultWhereParams);
   const [popupData, setPopupData] = useState<__esri.ViewHit[]>([]);
+  const [geometry, setGeometry] = useState<__esri.Geometry>();
   const { view } = useContext(MapContext);
   const auth = useContext(AuthContext);
-  const array: __esri.Geometry[] = [];
 
   console.log("dateStart", dateStart);
-
 
   const removeFilterEffect = () => {
     const effect = new FeatureEffect({
@@ -49,15 +48,13 @@ export function Map() {
     if (featureLayer !== undefined) {
       featureLayer.featureEffect = effect;
     }
-  }
+  };
 
   useEffect(() => {
     if (auth.user.token) {
-      drawPolygon(view);
+      drawPolygon(view, setGeometry);
     }
   }, [auth.user.token, view]);
-
-  console.log("event.graphic", array);
 
   useEffect(() => {
     setWhereParams(whereParamsChange(dateStart, dateEnd, category));
@@ -87,6 +84,22 @@ export function Map() {
                 where: whereParams,
                 returnGeometry: true,
                 returnM: true,
+                outFields: [
+                  "APRASYMAS",
+                  "GlobalID",
+                  "ILGALAIKIS",
+                  "KASMETINIS",
+                  "KATEGORIJA",
+                  "OBJECTID",
+                  "ORGANIZATORIUS",
+                  "PAPILD_INF",
+                  "PASTABOS",
+                  "PAVADINIMAS",
+                  "RENGINIO_PRADZIA",
+                  "RENGINIO_PABAIGA",
+                  "Savaites_dienos",
+                  "WEBPAGE",
+                ],
               })
               .then(({ features }) => {
                 console.log("features", features);
@@ -121,10 +134,11 @@ export function Map() {
       value === "šiandien"
         ? todayEnd
         : value === "savaitė"
-          ? addDays(todayEnd, 7)
-          : addDays(todayEnd, 31);
+        ? addDays(todayEnd, 7)
+        : addDays(todayEnd, 31);
     setDateEnd(dateEnd);
   };
+
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "šiandien",
     defaultValue: "šiandien",
@@ -133,11 +147,14 @@ export function Map() {
   const group = getRootProps();
 
   // filter events by category
-  const handleFilter = (category: string[], startDate: number, endDate: number) => {
-    setDateStart(startDate);
-    setDateEnd(endDate);
-    setCategory(category);
-  };
+  const handleFilter = useCallback(
+    (category: string[], startDate: number, endDate: number) => {
+      setDateStart(startDate);
+      setDateEnd(endDate);
+      setCategory(category);
+    },
+    []
+  );
 
   useEffect(() => {
     if (view && featureLayer) {
@@ -156,18 +173,20 @@ export function Map() {
             attachmentTypes: ["image/jpeg", "image/png"],
           };
           console.log("objectIds", objectIds);
-          await featureLayer.queryAttachments(attachmentQuery).then((attachments) => {
-            console.log("attachments", attachments);
-            if (Object.keys(attachments).length > 0) {
-              results.map((result) => {
-                const resultId = result.graphic.attributes.OBJECTID;
-                if (attachments[resultId]) {
-                  console.log("attachmentsAdd", attachments);
-                  result.graphic.set("attachments", attachments[resultId]);
-                }
-              })
-            }
-          });
+          await featureLayer
+            .queryAttachments(attachmentQuery)
+            .then((attachments) => {
+              console.log("attachments", attachments);
+              if (Object.keys(attachments).length > 0) {
+                results.map((result) => {
+                  const resultId = result.graphic.attributes.OBJECTID;
+                  if (attachments[resultId]) {
+                    console.log("attachmentsAdd", attachments);
+                    result.graphic.set("attachments", attachments[resultId]);
+                  }
+                });
+              }
+            });
 
           console.log(results, "features returned");
           view.goTo(
@@ -180,7 +199,9 @@ export function Map() {
             },
             { duration: 400 }
           );
-          const filterObjectids = results.map((result) => result.graphic.attributes.OBJECTID);
+          const filterObjectids = results.map(
+            (result) => result.graphic.attributes.OBJECTID
+          );
           const featureFilter = new FeatureFilter({
             objectIds: filterObjectids,
           });
@@ -198,7 +219,7 @@ export function Map() {
     setPopupData([]);
     queryFeatures();
     removeFilterEffect();
-  }
+  };
 
   return (
     <Flex w="100" h="100%" flexDirection={{ base: "column", md: "row" }}>
@@ -216,7 +237,8 @@ export function Map() {
             renginiai
           </Flex>
           <Text ml="1" fontSize="sm">
-            {new Date(dateStart).toLocaleDateString("lt-LT")} -{" "} {new Date(dateEnd).toLocaleDateString("lt-LT")}
+            {new Date(dateStart).toLocaleDateString("lt-LT")} -{" "}
+            {new Date(dateEnd).toLocaleDateString("lt-LT")}
           </Text>
         </Flex>
         <Flex px="3" justify="space-around" gap="1" {...group}>
@@ -259,13 +281,11 @@ export function Map() {
           ) : data.length > 0 ? (
             popupData.length > 0 ? (
               <>
-                <BackButton
-                  handleClick={handleBack}
-                />
+                <BackButton handleClick={handleBack} />
                 <Popup popupData={popupData} />
               </>
             ) : (
-              <Card data={data} handleClick={(e) => console.log(e)} />
+              <Card data={data} />
             )
           ) : (
             <NoResults />
@@ -273,7 +293,7 @@ export function Map() {
         </Flex>
       </Sidebar>
       <ArcGISMap />
-      {auth.user.token && <Form />}
+      {auth.user.token && <Form geometry={geometry} />}
     </Flex>
   );
 }
