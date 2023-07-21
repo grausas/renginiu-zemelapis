@@ -19,6 +19,7 @@ export default function InfoModal() {
     <>
       <Tooltip label="Informacija kaip kurti renginius">
         <InfoIcon
+          color="green"
           boxSize="4"
           onClick={onOpen}
           position="absolute"

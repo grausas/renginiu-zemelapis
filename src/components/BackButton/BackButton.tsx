@@ -16,6 +16,7 @@ export default function BackButton({ handleClick }: ButtonProps) {
       shadow="sm"
       color="brand.dark"
       fontSize="xs"
+      py="2"
       fontWeight="400"
       textTransform="uppercase"
       onClick={handleClick}

@@ -9,9 +9,13 @@ export const getDates = (
   const d2 = new Date(endDate);
   const weekDaysArray = weekDays.split(",");
   if (weekDaysArray.length === 7) {
-    return dates;
+    dates.push({
+      startDate,
+      endDate,
+    });
   }
-  while (d1 <= d2) {
+
+  while (d1 <= d2 && weekDaysArray.length !== 7) {
     const newDate = new Date(d1);
     if (weekDaysArray.includes(newDate.getDay().toString())) {
       const date = newDate.getDate();
