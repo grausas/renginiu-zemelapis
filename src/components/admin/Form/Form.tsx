@@ -52,6 +52,11 @@ export default function Form({ geometry }: any) {
     onOpen: onOpenSuggestions,
     onClose: onCloseSuggestions,
   } = useDisclosure();
+  const {
+    isOpen: isOpenSuggestions2,
+    onOpen: onOpenSuggestions2,
+    onClose: onCloseSuggestions2,
+  } = useDisclosure();
   const [suggestions, setSuggestions] = useState<__esri.Graphic[]>([]);
   const [checkedAll, setCheckedAll] = useState(false);
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
@@ -64,7 +69,10 @@ export default function Form({ geometry }: any) {
   const ref = useRef(null);
   useOutsideClick({
     ref,
-    handler: () => onCloseSuggestions(),
+    handler: () => {
+      onCloseSuggestions();
+      onCloseSuggestions2();
+    },
   });
 
   const {
@@ -87,11 +95,16 @@ export default function Form({ geometry }: any) {
     if (value.length > 1) {
       const whereParams = `${name} LIKE '%${value}%'`;
       queryFeatures(featureLayerPrivate(), whereParams).then((data) => {
+        if (name === "PAVADINIMAS") {
+          onOpenSuggestions();
+        } else {
+          onOpenSuggestions2();
+        }
         setSuggestions(data);
-        onOpenSuggestions();
       });
     } else {
       onCloseSuggestions();
+      onCloseSuggestions2();
       setSuggestions([]);
     }
   };
@@ -115,6 +128,7 @@ export default function Form({ geometry }: any) {
       setCheckedItems(newCheckedItems);
     });
     dates.length !== 7 ? setCheckedAll(false) : setCheckedAll(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endDate, startDate]);
 
   const handleSelectAll = (e: ChangeEvent<HTMLInputElement>) => {
@@ -331,29 +345,7 @@ export default function Form({ geometry }: any) {
                 )}
               </Box>
             </FormControl>
-            <Flex gap="2">
-              <Box mb="2" w="100%">
-                <FormLabel m="0">Kategorija</FormLabel>
-                <Select {...register("KATEGORIJA", { valueAsNumber: true })}>
-                  {CategoryData.map((category) => (
-                    <option
-                      typeof="number"
-                      value={category.value}
-                      key={category.id}
-                    >
-                      {category.text}
-                    </option>
-                  ))}
-                </Select>
-              </Box>
-              <Box w="100%">
-                <FormLabel m="0">Renginio tinklapis</FormLabel>
-                <InputGroup mb="2">
-                  <InputLeftAddon children="https://" />
-                  <Input {...register("WEBPAGE")} />
-                </InputGroup>
-              </Box>
-            </Flex>
+
             <Flex gap="2">
               <FormControl mb="2" w="100%" position="relative" isRequired>
                 <FormLabel m="0">Pavadinimas</FormLabel>
@@ -409,19 +401,85 @@ export default function Form({ geometry }: any) {
                   {errors?.PAVADINIMAS && <p>{errors.PAVADINIMAS.message}</p>}
                 </Box>
               </FormControl>
-              <FormControl mb="2" w="100%" isRequired>
+              <FormControl mb="2" w="100%" position="relative" isRequired>
                 <FormLabel m="0">Organizatorius</FormLabel>
                 <Input
                   {...register("ORGANIZATORIUS", {
                     required: "Organizatorius yra būtinas",
                   })}
+                  onChange={handleChange}
                 />
+                {isOpenSuggestions2 && (
+                  <List
+                    ref={ref}
+                    position="absolute"
+                    bg="brand.white"
+                    zIndex="2"
+                    border="1px solid"
+                    borderColor="gray.200"
+                    borderRadius="md"
+                    overflow="auto"
+                    maxH="220px"
+                    w="100%"
+                  >
+                    {suggestions
+                      .filter(
+                        (obj, index) =>
+                          suggestions.findIndex(
+                            (item) =>
+                              item.attributes.ORGANIZATORIUS ===
+                              obj.attributes.ORGANIZATORIUS
+                          ) === index
+                      )
+                      .slice(0, 5)
+                      .map((suggestion) => (
+                        <ListItem
+                          _hover={{ bg: "gray.200" }}
+                          py="1"
+                          px="2"
+                          key={suggestion.attributes.OBJECTID}
+                          onClick={() => {
+                            onCloseSuggestions2();
+                            setValue(
+                              "ORGANIZATORIUS",
+                              suggestion.attributes.ORGANIZATORIUS
+                            );
+                          }}
+                        >
+                          {suggestion.attributes.ORGANIZATORIUS}
+                        </ListItem>
+                      ))}
+                  </List>
+                )}
                 <Box color="red" fontSize="sm">
                   {errors?.ORGANIZATORIUS && (
                     <p>{errors.ORGANIZATORIUS.message}</p>
                   )}
                 </Box>
               </FormControl>
+            </Flex>
+            <Flex gap="2">
+              <Box mb="2" w="100%">
+                <FormLabel m="0">Kategorija</FormLabel>
+                <Select {...register("KATEGORIJA", { valueAsNumber: true })}>
+                  {CategoryData.map((category) => (
+                    <option
+                      typeof="number"
+                      value={category.value}
+                      key={category.id}
+                    >
+                      {category.text}
+                    </option>
+                  ))}
+                </Select>
+              </Box>
+              <Box w="100%">
+                <FormLabel m="0">Renginio tinklapis</FormLabel>
+                <InputGroup mb="2">
+                  <InputLeftAddon children="https://" fontSize="sm" />
+                  <Input {...register("WEBPAGE")} />
+                </InputGroup>
+              </Box>
             </Flex>
             <Flex mb="2" gap="2">
               <Box w="100%">
@@ -453,6 +511,7 @@ export default function Form({ geometry }: any) {
                     leftIcon={<AttachmentIcon />}
                     variant="outline"
                     w="100%"
+                    fontSize="sm"
                   >
                     Pridėti nuotraukas
                   </Button>

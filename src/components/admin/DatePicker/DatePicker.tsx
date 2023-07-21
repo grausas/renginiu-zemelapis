@@ -9,9 +9,15 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./datepicker.css";
 registerLocale("lt", lt);
 
+type CustomDateInputProps = {
+  onClick?: () => void;
+  value?: string;
+  props?: any;
+};
+
 const customDateInput = (
-  { onClick, value, onChange, props }: any,
-  ref: any
+  { onClick, value, props }: CustomDateInputProps,
+  ref: React.Ref<any>
 ) => (
   <Input
     autoComplete="off"
@@ -34,15 +40,15 @@ interface Props {
   showTimeDropdown?: boolean;
   showTimeSelect?: boolean;
   showTimeSelectOnly?: boolean;
-  dropdownMode?: string;
+  dropdownMode?: "scroll" | "select";
   timeFormat?: string;
   timeIntervals?: number;
   dateFormat: string;
-  minDate?: Date | number;
-  maxDate?: Date | number;
-  minTime?: Date | number;
-  maxTime?: Date | number;
-  onChange: (date: Date) => any;
+  minDate?: Date | null | undefined;
+  maxDate?: Date | null | undefined;
+  minTime?: any;
+  maxTime?: any;
+  onChange: (date: Date) => void;
   selectedDate: Date | undefined;
   showPopperArrow?: boolean;
   inputType?: string;
