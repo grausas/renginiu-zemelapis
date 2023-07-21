@@ -5,6 +5,7 @@ import {
   Button,
   CloseButton,
   FormLabel,
+  FormControl,
   InputGroup,
   InputLeftAddon,
   Select,
@@ -14,6 +15,7 @@ import {
   List,
   ListItem,
   useOutsideClick,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useForm, Controller } from "react-hook-form";
 import { AddFeature } from "../../../helpers/addFeature";
@@ -25,6 +27,7 @@ import { getWeekDays } from "../../../helpers/getWeekDays";
 import DatePicker from "../DatePicker/DatePicker";
 import FileUpload from "../FileUpload/FileUpload";
 import { AttachmentIcon } from "@chakra-ui/icons";
+import InfoModal from "../InfoModal/InfoModal";
 
 type FormValues = {
   PAVADINIMAS: string;
@@ -104,7 +107,6 @@ export default function Form({ geometry }: any) {
   };
 
   useEffect(() => {
-    setCheckedAll(false);
     const dates = getWeekDays(startDate, endDate);
     setValue("Savaites_dienos", dates.toString());
     const newCheckedItems = weekDays.map(() => false);
@@ -112,6 +114,7 @@ export default function Form({ geometry }: any) {
       newCheckedItems[day === 0 ? 6 : day - 1] = true;
       setCheckedItems(newCheckedItems);
     });
+    dates.length !== 7 ? setCheckedAll(false) : setCheckedAll(true);
   }, [endDate, startDate]);
 
   const handleSelectAll = (e: ChangeEvent<HTMLInputElement>) => {
@@ -125,6 +128,7 @@ export default function Form({ geometry }: any) {
   };
 
   const onSubmit = handleSubmit((data) => {
+    if (geometry.length === 0) return;
     const dataToSubmit = data.Savaites_dienos.toString();
     data.Savaites_dienos = dataToSubmit;
     data.RENGINIO_PRADZIA = startDate.toISOString();
@@ -135,7 +139,6 @@ export default function Form({ geometry }: any) {
   });
 
   const files = watch("Attachments");
-  console.log("files", files);
 
   return (
     <>
@@ -158,10 +161,13 @@ export default function Form({ geometry }: any) {
           w="100%"
           right="3"
           bg="brand.white"
-          p="5"
+          pt="6"
+          pb="3"
+          px="3"
           borderRadius="md"
           shadow="md"
         >
+          <InfoModal />
           <CloseButton
             position="absolute"
             right="0"
@@ -221,27 +227,24 @@ export default function Form({ geometry }: any) {
                 />
               </Box>
               <Flex flexDirection="column">
-                <Box>
-                  <Checkbox
-                    onChange={(e) => {
-                      setValue("KASMETINIS", e.target.checked ? 1 : 2);
-                      console.log(e.target.checked);
-                      setCheckedEveryYear(!checkedEveryYear);
-                    }}
-                    mr="2"
-                  >
-                    Kasmetinis renginys
-                  </Checkbox>
-                </Box>
-                <Box>
+                <Box mb="1">
                   <Checkbox
                     onChange={(e) => {
                       setValue("ILGALAIKIS", e.target.checked ? 1 : 2);
                       setCheckedLong(!checkedLong);
                     }}
-                    mr="2"
                   >
                     Ilgalaikis renginys
+                  </Checkbox>
+                </Box>
+                <Box>
+                  <Checkbox
+                    onChange={(e) => {
+                      setValue("KASMETINIS", e.target.checked ? 1 : 2);
+                      setCheckedEveryYear(!checkedEveryYear);
+                    }}
+                  >
+                    Kasmetinis renginys
                   </Checkbox>
                 </Box>
               </Flex>
@@ -294,26 +297,29 @@ export default function Form({ geometry }: any) {
                 />
               </Box>
             </Flex>
-            <Box mb="2">
+            <FormControl mb="2" isRequired>
               <FormLabel m="0">Savaitės dienos</FormLabel>
               <Flex flexWrap="wrap">
                 <Checkbox
                   isChecked={checkedAll}
                   onChange={(e) => handleSelectAll(e)}
                   mr="2"
+                  disabled={checkedLong}
                 >
                   Visos
                 </Checkbox>
                 {weekDays.map((day, index) => (
                   <Checkbox
                     {...register("Savaites_dienos", {
-                      required: "Savaitės dienos yra privalomos",
+                      required:
+                        !checkedLong && "Savaitės dienos yra privalomos",
                     })}
                     key={day.id}
                     value={day.id}
                     mr="2"
                     isChecked={checkedItems[index]}
                     onChange={(e) => handleChangeSelect(e, index)}
+                    disabled={checkedLong}
                   >
                     {day.name}
                   </Checkbox>
@@ -324,7 +330,7 @@ export default function Form({ geometry }: any) {
                   <p>{errors.Savaites_dienos.message}</p>
                 )}
               </Box>
-            </Box>
+            </FormControl>
             <Flex gap="2">
               <Box mb="2" w="100%">
                 <FormLabel m="0">Kategorija</FormLabel>
@@ -349,8 +355,8 @@ export default function Form({ geometry }: any) {
               </Box>
             </Flex>
             <Flex gap="2">
-              <Box mb="2" w="100%" position="relative">
-                <FormLabel m="0">Pavadinimas *</FormLabel>
+              <FormControl mb="2" w="100%" position="relative" isRequired>
+                <FormLabel m="0">Pavadinimas</FormLabel>
                 <Input
                   {...register("PAVADINIMAS", {
                     required: "Pavadinimas yra būtinas",
@@ -402,9 +408,9 @@ export default function Form({ geometry }: any) {
                 <Box color="red" fontSize="sm">
                   {errors?.PAVADINIMAS && <p>{errors.PAVADINIMAS.message}</p>}
                 </Box>
-              </Box>
-              <Box mb="2" w="100%">
-                <FormLabel m="0">Organizatorius *</FormLabel>
+              </FormControl>
+              <FormControl mb="2" w="100%" isRequired>
+                <FormLabel m="0">Organizatorius</FormLabel>
                 <Input
                   {...register("ORGANIZATORIUS", {
                     required: "Organizatorius yra būtinas",
@@ -415,7 +421,7 @@ export default function Form({ geometry }: any) {
                     <p>{errors.ORGANIZATORIUS.message}</p>
                   )}
                 </Box>
-              </Box>
+              </FormControl>
             </Flex>
             <Flex mb="2" gap="2">
               <Box w="100%">
@@ -429,7 +435,10 @@ export default function Form({ geometry }: any) {
             </Flex>
             <Flex mb="2" gap="2">
               <Box w="100%">
-                <FormLabel m="0">Papildoma informacija</FormLabel>
+                <FormLabel m="0">
+                  Papildoma informacija{" "}
+                  <Tooltip label="Nematomas viešai">*</Tooltip>{" "}
+                </FormLabel>
                 <Input {...register("PAPILD_INF")} />
               </Box>
               <Box w="100%">
