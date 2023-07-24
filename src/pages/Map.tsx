@@ -24,8 +24,11 @@ const todayEnd = new Date(new Date().setHours(23, 59, 59)).getTime();
 const defaultWhereParams = `RENGINIO_PRADZIA <= '${todayEnd}' AND RENGINIO_PABAIGA >= '${todayStart}'`;
 const options = ["šiandien", "savaitė", "mėnesis"];
 import { drawPolygon } from "../helpers/drawPolygons";
+// locale
+import * as intl from "@arcgis/core/intl";
 
 export function Map() {
+  intl.setLocale("lt");
   const history = useNavigate();
   const [handle, setHandle] = useState();
   const [data, setData] = useState<__esri.Graphic[]>([]);
