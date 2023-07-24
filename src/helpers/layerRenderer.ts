@@ -63,9 +63,15 @@ export const layerRenderer = (view: any) => {
         () => view.zoom,
         () => {
           view.map.layers.items[0].renderer =
-            view.zoom <= 11
+            view.map.basemap.id === "basemap"
+              ? view.zoom <= 11
+                ? simpleRendererBig
+                : view.zoom <= 16
+                ? simpleRenderer
+                : simpleRendererPolygon
+              : view.zoom <= 3.5
               ? simpleRendererBig
-              : view.zoom <= 16
+              : view.zoom <= 6.5
               ? simpleRenderer
               : simpleRendererPolygon;
         },

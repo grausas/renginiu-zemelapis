@@ -2,6 +2,7 @@ import ArcGISMap from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 import Basemap from "@arcgis/core/Basemap.js";
+import BasemapToggle from "@arcgis/core/widgets/BasemapToggle.js";
 import Search from "@arcgis/core/widgets/Search.js";
 import Zoom from "@arcgis/core/widgets/Zoom.js";
 import Legend from "@arcgis/core/widgets/Legend.js";
@@ -34,6 +35,16 @@ export function init(container: HTMLDivElement) {
     id: "basemap",
   });
 
+  const orto2022 = new Basemap({
+    portalItem: {
+      id: "f089d2cf232643819a0faacc679f2c4b",
+    },
+    title: "orto2022",
+    id: "orto2022",
+  });
+
+  console.log("orto2022", orto2022);
+
   const map = new ArcGISMap({
     basemap: baseMap,
     layers: [featureLayerPublic()],
@@ -49,6 +60,7 @@ export function init(container: HTMLDivElement) {
     },
     constraints: {
       minScale: 500000,
+      maxScale: 100,
       snapToZoom: false,
     },
   });
@@ -115,6 +127,12 @@ export function init(container: HTMLDivElement) {
   view.ui.add(zoom, {
     position: "bottom-right",
   });
+
+  const basemapToggle = new BasemapToggle({
+    view: view,
+    nextBasemap: orto2022,
+  });
+  view.ui.add(basemapToggle, "bottom-left");
 
   return view;
 }

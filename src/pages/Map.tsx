@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-  useRef,
-} from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import ArcGISMap from "../components/Map/Map";
 import { Flex, Stack, Text, useRadioGroup } from "@chakra-ui/react";
