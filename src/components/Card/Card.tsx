@@ -80,7 +80,12 @@ export default function Card({ data, handleClick }: CardProps) {
             );
           }
         })}
-        <Text textAlign="center" py={{ base: "1", md: "3" }} fontWeight="500" fontSize={{ base: "sm", md: "md" }}>
+        <Text
+          textAlign="center"
+          py={{ base: "1", md: "3" }}
+          fontWeight="500"
+          fontSize={{ base: "sm", md: "md" }}
+        >
           {feature.attributes.PAVADINIMAS}
         </Text>
         <Flex align="center">

@@ -16,6 +16,7 @@ import {
   ListItem,
   useOutsideClick,
   Tooltip,
+  Text,
 } from "@chakra-ui/react";
 import { useForm, Controller } from "react-hook-form";
 import { AddFeature } from "../../../helpers/addFeature";
@@ -516,28 +517,14 @@ export default function Form({ geometry }: any) {
                     Pridėti nuotraukas
                   </Button>
                 </FileUpload>
-                <Box>
+                <Flex>
                   {files &&
-                    [...files].map((file, index) => (
-                      <p key={index}>{file.name}</p>
+                    [...files].map((file: any, index) => (
+                      <Text mr="1" fontSize="xs" key={index}>
+                        {file.name}
+                      </Text>
                     ))}
-                </Box>
-                {/* 
-                <Input
-                  type="file"
-                  {...register("Attachments")}
-                  mb="2"
-                  sx={{
-                    "::file-selector-button": {
-                      height: 10,
-                      padding: 0,
-                      mr: 4,
-                      background: "none",
-                      border: "none",
-                      fontWeight: "bold",
-                    },
-                  }}
-                /> */}
+                </Flex>
               </Box>
             </Flex>
           </>

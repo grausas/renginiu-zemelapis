@@ -9,7 +9,7 @@ export default function Search() {
       </InputLeftElement>
       <Input
         placeholder="Ieškoti renginio"
-        fontSize={{ base: "sm", md: "md" }}
+        fontSize="sm"
         shadow="md"
         bg="brand.white"
         pl="8"

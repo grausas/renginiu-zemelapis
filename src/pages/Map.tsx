@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useState, useCallback } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
+import { useNavigate } from "react-router-dom";
 import ArcGISMap from "../components/Map/Map";
 import { Flex, Stack, Text, useRadioGroup } from "@chakra-ui/react";
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -25,6 +32,8 @@ const options = ["šiandien", "savaitė", "mėnesis"];
 import { drawPolygon } from "../helpers/drawPolygons";
 
 export function Map() {
+  const history = useNavigate();
+  const [handle, setHandle] = useState();
   const [data, setData] = useState<__esri.Graphic[]>([]);
   const [featureLayer, setFeatureLayer] = useState<
     __esri.FeatureLayer | undefined
@@ -34,8 +43,9 @@ export function Map() {
   const [dateEnd, setDateEnd] = useState(todayEnd);
   const [loading, setLoading] = useState(true);
   const [whereParams, setWhereParams] = useState(defaultWhereParams);
-  const [popupData, setPopupData] = useState<__esri.ViewHit[]>([]);
-  const [geometry, setGeometry] = useState<__esri.Geometry>();
+  const [popupData, setPopupData] = useState<any[]>([]);
+  const [geometry, setGeometry] = useState<__esri.Geometry[]>([]);
+  const [objectId, setObjectId] = useState<number>();
   const { view } = useContext(MapContext);
   const auth = useContext(AuthContext);
 
@@ -60,7 +70,7 @@ export function Map() {
     setWhereParams(whereParamsChange(dateStart, dateEnd, category));
   }, [dateStart, dateEnd, category]);
 
-  const queryFeatures = () => {
+  const queryFeatures = async () => {
     const layer = view?.map.layers.getItemAt(0) as __esri.FeatureLayer;
     if (!layer) return;
     setFeatureLayer(layer);
@@ -69,21 +79,24 @@ export function Map() {
       ?.whenLayerView(layer)
       .then((layerView) => {
         setLoading(true);
-        const featureFilter = new FeatureFilter({ where: whereParams });
+        const featureFilter = new FeatureFilter({
+          where: whereParams,
+        });
         console.log(layer);
         console.log("view", view.extent);
         layerView.filter = featureFilter;
+        console.log("objectIDs", typeof objectId);
 
         reactiveUtils.when(
           () => !layerView.updating,
-          () => {
-            // const query = layerView.filter.createQuery();
-            // query.geometry = view.extent;
-            layerView
+          async () => {
+            await layerView
               .queryFeatures({
+                outSpatialReference: view.spatialReference,
                 where: whereParams,
                 returnGeometry: true,
-                returnM: true,
+                geometry: objectId !== undefined ? undefined : view.extent,
+                objectIds: objectId !== undefined ? [objectId] : [],
                 outFields: [
                   "APRASYMAS",
                   "GlobalID",
@@ -104,6 +117,12 @@ export function Map() {
               .then(({ features }) => {
                 console.log("features", features);
                 setData(features);
+                if (objectId !== undefined) {
+                  const result = { graphic: features[0] };
+                  getAttachments([result]);
+                  zoomToFeature([result]);
+                  setPopupData([result]);
+                }
                 setLoading(false);
               })
               .catch((error) => {
@@ -119,13 +138,38 @@ export function Map() {
       });
   };
 
+  // const handle = reactiveUtils.watch(
+  //   () => [view?.stationary, view?.extent],
+  //   (stationary) => {
+  //     if (stationary) {
+  //       console.log(`Extent change xmin = `);
+  //       queryFeatures();
+  //     }
+  //   }
+  // );
+
   // query features by where params
   useEffect(() => {
-    queryFeatures();
+    if (view) {
+      queryFeatures();
+      // const handleByExtent = reactiveUtils.watch(
+      //   () => view?.stationary,
+      //   (stationary) => {
+      //     if (stationary) {
+      //       console.log(`Extent change xmin = `);
+      //       queryFeatures();
+      //     }
+      //   }
+      // );
+      // setHandle(handleByExtent);
+    }
   }, [view, whereParams]);
 
   // filter events by current day, coming week or month
   const handleChangeDate = (value: string) => {
+    handle?.remove();
+    history("/");
+    setObjectId(undefined);
     setDateStart(todayStart);
     removeFilterEffect();
     setPopupData([]);
@@ -165,61 +209,93 @@ export function Map() {
         if (response.results.length) {
           console.log("response", response);
           const results = response.results;
-          const objectIds = results.map(
-            (result) => result.graphic.attributes.OBJECTID
-          );
-          const attachmentQuery = {
-            objectIds: objectIds,
-            attachmentTypes: ["image/jpeg", "image/png"],
-          };
-          console.log("objectIds", objectIds);
-          await featureLayer
-            .queryAttachments(attachmentQuery)
-            .then((attachments) => {
-              console.log("attachments", attachments);
-              if (Object.keys(attachments).length > 0) {
-                results.map((result) => {
-                  const resultId = result.graphic.attributes.OBJECTID;
-                  if (attachments[resultId]) {
-                    console.log("attachmentsAdd", attachments);
-                    result.graphic.set("attachments", attachments[resultId]);
-                  }
-                });
-              }
-            });
+
+          await getAttachments(results);
 
           console.log(results, "features returned");
-          view.goTo(
-            {
-              center: [
-                results[0].graphic.geometry.centroid.longitude,
-                results[0].graphic.geometry.centroid.latitude,
-              ],
-              zoom: 18,
-            },
-            { duration: 400 }
-          );
-          const filterObjectids = results.map(
-            (result) => result.graphic.attributes.OBJECTID
-          );
-          const featureFilter = new FeatureFilter({
-            objectIds: filterObjectids,
-          });
-          featureLayer.featureEffect = new FeatureEffect({
-            filter: featureFilter,
-            excludedEffect: "opacity(20%) ",
-          });
+          zoomToFeature(results);
           setPopupData(results);
         }
       });
     }
   }, [featureLayer, view]);
 
+  const getAttachments = async (results: any) => {
+    console.log("resultsAttach", results);
+    const objectIds = results.map(
+      (result: any) => result.graphic.attributes.OBJECTID
+    );
+    const attachmentQuery = {
+      objectIds: objectIds,
+      attachmentTypes: ["image/jpeg", "image/png"],
+    };
+    console.log("objectIds", objectIds);
+    await featureLayer
+      ?.queryAttachments(attachmentQuery)
+      .then((attachments) => {
+        console.log("attachments", attachments);
+        if (Object.keys(attachments).length > 0) {
+          results.map((result: any) => {
+            console.log("result", result);
+            const resultId = result.graphic.attributes.OBJECTID;
+            if (attachments[resultId]) {
+              console.log("attachmentsAdd", attachments);
+              result.graphic.set("attachments", attachments[resultId]);
+            }
+          });
+        }
+      });
+
+    return results;
+  };
+
+  const zoomToFeature = (results: any) => {
+    view?.goTo(
+      {
+        center: [
+          results[0].graphic.geometry.centroid.longitude,
+          results[0].graphic.geometry.centroid.latitude,
+        ],
+        zoom: 17,
+      },
+      { duration: 400 }
+    );
+    const filterObjectids = results.map(
+      (result: any) => result.graphic.attributes.OBJECTID
+    );
+    const featureFilter = new FeatureFilter({
+      objectIds: filterObjectids,
+    });
+
+    const featureEffect = new FeatureEffect({
+      filter: featureFilter,
+      excludedEffect: "opacity(20%) ",
+    });
+
+    if (featureLayer !== undefined) {
+      featureLayer.featureEffect = featureEffect;
+    }
+  };
+
   const handleBack = () => {
+    history("/");
+    setObjectId(undefined);
     setPopupData([]);
     queryFeatures();
     removeFilterEffect();
   };
+
+  useEffect(() => {
+    const queryParameters = new URLSearchParams(window.location.search);
+    const objectID = queryParameters.get("objectid");
+    if (objectID) {
+      setObjectId(Number(objectID));
+    }
+    console.log("objectID", objectID);
+    console.log("queryParameters", queryParameters);
+  }, []);
+
+  console.log("popupData", popupData);
 
   return (
     <Flex w="100" h="100%" flexDirection={{ base: "column", md: "row" }}>
@@ -285,7 +361,15 @@ export function Map() {
                 <Popup popupData={popupData} />
               </>
             ) : (
-              <Card data={data} />
+              <Card
+                data={data}
+                handleClick={async (e) => {
+                  const result = { graphic: e };
+                  await getAttachments([result]);
+                  zoomToFeature([result]);
+                  setPopupData([result]);
+                }}
+              />
             )
           ) : (
             <NoResults />

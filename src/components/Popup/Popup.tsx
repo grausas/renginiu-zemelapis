@@ -1,16 +1,20 @@
-import { Flex, Text, Image } from "@chakra-ui/react";
+import { Flex, Text, Image, Tooltip, useToast, Box } from "@chakra-ui/react";
 import { CategoryData } from "../../utils/Category";
 import ImagePreview from "../ImagePreview/ImagePreview";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 interface Popup {
   popupData: __esri.ViewHit[];
 }
 
+const shareUrl = window.location.href;
+
 export default function Popup({ popupData }: Popup) {
+  const toast = useToast();
+
   console.log("popupData", popupData);
   return popupData?.map((item: any) => (
     <Flex
-      overflowY="auto"
       key={item.graphic.attributes.OBJECTID}
       flexDirection={"column"}
       bg="brand.white"
@@ -23,7 +27,27 @@ export default function Popup({ popupData }: Popup) {
         base: popupData.length > 1 ? "calc(100%-40px)" : "100vw",
         md: "auto",
       }}
+      position="relative"
     >
+      <Tooltip label="Dalintis" fontSize="xs">
+        <ExternalLinkIcon
+          position="absolute"
+          top="2"
+          right="2"
+          _hover={{ cursor: "pointer" }}
+          onClick={() => {
+            navigator.clipboard.writeText(
+              `${shareUrl}?objectid=${item.graphic.attributes.OBJECTID} `
+            );
+            toast({
+              title: "Linkas nukopijuotas",
+              position: "top",
+              status: "success",
+              duration: 2000,
+            });
+          }}
+        />
+      </Tooltip>
       {CategoryData.map((category) => {
         if (category.value === item.graphic.attributes.KATEGORIJA) {
           return (
@@ -64,19 +88,26 @@ export default function Popup({ popupData }: Popup) {
         {item.graphic.attributes.PAVADINIMAS}
       </Text>
       <Text>Organizatorius: {item.graphic.attributes.ORGANIZATORIUS}</Text>
-      <Text>Pradžia: {new Date(
-        item.graphic.attributes.RENGINIO_PRADZIA
-      ).toLocaleString("lt-LT")}</Text>
-      <Text>Pabaiga: {new Date(
-        item.graphic.attributes.RENGINIO_PABAIGA
-      ).toLocaleString("lt-LT")} </Text>
+      <Text>
+        Pradžia:{" "}
+        {new Date(item.graphic.attributes.RENGINIO_PRADZIA).toLocaleString(
+          "lt-LT"
+        )}
+      </Text>
+      <Text>
+        Pabaiga:{" "}
+        {new Date(item.graphic.attributes.RENGINIO_PABAIGA).toLocaleString(
+          "lt-LT"
+        )}{" "}
+      </Text>
       <Text>{item.graphic.attributes.APRASYMAS}</Text>
       <Text>{item.graphic.attributes.PASTABOS}</Text>
       <Text>{item.graphic.attributes.WEBSITE}</Text>
       <Flex flexDirection="row" w="100%" flexWrap="wrap">
-        {item.graphic.attachments && item.graphic.attachments.map((att: any) => (
-          <ImagePreview url={att.url} />
-        ))}
+        {item.graphic.attachments &&
+          item.graphic.attachments.map((att: any, index: number) => (
+            <ImagePreview key={index} url={att.url} />
+          ))}
       </Flex>
     </Flex>
   ));

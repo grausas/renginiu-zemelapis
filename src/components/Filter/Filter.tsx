@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Checkbox,
@@ -20,7 +20,11 @@ import FilterIcon from "../../assets/filter.png";
 import DatePicker from "../admin/DatePicker/DatePicker";
 
 type FilterProps = {
-  handleFilter: (category: string[], startDate: number, endDate: number) => void;
+  handleFilter: (
+    category: string[],
+    startDate: number,
+    endDate: number
+  ) => void;
 };
 
 type CategoryItem = {
@@ -31,7 +35,7 @@ type CategoryItem = {
   icon: string;
 };
 
-export default function Filter({ handleFilter }: FilterProps) {
+const Filter = React.memo(({ handleFilter }: FilterProps) => {
   // state to keep track of selected categories and checked checkboxes
   const [category, setCategory] = useState<string[]>([]);
   const [startDate, setStartDate] = useState<Date>(new Date());
@@ -41,7 +45,7 @@ export default function Filter({ handleFilter }: FilterProps) {
   );
 
   // console.log("startDate", startDate);
-  console.log("Filter rerenders")
+  console.log("Filter rerenders");
 
   // filter by category, add checkboxes to array to save state after modal closed
   const handleChange = (
@@ -60,12 +64,16 @@ export default function Filter({ handleFilter }: FilterProps) {
   const clearFilter = () => {
     setCategory([]);
     setCheckedItems(CategoryData.map(() => false));
+    setStartDate(new Date());
+    setEndDate(new Date());
   };
   // call handleFilter when category changes
   useEffect(() => {
-    const formatStartDate = new Date(startDate.setHours(0, 0, 0)).getTime()
-    const formatEndDate = new Date(endDate.setHours(23, 59, 59)).getTime()
+    console.log("endDate", endDate);
+    const formatStartDate = new Date(startDate.setHours(0, 0, 0)).getTime();
+    const formatEndDate = new Date(endDate.setHours(23, 59, 59)).getTime();
     handleFilter(category, formatStartDate, formatEndDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, startDate, endDate]);
 
   const COLORS_SMOOTH = {
@@ -147,10 +155,9 @@ export default function Filter({ handleFilter }: FilterProps) {
     <Popover closeOnBlur={false} placement="right-end" isLazy>
       <PopoverTrigger>
         <Button
-          color="brand.dark"
           bg="brand.white"
           variant="outline"
-          fontSize="sm"
+          fontSize="xs"
           fontWeight="400"
           shadow="md"
           textTransform="uppercase"
@@ -166,9 +173,9 @@ export default function Filter({ handleFilter }: FilterProps) {
         <PopoverArrow />
         <PopoverCloseButton />
         <PopoverBody>
-          <Flex w="100%" gap="2" >
-            <Box>
-              <Text fontSize="sm">Data nuo:</Text>
+          <Flex w="100%" gap="2">
+            <Box fontSize="sm">
+              <Text>Data nuo</Text>
               <DatePicker
                 dateFormat="dd/MM/yyyy"
                 showMonthDropdown
@@ -209,13 +216,17 @@ export default function Filter({ handleFilter }: FilterProps) {
           display="flex"
           alignItems="center"
           justifyContent="flex-end"
-          pb={2}
+          pt="0"
         >
-          <Button variant="outline" size="sm" onClick={clearFilter}>
-            Panaikinti {category.length > 0 ? category.length : ""} filtrus
-          </Button>
+          {category.length > 0 && (
+            <Button variant="outline" size="sm" onClick={clearFilter}>
+              Panaikinti {category.length > 0 ? category.length : ""} filtrus
+            </Button>
+          )}
         </PopoverFooter>
       </PopoverContent>
     </Popover>
   );
-}
+});
+
+export default Filter;

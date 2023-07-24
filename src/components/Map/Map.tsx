@@ -2,9 +2,11 @@ import { useContext, useEffect, useRef } from "react";
 import { Box } from "@chakra-ui/react";
 import { MapContext } from "../../context/map-context";
 
-export function ArcGISMap() {
+const ArcGISMap = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const { loadMap } = useContext(MapContext);
+
+  console.log("Map relaod");
 
   useEffect(() => {
     if (mapRef.current && loadMap) {
@@ -21,4 +23,6 @@ export function ArcGISMap() {
       overflow="hidden"
     ></Box>
   );
-}
+};
+
+export default ArcGISMap;

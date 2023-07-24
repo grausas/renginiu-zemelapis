@@ -45,7 +45,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     console.log("hello");
     console.log("users", users);
     const esriId = await importIdentifyManager;
-    esriId.tokenValidity = 300;
+    esriId.tokenValidity = 720;
 
     esriId.generateToken(serverInfo, users).then((response) => {
       response.server = serverInfo.server;

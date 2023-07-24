@@ -44,8 +44,8 @@ interface Props {
   timeFormat?: string;
   timeIntervals?: number;
   dateFormat: string;
-  minDate?: Date | null | undefined;
-  maxDate?: Date | null | undefined;
+  minDate?: any;
+  maxDate?: any;
   minTime?: any;
   maxTime?: any;
   onChange: (date: Date) => void;
