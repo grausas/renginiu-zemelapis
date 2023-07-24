@@ -58,10 +58,10 @@ export function Map() {
   };
 
   useEffect(() => {
-    if (auth.user.token) {
-      drawPolygon(view, setGeometry);
+    if (auth.user.token && featureLayer) {
+      drawPolygon(view, setGeometry, featureLayer);
     }
-  }, [auth.user.token, view]);
+  }, [auth.user.token, view, featureLayer]);
 
   useEffect(() => {
     setWhereParams(whereParamsChange(dateStart, dateEnd, category));
@@ -355,7 +355,7 @@ export function Map() {
             popupData.length > 0 ? (
               <>
                 <BackButton handleClick={handleBack} />
-                <Popup popupData={popupData} />
+                <Popup popupData={popupData} auth={auth} />
               </>
             ) : (
               <Card

@@ -5,11 +5,12 @@ import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 interface Popup {
   popupData: __esri.ViewHit[];
+  auth: any;
 }
 
 const shareUrl = window.location.href;
 
-export default function Popup({ popupData }: Popup) {
+export default function Popup({ popupData, auth }: Popup) {
   const toast = useToast();
 
   console.log("popupData", popupData);
@@ -103,6 +104,7 @@ export default function Popup({ popupData }: Popup) {
       <Text>{item.graphic.attributes.APRASYMAS}</Text>
       <Text>{item.graphic.attributes.PASTABOS}</Text>
       <Text>{item.graphic.attributes.WEBSITE}</Text>
+      {auth.user.token && <Text>{item.graphic.attributes.PAPILD_INF}</Text>}
       <Flex flexDirection="row" w="100%" flexWrap="wrap">
         {item.graphic.attachments &&
           item.graphic.attachments.map((att: any, index: number) => (

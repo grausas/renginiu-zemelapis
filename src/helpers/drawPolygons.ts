@@ -1,6 +1,7 @@
 export const drawPolygon = async (
   view: __esri.MapView | undefined,
-  setGeometry
+  setGeometry,
+  featureLayer: __esri.FeatureLayer
 ) => {
   const sketch = await (await import("@arcgis/core/widgets/Sketch.js")).default;
   const graphicLayer = await (
@@ -37,6 +38,7 @@ export const drawPolygon = async (
 
   let arr: any;
   home.on("create", function ({ graphic, state }) {
+    featureLayer.opacity = 0.2;
     // check if the create event's state has changed to complete indicating
     // the graphic create operation is completed.
     if (state === "complete") {
@@ -51,6 +53,10 @@ export const drawPolygon = async (
       setGeometry(arr);
 
       // use the graphic.geometry to query features that intersect it
+    }
+
+    if (state === "cancel") {
+      featureLayer.opacity = 1;
     }
   });
   home.on("delete", function (event) {
