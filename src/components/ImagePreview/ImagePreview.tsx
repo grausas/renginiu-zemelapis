@@ -27,7 +27,7 @@ export default function ImagePreview({ url }) {
         alt="Preview"
         onClick={handleImageClick}
         objectFit={"cover"}
-        w="33%"
+        w="30%"
       />
       <Modal isOpen={isOpen} onClose={handleClose} isCentered>
         <ModalOverlay />
