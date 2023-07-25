@@ -17,6 +17,7 @@ import {
   useOutsideClick,
   Tooltip,
   Text,
+  Alert,
 } from "@chakra-ui/react";
 import { useForm, Controller } from "react-hook-form";
 import { AddFeature } from "../../../helpers/addFeature";
@@ -27,7 +28,7 @@ import { featureLayerPrivate } from "../../../layers";
 import { getWeekDays } from "../../../helpers/getWeekDays";
 import DatePicker from "../DatePicker/DatePicker";
 import FileUpload from "../FileUpload/FileUpload";
-import { AttachmentIcon } from "@chakra-ui/icons";
+import { AttachmentIcon, WarningTwoIcon } from "@chakra-ui/icons";
 import InfoModal from "../InfoModal/InfoModal";
 
 type FormValues = {
@@ -48,6 +49,11 @@ type FormValues = {
 
 export default function Form({ geometry }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: geometryErrorOpen,
+    onClose: geometryErrorClose,
+    onOpen: geometryErrorOnOpen,
+  } = useDisclosure();
   const {
     isOpen: isOpenSuggestions,
     onOpen: onOpenSuggestions,
@@ -143,14 +149,17 @@ export default function Form({ geometry }: any) {
   };
 
   const onSubmit = handleSubmit((data) => {
-    if (geometry.length === 0) return;
-    const dataToSubmit = data.Savaites_dienos.toString();
-    data.Savaites_dienos = dataToSubmit;
-    data.RENGINIO_PRADZIA = startDate.toISOString();
-    data.RENGINIO_PABAIGA = endDate.toISOString();
-    const attachments = data.Attachments;
-    delete data.Attachments;
-    AddFeature(data, attachments, geometry);
+    if (geometry.length === 0) {
+      geometryErrorOnOpen();
+    } else {
+      const dataToSubmit = data.Savaites_dienos.toString();
+      data.Savaites_dienos = dataToSubmit;
+      data.RENGINIO_PRADZIA = startDate.toISOString();
+      data.RENGINIO_PABAIGA = endDate.toISOString();
+      const attachments = data.Attachments;
+      delete data.Attachments;
+      AddFeature(data, attachments, geometry);
+    }
   });
 
   const files = watch("Attachments");
@@ -182,6 +191,19 @@ export default function Form({ geometry }: any) {
           borderRadius="md"
           shadow="md"
         >
+          {geometryErrorOpen && (
+            <Alert status="error" fontSize="sm" m="0 auto" w="90%">
+              <WarningTwoIcon color="red" mr="1" />
+              Nenubraižyta renginio geometrija žemėlapyje.
+              <CloseButton
+                alignSelf="flex-start"
+                position="absolute"
+                right={-1}
+                top={-1}
+                onClick={geometryErrorClose}
+              />
+            </Alert>
+          )}
           <InfoModal />
           <CloseButton
             position="absolute"
