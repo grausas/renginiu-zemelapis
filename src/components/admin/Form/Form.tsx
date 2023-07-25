@@ -149,9 +149,10 @@ export default function Form({ geometry }: any) {
   };
 
   const onSubmit = handleSubmit((data) => {
-    if (geometry.length === 0) {
+    if (geometry.length === 0 || geometry.rings.length === 0) {
       geometryErrorOnOpen();
     } else {
+      geometryErrorClose();
       const dataToSubmit = data.Savaites_dienos.toString();
       data.Savaites_dienos = dataToSubmit;
       data.RENGINIO_PRADZIA = startDate.toISOString();
@@ -183,6 +184,8 @@ export default function Form({ geometry }: any) {
           bottom="5"
           maxW="700px"
           w="100%"
+          maxH={{ base: "450px", xl: "700px" }}
+          // h="400px"
           right="3"
           bg="brand.white"
           pt="6"
@@ -190,6 +193,7 @@ export default function Form({ geometry }: any) {
           px="3"
           borderRadius="md"
           shadow="md"
+          overflow="auto"
         >
           {geometryErrorOpen && (
             <Alert status="error" fontSize="sm" m="0 auto" w="90%">

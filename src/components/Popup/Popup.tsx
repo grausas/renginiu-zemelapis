@@ -10,7 +10,7 @@ interface Popup {
   auth: any;
 }
 
-const shareUrl = window.location.href;
+const shareUrl = "http://localhost:5173/";
 
 export default function Popup({ popupData, auth }: Popup) {
   const toast = useToast();

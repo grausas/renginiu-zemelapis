@@ -274,11 +274,11 @@ export function Map() {
   };
 
   const handleBack = () => {
-    history("/");
     setObjectId(undefined);
     setPopupData([]);
     queryFeatures();
     removeFilterEffect();
+    history("/", { replace: true });
   };
 
   useEffect(() => {
