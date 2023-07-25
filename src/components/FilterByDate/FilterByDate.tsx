@@ -34,6 +34,14 @@ export default function FilterByDate(
         _checked={{
           bg: "brand.dark",
           color: "brand.white",
+          _hover: {
+            bg: "brand.dark",
+            color: "brand.white",
+          },
+        }}
+        _hover={{
+          bg: "gray.50",
+          cursor: "pointer",
         }}
       >
         {input.checked === true ? <ViewIcon mr="1" /> : <ViewOffIcon mr="1" />}

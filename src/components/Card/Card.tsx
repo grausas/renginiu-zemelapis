@@ -33,29 +33,12 @@ export default function Card({ data, handleClick }: CardProps) {
         onClick={() => {
           handleClick(feature);
         }}
+        _hover={{ bg: "gray.50", cursor: "pointer" }}
       >
         {CategoryData.map((category) => {
           if (category.value === feature.attributes.KATEGORIJA) {
             return (
               <Flex justify="center" key={category.id}>
-                {/* <Box
-                  position="absolute"
-                  top="calc(50% - 30%)"
-                  right="0"
-                  bg={category.color}
-                  w="4px"
-                  h="60%"
-                  borderLeftRadius="xl"
-                />
-                <Box
-                  position="absolute"
-                  top="calc(50% - 30%)"
-                  left="0"
-                  bg={category.color}
-                  w="4px"
-                  h="60%"
-                  borderRightRadius="xl"
-                /> */}
                 <Flex
                   align="center"
                   justify="center"
@@ -90,9 +73,9 @@ export default function Card({ data, handleClick }: CardProps) {
         </Text>
         <Flex align="center">
           <Image src={calendar} alt="calendar" w="20px" mr="3" />
-          <Box>
-            <Text fontSize="sm">{startDate}</Text>
-            <Text fontSize="sm">{endDate}</Text>
+          <Box fontSize="sm">
+            <Text>{startDate}</Text>
+            <Text>{endDate}</Text>
           </Box>
         </Flex>
       </Flex>
