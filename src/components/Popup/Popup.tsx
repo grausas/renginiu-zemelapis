@@ -1,7 +1,7 @@
 import { Flex, Text, Image, Tooltip, useToast, Box } from "@chakra-ui/react";
 import { CategoryData } from "../../utils/Category";
 import ImagePreview from "../ImagePreview/ImagePreview";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { ExternalLinkIcon, EditIcon } from "@chakra-ui/icons";
 import calendar from "../../assets/calendar.png";
 import document from "../../assets/document.png";
 
@@ -32,6 +32,17 @@ export default function Popup({ popupData, auth }: Popup) {
       }}
       position="relative"
     >
+      {auth && (
+        <Tooltip label="Redaguoti" fontSize="xs">
+          <EditIcon
+            position="absolute"
+            top="2"
+            left="2"
+            _hover={{ cursor: "pointer" }}
+            onClick={() => console.log("item", item)}
+          />
+        </Tooltip>
+      )}
       <Tooltip label="Dalintis" fontSize="xs">
         <ExternalLinkIcon
           position="absolute"
