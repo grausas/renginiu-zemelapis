@@ -111,12 +111,12 @@ export function Map() {
                   "WEBPAGE",
                 ],
               })
-              .then(({ features }) => {
+              .then(async ({ features }) => {
                 console.log("features", features);
                 setData(features);
                 if (objectId !== undefined) {
                   const result = { graphic: features[0] };
-                  getAttachments([result]);
+                  await getAttachments([result], layer);
                   zoomToFeature([result]);
                   setPopupData([result]);
                 }
@@ -207,7 +207,7 @@ export function Map() {
           console.log("response", response);
           const results = response.results;
 
-          await getAttachments(results);
+          await getAttachments(results, featureLayer);
 
           console.log(results, "features returned");
           zoomToFeature(results);
@@ -217,7 +217,7 @@ export function Map() {
     }
   }, [featureLayer, view]);
 
-  const getAttachments = async (results: any) => {
+  const getAttachments = async (results: any, layer?: __esri.FeatureLayer) => {
     console.log("resultsAttach", results);
     const objectIds = results.map(
       (result: any) => result.graphic.attributes.OBJECTID
@@ -227,21 +227,20 @@ export function Map() {
       attachmentTypes: ["image/jpeg", "image/png"],
     };
     console.log("objectIds", objectIds);
-    await featureLayer
-      ?.queryAttachments(attachmentQuery)
-      .then((attachments) => {
-        console.log("attachments", attachments);
-        if (Object.keys(attachments).length > 0) {
-          results.map((result: any) => {
-            console.log("result", result);
-            const resultId = result.graphic.attributes.OBJECTID;
-            if (attachments[resultId]) {
-              console.log("attachmentsAdd", attachments);
-              result.graphic.set("attachments", attachments[resultId]);
-            }
-          });
-        }
-      });
+    console.log("featureLayer21212121", layer);
+    await layer?.queryAttachments(attachmentQuery).then((attachments) => {
+      console.log("attachments", attachments);
+      if (Object.keys(attachments).length > 0) {
+        results.map((result: any) => {
+          console.log("result", result);
+          const resultId = result.graphic.attributes.OBJECTID;
+          if (attachments[resultId]) {
+            console.log("attachmentsAdd", attachments);
+            result.graphic.set("attachments", attachments[resultId]);
+          }
+        });
+      }
+    });
 
     return results;
   };
@@ -362,7 +361,7 @@ export function Map() {
                 data={data}
                 handleClick={async (e) => {
                   const result = { graphic: e };
-                  await getAttachments([result]);
+                  await getAttachments([result], featureLayer);
                   zoomToFeature([result]);
                   setPopupData([result]);
                 }}

@@ -32,7 +32,7 @@ export default function Popup({ popupData, auth }: Popup) {
       }}
       position="relative"
     >
-      {auth && (
+      {auth.user.token && (
         <Tooltip label="Redaguoti" fontSize="xs">
           <EditIcon
             position="absolute"
