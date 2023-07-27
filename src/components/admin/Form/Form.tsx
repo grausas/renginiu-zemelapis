@@ -93,6 +93,7 @@ export default function Form({ geometry }: any) {
     defaultValues: {
       ILGALAIKIS: 2,
       KASMETINIS: 2,
+      KATEGORIJA: 8,
     },
   });
 
@@ -530,7 +531,7 @@ export default function Form({ geometry }: any) {
                 <FormLabel m="0">Priedai</FormLabel>
                 {/* <FileUpload props={...register("Att")} /> */}
                 <FileUpload
-                  accept={"image/*"}
+                  accept={"image/*, application/pdf"}
                   multiple
                   register={register("Attachments")}
                 >

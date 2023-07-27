@@ -128,7 +128,11 @@ export default function Popup({ popupData, auth }: Popup) {
         <Text fontSize="sm">Gauta: {item.graphic.attributes.PASTABOS}</Text>
       )}
       <Text>{item.graphic.attributes.WEBSITE}</Text>
-      {auth.user.token && <Text>{item.graphic.attributes.PAPILD_INF}</Text>}
+      {auth.user.token && (
+        <Text color="green" fontSize="sm">
+          {item.graphic.attributes.PAPILD_INF}* Papildoma informacija
+        </Text>
+      )}
       <Flex
         flexDirection="row"
         w="100%"

@@ -13,6 +13,8 @@ import { whereParamsChange } from "../helpers/whereParams";
 import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter.js";
 import FeatureEffect from "@arcgis/core/layers/support/FeatureEffect.js";
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
+import Handles from "@arcgis/core/core/Handles.js";
+import * as promiseUtils from "@arcgis/core/core/promiseUtils.js";
 import { MapContext } from "../context/map-context";
 import { addDays } from "../helpers/addDays";
 import NoResults from "../components/NoResults/NoResults";
@@ -30,7 +32,6 @@ import * as intl from "@arcgis/core/intl";
 export function Map() {
   intl.setLocale("lt");
   const history = useNavigate();
-  const [handle, setHandle] = useState();
   const [data, setData] = useState<__esri.Graphic[]>([]);
   const [featureLayer, setFeatureLayer] = useState<
     __esri.FeatureLayer | undefined
@@ -67,104 +68,85 @@ export function Map() {
     setWhereParams(whereParamsChange(dateStart, dateEnd, category));
   }, [dateStart, dateEnd, category]);
 
-  const queryFeatures = async () => {
-    const layer = view?.map.layers.getItemAt(0) as __esri.FeatureLayer;
-    if (!layer) return;
+  const queryFeatures = async (
+    layer: __esri.FeatureLayer,
+    layerView: __esri.FeatureLayerView
+  ) => {
     setFeatureLayer(layer);
 
-    view
-      ?.whenLayerView(layer)
-      .then((layerView) => {
-        setLoading(true);
-        const featureFilter = new FeatureFilter({
-          where: whereParams,
-        });
-        console.log(layer);
-        console.log("view", view.extent);
-        layerView.filter = featureFilter;
-        console.log("objectIDs", typeof objectId);
+    setLoading(true);
+    console.log(layer);
+    const featureFilter = new FeatureFilter({
+      where: whereParams,
+    });
+    layerView.filter = featureFilter;
+    console.log("objectIDs", typeof objectId);
 
-        reactiveUtils.when(
-          () => !layerView.updating,
-          async () => {
-            await layerView
-              .queryFeatures({
-                outSpatialReference: view.spatialReference,
-                where: whereParams,
-                returnGeometry: true,
-                geometry: objectId !== undefined ? undefined : view.extent,
-                objectIds: objectId !== undefined ? [objectId] : [],
-                outFields: [
-                  "APRASYMAS",
-                  "GlobalID",
-                  "ILGALAIKIS",
-                  "KASMETINIS",
-                  "KATEGORIJA",
-                  "OBJECTID",
-                  "ORGANIZATORIUS",
-                  "PAPILD_INF",
-                  "PASTABOS",
-                  "PAVADINIMAS",
-                  "RENGINIO_PRADZIA",
-                  "RENGINIO_PABAIGA",
-                  "Savaites_dienos",
-                  "WEBPAGE",
-                ],
-              })
-              .then(async ({ features }) => {
-                console.log("features", features);
-                setData(features);
-                if (objectId !== undefined) {
-                  const result = { graphic: features[0] };
-                  await getAttachments([result], layer);
-                  zoomToFeature([result]);
-                  setPopupData([result]);
-                }
-                setLoading(false);
-              })
-              .catch((error) => {
-                setLoading(false);
-                console.error(error);
-              });
-          },
-          { once: true }
-        );
+    await reactiveUtils.whenOnce(() => !view?.updating);
+    await layerView
+      .queryFeatures({
+        outSpatialReference: view?.spatialReference,
+        where: whereParams,
+        returnGeometry: true,
+        geometry: objectId !== undefined ? undefined : view?.extent,
+        objectIds: objectId !== undefined ? [objectId] : [],
+        outFields: [
+          "APRASYMAS",
+          "GlobalID",
+          "ILGALAIKIS",
+          "KASMETINIS",
+          "KATEGORIJA",
+          "OBJECTID",
+          "ORGANIZATORIUS",
+          "PAPILD_INF",
+          "PASTABOS",
+          "PAVADINIMAS",
+          "RENGINIO_PRADZIA",
+          "RENGINIO_PABAIGA",
+          "Savaites_dienos",
+          "WEBPAGE",
+        ],
+      })
+      .then(async ({ features }) => {
+        console.log("features", features);
+        setData(features);
+        if (objectId !== undefined) {
+          const result = { graphic: features[0] };
+          await getAttachments([result], layer);
+          zoomToFeature([result]);
+          setPopupData([result]);
+        }
+        setLoading(false);
       })
       .catch((error) => {
+        setLoading(false);
         console.error(error);
       });
   };
 
-  // const handle = reactiveUtils.watch(
-  //   () => [view?.stationary, view?.extent],
-  //   (stationary) => {
-  //     if (stationary) {
-  //       console.log(`Extent change xmin = `);
-  //       queryFeatures();
-  //     }
-  //   }
-  // );
-
   // query features by where params
   useEffect(() => {
-    if (view) {
-      queryFeatures();
-      // const handleByExtent = reactiveUtils.watch(
-      //   () => view?.stationary,
-      //   (stationary) => {
-      //     if (stationary) {
-      //       console.log(`Extent change xmin = `);
-      //       queryFeatures();
-      //     }
-      //   }
-      // );
-      // setHandle(handleByExtent);
-    }
+    const handles = new Handles();
+    if (!view) return;
+    const layer = view?.map.layers.getItemAt(0) as __esri.FeatureLayer;
+
+    view?.whenLayerView(layer).then(async (layerView) => {
+      // initial count
+      queryFeatures(layer, layerView);
+      // subsequent map interaction
+      handles.add(
+        reactiveUtils.watch(
+          () => [view.stationary, view.extent],
+          ([stationary]) =>
+            stationary && promiseUtils.debounce(queryFeatures(layer, layerView))
+        )
+      );
+    });
+    return () => handles.remove();
   }, [view, whereParams]);
 
   // filter events by current day, coming week or month
   const handleChangeDate = (value: string) => {
-    handle?.remove();
     history("/");
     setObjectId(undefined);
     setDateStart(todayStart);
@@ -224,7 +206,7 @@ export function Map() {
     );
     const attachmentQuery = {
       objectIds: objectIds,
-      attachmentTypes: ["image/jpeg", "image/png"],
+      // attachmentTypes: ["image/*", "application/pdf"],
     };
     console.log("objectIds", objectIds);
     console.log("featureLayer21212121", layer);
@@ -276,7 +258,6 @@ export function Map() {
   const handleBack = () => {
     setObjectId(undefined);
     setPopupData([]);
-    queryFeatures();
     removeFilterEffect();
     history("/", { replace: true });
   };
@@ -304,7 +285,7 @@ export function Map() {
           <Flex>
             Rodomi{" "}
             <Text mx="1" fontWeight="500">
-              {data?.length}
+              {!loading ? data?.length : "..."}
             </Text>
             renginiai
           </Flex>

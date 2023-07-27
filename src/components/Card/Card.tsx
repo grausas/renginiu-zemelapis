@@ -13,10 +13,22 @@ export default function Card({ data, handleClick }: CardProps) {
   return sortedData.map((feature: __esri.Graphic) => {
     const startDate = new Date(
       feature.attributes.RENGINIO_PRADZIA
-    ).toLocaleString("lt-LT");
+    ).toLocaleString("lt-LT", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
     const endDate = new Date(
       feature.attributes.RENGINIO_PABAIGA
-    ).toLocaleString("lt-LT");
+    ).toLocaleString("lt-LT", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
     return (
       <Flex
