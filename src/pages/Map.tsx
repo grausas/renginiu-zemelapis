@@ -334,8 +334,8 @@ export function Map() {
               <BackButton handleClick={handleBack} />
               <Popup popupData={popupData} auth={auth} />
             </>
-          ) : data.length > 0 ? (
-            !loading ? (
+          ) : !loading ? (
+            data.length > 0 ? (
               <Card
                 data={data}
                 handleClick={async (e) => {
@@ -346,10 +346,10 @@ export function Map() {
                 }}
               />
             ) : (
-              <Spinner />
+              <NoResults />
             )
           ) : (
-            <NoResults />
+            <Spinner />
           )}
         </Flex>
       </Sidebar>

@@ -4,6 +4,7 @@ import ImagePreview from "../ImagePreview/ImagePreview";
 import { ExternalLinkIcon, EditIcon } from "@chakra-ui/icons";
 import calendar from "../../assets/calendar.png";
 import document from "../../assets/document.png";
+import share from "../../assets/share.png";
 
 interface Popup {
   popupData: __esri.ViewHit[];
@@ -36,18 +37,21 @@ export default function Popup({ popupData, auth }: Popup) {
         <Tooltip label="Redaguoti" fontSize="xs">
           <EditIcon
             position="absolute"
-            top="2"
-            left="2"
+            boxSize="5"
+            top="1"
+            left="1"
             _hover={{ cursor: "pointer" }}
             onClick={() => console.log("item", item)}
           />
         </Tooltip>
       )}
       <Tooltip label="Dalintis" fontSize="xs">
-        <ExternalLinkIcon
+        <Image
+          src={share}
+          boxSize="5"
           position="absolute"
-          top="2"
-          right="2"
+          top="1"
+          right="1"
           _hover={{ cursor: "pointer" }}
           onClick={() => {
             navigator.clipboard.writeText(
@@ -97,27 +101,41 @@ export default function Popup({ popupData, auth }: Popup) {
         }
       })}
 
-      <Text fontWeight="500" my="2" textAlign="center">
+      <Text fontWeight="500" py="2" px="2" textAlign="center">
         {console.log("item", item)}
         {item.graphic.attributes.PAVADINIMAS}
       </Text>
 
-      <Flex align="center" mb="2" fontSize="sm">
+      <Flex align="center" mb="2">
         <Image src={calendar} alt="calendar" boxSize="5" mr="3" />
-        <Box>
-          <Text>
+        <Box fontSize="sm" color="gray.600" fontWeight="500">
+          <Text mr="2">
             {new Date(item.graphic.attributes.RENGINIO_PRADZIA).toLocaleString(
-              "lt-LT"
+              "lt-LT",
+              {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              }
             )}
           </Text>
           <Text>
             {new Date(item.graphic.attributes.RENGINIO_PABAIGA).toLocaleString(
-              "lt-LT"
+              "lt-LT",
+              {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              }
             )}{" "}
           </Text>
         </Box>
       </Flex>
-      <Flex align="center" mb="1" fontSize="sm">
+      <Flex align="center" mb="2" fontSize="sm">
         <Image src={document} alt="document" mr="3" boxSize="5" />
         <Text lineHeight="1.3">{item.graphic.attributes.ORGANIZATORIUS}</Text>
       </Flex>
@@ -128,9 +146,9 @@ export default function Popup({ popupData, auth }: Popup) {
         <Text fontSize="sm">Gauta: {item.graphic.attributes.PASTABOS}</Text>
       )}
       <Text>{item.graphic.attributes.WEBSITE}</Text>
-      {auth.user.token && (
+      {auth.user.token && item.graphic.attributes.PAPILD_INF && (
         <Text color="green" fontSize="sm">
-          {item.graphic.attributes.PAPILD_INF}* Papildoma informacija
+          * {item.graphic.attributes.PAPILD_INF}
         </Text>
       )}
       <Flex
