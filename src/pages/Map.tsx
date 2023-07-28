@@ -329,15 +329,13 @@ export function Map() {
             },
           }}
         >
-          {loading ? (
-            <Spinner />
+          {popupData.length > 0 ? (
+            <>
+              <BackButton handleClick={handleBack} />
+              <Popup popupData={popupData} auth={auth} />
+            </>
           ) : data.length > 0 ? (
-            popupData.length > 0 ? (
-              <>
-                <BackButton handleClick={handleBack} />
-                <Popup popupData={popupData} auth={auth} />
-              </>
-            ) : (
+            !loading ? (
               <Card
                 data={data}
                 handleClick={async (e) => {
@@ -347,6 +345,8 @@ export function Map() {
                   setPopupData([result]);
                 }}
               />
+            ) : (
+              <Spinner />
             )
           ) : (
             <NoResults />
