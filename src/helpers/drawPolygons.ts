@@ -43,7 +43,6 @@ export const drawPolygon = async (
     // the graphic create operation is completed.
     if (state === "complete") {
       if (arr) {
-        console.log("arr", arr);
         const geometry: any = graphic.geometry;
         const rings = geometry.rings[0];
         arr.addRing(rings);
@@ -74,5 +73,4 @@ export const drawPolygon = async (
     const newArray = removeNestedArray(arr.rings, rings);
     arr.rings = newArray;
   });
-  console.log("arr", arr);
 };

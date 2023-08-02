@@ -22,15 +22,6 @@ export const AddFeature = async (
   att: BlobPart[] | undefined,
   geometry: __esri.Geometry
 ) => {
-  console.log("feature", feature);
-  console.log("att", att);
-  console.log(
-    "feature.RENGINIO_PRADZIA,",
-    new Date(feature.RENGINIO_PRADZIA).getTime()
-  );
-  console.log("savaites_dienos", feature.Savaites_dienos);
-  console.log("getDay", new Date(feature.RENGINIO_PRADZIA).getDay());
-
   const addFeature: Graphic[] = [];
 
   if (feature.ILGALAIKIS === 1) {
@@ -67,7 +58,6 @@ export const AddFeature = async (
       feature.RENGINIO_PABAIGA,
       feature.Savaites_dienos
     );
-    console.log("dates", dates);
 
     dates.map((date) => {
       const newFeature = { ...feature };
@@ -106,16 +96,13 @@ export const AddFeature = async (
     });
   }
 
-  console.log("addFeature", addFeature);
-
   const deleteFeatures = [{ objectId: [7596, 7594, 7590] }];
 
   const edits = {
-    // addFeatures: addFeature,
+    addFeatures: addFeature,
     deleteFeatures: deleteFeatures,
   };
 
-  console.log("edits", edits);
   const attachments: __esri.EditsProperties[] = [];
   const attachFeatures = (response: __esri.EditsResult) => {
     if (response) {
@@ -137,8 +124,6 @@ export const AddFeature = async (
         addAttachments: attachments,
       };
 
-      console.log("editsAtt", editsAtt);
-
       featureLayerPrivate()
         .applyEdits(editsAtt, { globalIdUsed: true })
         .then((response) => {
@@ -149,8 +134,6 @@ export const AddFeature = async (
         .catch((error) => {
           console.log("errorAtt", error);
         });
-
-      console.log("attachments", attachments);
     }
   };
 
@@ -162,7 +145,6 @@ export const AddFeature = async (
       if (response) {
         if (response) {
           attachFeatures(response);
-          console.log("response", response);
           results = "success";
         }
       }

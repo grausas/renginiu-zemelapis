@@ -42,8 +42,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const login = async (users: Users) => {
-    console.log("hello");
-    console.log("users", users);
     const esriId = await importIdentifyManager;
     esriId.tokenValidity = 720;
 
@@ -51,7 +49,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       response.server = serverInfo.server;
       response.userId = users.username;
       esriId.registerToken(response);
-      console.log("response", response);
       const token = response.token;
       const name = response.userId;
       const expires = response.expires;

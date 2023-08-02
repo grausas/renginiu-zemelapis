@@ -6,11 +6,9 @@ import React, {
   useMemo,
 } from "react";
 import { useNavigate } from "react-router-dom";
-// import ArcGISMap from "../components/Map/Map";
-const ArcGISMap = React.lazy(() => import("../components/Map/Map"));
+import ArcGISMap from "../components/Map/Map";
 import { Flex, Stack, Text, useRadioGroup } from "@chakra-ui/react";
-// import Sidebar from "../components/Sidebar/Sidebar";
-const Sidebar = React.lazy(() => import("../components/Sidebar/Sidebar"));
+import Sidebar from "../components/Sidebar/Sidebar";
 import Search from "../components/Search/Search";
 import FilterByDate from "../components/FilterByDate/FilterByDate";
 import Card from "../components/Card/Card";
@@ -80,12 +78,10 @@ export function Map() {
     layerView: __esri.FeatureLayerView
   ) => {
     setLoading(true);
-    console.log(layer);
     const featureFilter = new FeatureFilter({
       where: whereParams,
     });
     layerView.filter = featureFilter;
-    console.log("objectIDs", typeof objectId);
     await reactiveUtils.whenOnce(() => !layerView?.updating);
     const results = await layerView.queryFeatures({
       // outSpatialReference: view?.spatialReference,
@@ -308,6 +304,13 @@ export function Map() {
     return filterData;
   }, [searchTerm, data]);
 
+  const handleCard = async (e: __esri.Graphic) => {
+    const result = { graphic: e };
+    await getAttachments([result], featureLayer);
+    zoomToFeature([result]);
+    setPopupData([result]);
+  };
+
   return (
     <Flex w="100" h="100%" flexDirection={{ base: "column", md: "row" }}>
       <Sidebar>
@@ -318,7 +321,11 @@ export function Map() {
             }
             value={searchTerm}
           />
-          <Filter handleFilter={handleFilter} />
+          <Filter
+            handleFilter={handleFilter}
+            dateEnd={dateEnd}
+            dateStart={dateStart}
+          />
         </Stack>
         <Flex px="3" mb="2" align="center" justify="space-between">
           <Flex>
@@ -375,15 +382,7 @@ export function Map() {
             </>
           ) : !loading ? (
             filteredData.length > 0 ? (
-              <Card
-                data={filteredData}
-                handleClick={async (e) => {
-                  const result = { graphic: e };
-                  await getAttachments([result], featureLayer);
-                  zoomToFeature([result]);
-                  setPopupData([result]);
-                }}
-              />
+              <Card data={filteredData} handleClick={handleCard} />
             ) : (
               <NoResults />
             )

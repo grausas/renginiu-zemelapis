@@ -17,7 +17,6 @@ const shareUrl = "http://localhost:5173/";
 export default function Popup({ popupData, auth }: Popup) {
   const toast = useToast();
 
-  console.log("popupData", popupData);
   return popupData?.map((item: any) => {
     const startDate = new Date(
       item.graphic.attributes.RENGINIO_PRADZIA
@@ -123,7 +122,6 @@ export default function Popup({ popupData, auth }: Popup) {
         })}
 
         <Text fontWeight="500" py="2" px="2" textAlign="center">
-          {console.log("item", item)}
           {item.graphic.attributes.PAVADINIMAS}
         </Text>
 
@@ -169,14 +167,11 @@ export default function Popup({ popupData, auth }: Popup) {
           {item.graphic.attachments &&
             item.graphic.attachments.map(
               (att: __esri.AttachmentInfo, index: number) => (
-                <>
-                  <ImagePreview
-                    key={index}
-                    url={att.url}
-                    type={att.contentType}
-                  />
-                  {console.log("att", att)}
-                </>
+                <ImagePreview
+                  key={index}
+                  url={att.url}
+                  type={att.contentType}
+                />
               )
             )}
         </Flex>

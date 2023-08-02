@@ -43,8 +43,6 @@ export function init(container: HTMLDivElement) {
     id: "orto2022",
   });
 
-  console.log("orto2022", orto2022);
-
   const map = new ArcGISMap({
     basemap: baseMap,
     layers: [featureLayerPublic()],

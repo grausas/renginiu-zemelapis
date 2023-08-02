@@ -6,8 +6,6 @@ const ArcGISMap = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const { loadMap } = useContext(MapContext);
 
-  console.log("Map relaod");
-
   useLayoutEffect(() => {
     if (mapRef.current && loadMap) {
       loadMap(mapRef.current);

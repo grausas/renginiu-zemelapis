@@ -6,7 +6,6 @@ export const getFeatureOnClick = (view: __esri.MapView) => {
       include: view.map.layers.getItemAt(0) as __esri.FeatureLayer,
     });
     if (response.results.length) {
-      console.log(response.results, "features returned");
       data.push(response.results);
     }
   });
