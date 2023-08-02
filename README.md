@@ -30,7 +30,7 @@ Norėdami paleisti projektą vietiniame kompiuteryje, sekite šiuos paprastus ž
 1. Klonuokite repozitoriją
 
 ```sh
-git clone https://github.com/grausas/inzineriniu-tinklu-korteles.git
+git clone https://github.com/mevplanas/renginiu-zemelapis
 ```
 
 2. Įdiekite NPM paketus
