@@ -4,7 +4,6 @@ import React, {
   useState,
   useCallback,
   useMemo,
-  Suspense,
 } from "react";
 import { useNavigate } from "react-router-dom";
 // import ArcGISMap from "../components/Map/Map";
