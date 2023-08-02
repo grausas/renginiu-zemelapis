@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState, useCallback } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import ArcGISMap from "../components/Map/Map";
 import { Flex, Stack, Text, useRadioGroup } from "@chakra-ui/react";
@@ -33,6 +39,7 @@ export function Map() {
   intl.setLocale("lt");
   const history = useNavigate();
   const [data, setData] = useState<__esri.Graphic[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [featureLayer, setFeatureLayer] = useState<
     __esri.FeatureLayer | undefined
   >();
@@ -46,8 +53,6 @@ export function Map() {
   const [objectId, setObjectId] = useState<number>();
   const { view } = useContext(MapContext);
   const auth = useContext(AuthContext);
-
-  console.log("dateStart", dateStart);
 
   const removeFilterEffect = () => {
     const effect = new FeatureEffect({
@@ -72,8 +77,6 @@ export function Map() {
     layer: __esri.FeatureLayer,
     layerView: __esri.FeatureLayerView
   ) => {
-    setFeatureLayer(layer);
-
     setLoading(true);
     console.log(layer);
     const featureFilter = new FeatureFilter({
@@ -81,47 +84,56 @@ export function Map() {
     });
     layerView.filter = featureFilter;
     console.log("objectIDs", typeof objectId);
+    await reactiveUtils.whenOnce(() => !layerView?.updating);
+    const results = await layerView.queryFeatures({
+      // outSpatialReference: view?.spatialReference,
+      where: whereParams,
+      returnGeometry: true,
+      geometry: objectId !== undefined ? undefined : view?.extent,
+      objectIds: objectId !== undefined ? [objectId] : [],
+      outFields: [
+        "APRASYMAS",
+        "GlobalID",
+        "ILGALAIKIS",
+        "KASMETINIS",
+        "KATEGORIJA",
+        "OBJECTID",
+        "ORGANIZATORIUS",
+        "PAPILD_INF",
+        "PASTABOS",
+        "PAVADINIMAS",
+        "RENGINIO_PRADZIA",
+        "RENGINIO_PABAIGA",
+        "Savaites_dienos",
+        "WEBPAGE",
+      ],
+    });
+    setData(results.features);
+    if (objectId !== undefined) {
+      const result = { graphic: results.features[0] };
+      await getAttachments([result], layer);
+      // const parcelExtent = result.graphic.geometry.extent.clone();
+      // const query = layerView.createQuery();
+      // layerView.queryExtent(query).then(function (results) {
+      //   view?.goTo(results.extent);
+      // });
 
-    await reactiveUtils.whenOnce(() => !view?.updating);
-    await layerView
-      .queryFeatures({
-        outSpatialReference: view?.spatialReference,
-        where: whereParams,
-        returnGeometry: true,
-        geometry: objectId !== undefined ? undefined : view?.extent,
-        objectIds: objectId !== undefined ? [objectId] : [],
-        outFields: [
-          "APRASYMAS",
-          "GlobalID",
-          "ILGALAIKIS",
-          "KASMETINIS",
-          "KATEGORIJA",
-          "OBJECTID",
-          "ORGANIZATORIUS",
-          "PAPILD_INF",
-          "PASTABOS",
-          "PAVADINIMAS",
-          "RENGINIO_PRADZIA",
-          "RENGINIO_PABAIGA",
-          "Savaites_dienos",
-          "WEBPAGE",
-        ],
-      })
-      .then(async ({ features }) => {
-        console.log("features", features);
-        setData(features);
-        if (objectId !== undefined) {
-          const result = { graphic: features[0] };
-          await getAttachments([result], layer);
-          zoomToFeature([result]);
-          setPopupData([result]);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.error(error);
-      });
+      // reactiveUtils
+      //   .once(() => !layerView.updating)
+      //   .then(() => {
+      // view?.goTo(
+      //   {
+      //     target: parcelExtent,
+      //     zoom: 17,
+      //   },
+      //   { duration: 400 }
+      // );
+      //   });
+
+      // zoomToFeature([result], layer);
+      setPopupData([result]);
+    }
+    setLoading(false);
   };
 
   // query features by where params
@@ -129,21 +141,28 @@ export function Map() {
     const handles = new Handles();
     if (!view) return;
     const layer = view?.map.layers.getItemAt(0) as __esri.FeatureLayer;
+    setFeatureLayer(layer);
 
     view?.whenLayerView(layer).then(async (layerView) => {
       // initial count
       queryFeatures(layer, layerView);
+
       // subsequent map interaction
       handles.add(
         reactiveUtils.watch(
           () => [view.stationary, view.extent],
-          ([stationary]) =>
-            stationary && promiseUtils.debounce(queryFeatures(layer, layerView))
+          ([stationary]) => {
+            console.log("stationary", stationary);
+            if (stationary) {
+              promiseUtils.debounce(queryFeatures(layer, layerView));
+            }
+          }
         )
       );
     });
     return () => handles.remove();
-  }, [view, whereParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [whereParams, view]);
 
   // filter events by current day, coming week or month
   const handleChangeDate = (value: string) => {
@@ -197,6 +216,7 @@ export function Map() {
         }
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [featureLayer, view]);
 
   const getAttachments = async (results: any, layer?: __esri.FeatureLayer) => {
@@ -206,7 +226,6 @@ export function Map() {
     );
     const attachmentQuery = {
       objectIds: objectIds,
-      // attachmentTypes: ["image/*", "application/pdf"],
     };
     console.log("objectIds", objectIds);
     console.log("featureLayer21212121", layer);
@@ -227,17 +246,17 @@ export function Map() {
     return results;
   };
 
-  const zoomToFeature = (results: any) => {
+  const zoomToFeature = async (results: any) => {
+    console.log("VIEWIIWIWIEIEUIWBIEGYB");
+
     view?.goTo(
       {
-        center: [
-          results[0].graphic.geometry.centroid.longitude,
-          results[0].graphic.geometry.centroid.latitude,
-        ],
+        target: results[0].graphic,
         zoom: 17,
       },
       { duration: 400 }
     );
+
     const filterObjectids = results.map(
       (result: any) => result.graphic.attributes.OBJECTID
     );
@@ -265,27 +284,45 @@ export function Map() {
   useEffect(() => {
     const queryParameters = new URLSearchParams(window.location.search);
     const objectID = queryParameters.get("objectid");
+    const startDate = Number(queryParameters.get("pradzia"));
+    const endDate = Number(queryParameters.get("pabaiga"));
     if (objectID) {
       setObjectId(Number(objectID));
+      setDateStart(startDate);
+      setDateEnd(endDate);
     }
     console.log("objectID", objectID);
     console.log("queryParameters", queryParameters);
   }, []);
 
-  console.log("popupData", popupData);
+  const filteredData = useMemo(() => {
+    if (!searchTerm) return data;
+
+    const filterData = data.filter((item) => {
+      return item.attributes.PAVADINIMAS.toLowerCase().includes(
+        searchTerm.toLowerCase()
+      );
+    });
+    return filterData;
+  }, [searchTerm, data]);
 
   return (
     <Flex w="100" h="100%" flexDirection={{ base: "column", md: "row" }}>
       <Sidebar>
         <Stack direction={"row"} spacing="1" px="3" mb="2">
-          <Search />
+          <Search
+            handleSearch={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearchTerm(e.target.value)
+            }
+            value={searchTerm}
+          />
           <Filter handleFilter={handleFilter} />
         </Stack>
         <Flex px="3" mb="2" align="center" justify="space-between">
           <Flex>
             Rodomi{" "}
             <Text mx="1" fontWeight="500">
-              {!loading ? data?.length : "..."}
+              {!loading ? filteredData.length : "..."}
             </Text>
             renginiai
           </Flex>
@@ -335,9 +372,9 @@ export function Map() {
               <Popup popupData={popupData} auth={auth} />
             </>
           ) : !loading ? (
-            data.length > 0 ? (
+            filteredData.length > 0 ? (
               <Card
-                data={data}
+                data={filteredData}
                 handleClick={async (e) => {
                   const result = { graphic: e };
                   await getAttachments([result], featureLayer);
@@ -354,7 +391,9 @@ export function Map() {
         </Flex>
       </Sidebar>
       <ArcGISMap />
-      {auth.user.token && <Form geometry={geometry} />}
+      {auth.user.token && (
+        <Form geometry={geometry} setGeometry={setGeometry} />
+      )}
     </Flex>
   );
 }

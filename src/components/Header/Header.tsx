@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Text, Flex, Image, Button, Box } from "@chakra-ui/react";
+import { Text, Flex, Image, Button } from "@chakra-ui/react";
 import logo from "../../assets/vilnius_logo.png";
 import { AuthContext } from "../../context/auth";
 

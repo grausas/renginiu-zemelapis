@@ -17,7 +17,7 @@ interface Feature {
   PAPILD_INF: string;
 }
 
-export const AddFeature = (
+export const AddFeature = async (
   feature: Feature,
   att: BlobPart[] | undefined,
   geometry: __esri.Geometry
@@ -106,58 +106,9 @@ export const AddFeature = (
     });
   }
 
-  // const dates = getDates(
-  //   feature.RENGINIO_PRADZIA,
-  //   feature.RENGINIO_PABAIGA,
-  //   feature.Savaites_dienos
-  // );
-  // console.log("dates", dates);
-
-  // const addFeature: Graphic[] = dates.flatMap((date) => {
-  //   const newFeature = { ...feature };
-  //   newFeature.RENGINIO_PRADZIA = date.startDate;
-  //   newFeature.RENGINIO_PABAIGA = date.endDate;
-
-  //   if (newFeature.KASMETINIS === 1) {
-  //     const currentYear = new Date().getFullYear();
-  //     const nextYears = Array.from({ length: 5 }, (_, i) => currentYear + i);
-
-  //     const recurringEvents = nextYears
-  //       .filter((year) => year !== currentYear)
-  //       .map((year) => {
-  //         const recurringStartDate = new Date(date.startDate);
-  //         recurringStartDate.setFullYear(year);
-
-  //         const recurringEndDate = new Date(date.endDate);
-  //         recurringEndDate.setFullYear(year);
-
-  //         return new Graphic({
-  //           attributes: {
-  //             ...newFeature,
-  //             RENGINIO_PRADZIA: recurringStartDate.toISOString(),
-  //             RENGINIO_PABAIGA: recurringEndDate.toISOString(),
-  //           },
-  //           geometry: geometry,
-  //         });
-  //       });
-
-  //     return [
-  //       new Graphic({
-  //         attributes: newFeature,
-  //         geometry: geometry,
-  //       }),
-  //       ...recurringEvents,
-  //     ];
-  //   }
-
-  //   return new Graphic({
-  //     attributes: newFeature,
-  //     geometry: geometry,
-  //   });
-  // });
   console.log("addFeature", addFeature);
 
-  const deleteFeatures = [{ objectId: [7448, 7449] }];
+  const deleteFeatures = [{ objectId: [7596, 7594, 7590] }];
 
   const edits = {
     // addFeatures: addFeature,
@@ -165,27 +116,28 @@ export const AddFeature = (
   };
 
   console.log("edits", edits);
-
+  const attachments: __esri.EditsProperties[] = [];
   const attachFeatures = (response: __esri.EditsResult) => {
     if (response) {
-      const blob = new Blob(att, {
-        type: "image/jpeg",
-      });
-
-      if (blob.size === 0) return;
-
-      const attachments = {
-        feature: response.addFeatureResults[0],
-        attachment: {
-          globalId: response.addFeatureResults[0].globalId,
-          name: feature.PAVADINIMAS,
-          data: blob,
-        },
-      };
-
+      att &&
+        [...att].map(async (it, index) => {
+          attachments.push({
+            feature: response.addFeatureResults[0],
+            attachment: {
+              globalId:
+                response.addFeatureResults[0].globalId.slice(0, -2) +
+                index +
+                index,
+              name: feature.PAVADINIMAS,
+              data: it,
+            },
+          });
+        });
       const editsAtt: __esri.EditsProperties = {
-        addAttachments: [attachments],
+        addAttachments: attachments,
       };
+
+      console.log("editsAtt", editsAtt);
 
       featureLayerPrivate()
         .applyEdits(editsAtt, { globalIdUsed: true })
@@ -197,22 +149,28 @@ export const AddFeature = (
         .catch((error) => {
           console.log("errorAtt", error);
         });
+
+      console.log("attachments", attachments);
     }
   };
 
-  featureLayerPrivate()
+  let results;
+
+  await featureLayerPrivate()
     .applyEdits(edits)
     .then((response) => {
       if (response) {
         if (response) {
-          console.log("responseAddFeature", response);
           attachFeatures(response);
+          console.log("response", response);
+          results = "success";
         }
       }
     })
     .catch((error) => {
       if (error) {
-        console.log("error", error);
+        results = "error  ";
       }
     });
+  return results;
 };

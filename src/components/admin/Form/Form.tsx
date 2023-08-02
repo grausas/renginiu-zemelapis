@@ -18,6 +18,7 @@ import {
   Tooltip,
   Text,
   Alert,
+  useToast,
 } from "@chakra-ui/react";
 import { useForm, Controller } from "react-hook-form";
 import { AddFeature } from "../../../helpers/addFeature";
@@ -30,6 +31,7 @@ import DatePicker from "../DatePicker/DatePicker";
 import FileUpload from "../FileUpload/FileUpload";
 import { AttachmentIcon, WarningTwoIcon } from "@chakra-ui/icons";
 import InfoModal from "../InfoModal/InfoModal";
+import { gLayer } from "../../../helpers/drawPolygons";
 
 type FormValues = {
   PAVADINIMAS: string;
@@ -47,8 +49,20 @@ type FormValues = {
   Attachments?: BlobPart[];
 };
 
-export default function Form({ geometry }: any) {
+type ToastState = {
+  text: string;
+  status: "info" | "success" | "error";
+};
+
+type Form = {
+  geometry: __esri.Geometry[];
+  setGeometry: React.Dispatch<React.SetStateAction<__esri.Geometry[]>>;
+};
+
+export default function Form({ geometry, setGeometry }: Form) {
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [loading, setLoading] = useState(false);
   const {
     isOpen: geometryErrorOpen,
     onClose: geometryErrorClose,
@@ -64,6 +78,7 @@ export default function Form({ geometry }: any) {
     onOpen: onOpenSuggestions2,
     onClose: onCloseSuggestions2,
   } = useDisclosure();
+
   const [suggestions, setSuggestions] = useState<__esri.Graphic[]>([]);
   const [checkedAll, setCheckedAll] = useState(false);
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
@@ -73,6 +88,10 @@ export default function Form({ geometry }: any) {
   const [checkedEveryYear, setCheckedEveryYear] = useState(false);
   const [endDate, setEndDate] = useState(new Date());
   const [startDate, setStartDate] = useState(new Date());
+  const [successText, setSuccessText] = useState<ToastState>({
+    text: "",
+    status: "info",
+  });
   const ref = useRef(null);
   useOutsideClick({
     ref,
@@ -149,10 +168,25 @@ export default function Form({ geometry }: any) {
     );
   };
 
-  const onSubmit = handleSubmit((data) => {
-    if (geometry.length === 0 || geometry.rings.length === 0) {
+  useEffect(() => {
+    if (successText.text !== "") {
+      const { text, status } = successText;
+
+      toast({
+        description: text,
+        status: status,
+        duration: 3000,
+        position: "top",
+        isClosable: true,
+      });
+    }
+  }, [successText, toast]);
+
+  const onSubmit = handleSubmit(async (data) => {
+    if (geometry) {
       geometryErrorOnOpen();
     } else {
+      setLoading(true);
       geometryErrorClose();
       const dataToSubmit = data.Savaites_dienos.toString();
       data.Savaites_dienos = dataToSubmit;
@@ -160,11 +194,23 @@ export default function Form({ geometry }: any) {
       data.RENGINIO_PABAIGA = endDate.toISOString();
       const attachments = data.Attachments;
       delete data.Attachments;
-      AddFeature(data, attachments, geometry);
+      const results = await AddFeature(data, attachments, geometry);
+      if (results === "success") {
+        setLoading(false);
+        setSuccessText({
+          text: "Renginys sėkmingai sukurtas",
+          status: "success",
+        });
+        gLayer.removeAll();
+        setGeometry([]);
+      } else {
+        setLoading(false);
+        setSuccessText({ text: "Įvyko klaida", status: "error" });
+      }
     }
   });
 
-  const files = watch("Attachments");
+  const files: any = watch("Attachments");
 
   return (
     <>
@@ -217,8 +263,6 @@ export default function Form({ geometry }: any) {
             onClick={onClose}
           />
           <>
-            {/* <div>Pradžios data: {startDate ? startDate.toISOString() : ""}</div>
-            <div>Pabaigos data: {endDate ? endDate.toISOString() : ""}</div> */}
             <Flex alignItems="flex-start" mb="2" gap="2">
               <Box zIndex="22">
                 <FormLabel m="0">Pradžios data</FormLabel>
@@ -541,12 +585,12 @@ export default function Form({ geometry }: any) {
                     w="100%"
                     fontSize="sm"
                   >
-                    Pridėti nuotraukas
+                    Pridėti priedus
                   </Button>
                 </FileUpload>
                 <Flex>
                   {files &&
-                    [...files].map((file: any, index) => (
+                    [...files].map((file, index) => (
                       <Text mr="1" fontSize="xs" key={index}>
                         {file.name}
                       </Text>
@@ -559,7 +603,12 @@ export default function Form({ geometry }: any) {
             <Button mt="2" onClick={onClose} variant="outline">
               Atšaukti
             </Button>
-            <Button mt="2" onClick={onSubmit}>
+            <Button
+              mt="2"
+              onClick={onSubmit}
+              isLoading={loading}
+              loadingText="Laukite"
+            >
               Pridėti
             </Button>
           </Flex>

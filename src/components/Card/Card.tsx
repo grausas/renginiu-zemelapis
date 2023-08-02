@@ -2,6 +2,7 @@ import { Text, Flex, Image, Box } from "@chakra-ui/react";
 import { sortByDate } from "../../helpers/sortBydate";
 import { CategoryData } from "../../utils/Category";
 import calendar from "../../assets/calendar.png";
+import { formatStartDate, formatEndDate } from "../../helpers/formatDate";
 
 interface CardProps {
   data: __esri.Graphic[];
@@ -86,8 +87,16 @@ export default function Card({ data, handleClick }: CardProps) {
         <Flex align="center">
           <Image src={calendar} alt="calendar" w="20px" mr="3" />
           <Box fontSize="sm">
-            <Text>{startDate}</Text>
-            <Text>{endDate}</Text>
+            <Text>
+              {feature.attributes.ILGALAIKIS === 1
+                ? formatStartDate(startDate, endDate)
+                : startDate}
+            </Text>
+            <Text>
+              {feature.attributes.ILGALAIKIS === 1
+                ? formatEndDate(startDate, endDate)
+                : endDate}
+            </Text>
           </Box>
         </Flex>
       </Flex>

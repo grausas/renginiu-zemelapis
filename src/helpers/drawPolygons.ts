@@ -1,19 +1,19 @@
+import graphicLayer from "@arcgis/core/layers/GraphicsLayer.js";
+export const gLayer = new graphicLayer({
+  title: "graphics",
+});
+
 export const drawPolygon = async (
   view: __esri.MapView | undefined,
-  setGeometry,
+  setGeometry: any,
   featureLayer: __esri.FeatureLayer
 ) => {
   const sketch = await (await import("@arcgis/core/widgets/Sketch.js")).default;
-  const graphicLayer = await (
-    await import("@arcgis/core/layers/GraphicsLayer.js")
-  ).default;
-  const layer = new graphicLayer({
-    title: "graphics",
-  });
-  view?.map.layers.add(layer);
+
+  view?.map.layers.add(gLayer);
   const home = new sketch({
     view: view,
-    layer: layer,
+    layer: gLayer,
     visibleElements: {
       createTools: {
         circle: false,
@@ -43,8 +43,10 @@ export const drawPolygon = async (
     // the graphic create operation is completed.
     if (state === "complete") {
       if (arr) {
-        console.log("heheh");
-        arr.addRing(graphic.geometry.rings[0]);
+        console.log("arr", arr);
+        const geometry: any = graphic.geometry;
+        const rings = geometry.rings[0];
+        arr.addRing(rings);
       } else {
         arr = graphic.geometry;
       }
@@ -60,25 +62,17 @@ export const drawPolygon = async (
     }
   });
   home.on("delete", function (event) {
-    function areArraysEqual(arr1, arr2) {
+    function areArraysEqual(arr1: any, arr2: any) {
       return JSON.stringify(arr1) === JSON.stringify(arr2);
     }
 
-    function removeNestedArray(arr, nestedArr) {
-      return arr.filter((item) => !areArraysEqual(item, nestedArr));
+    function removeNestedArray(arr: any, nestedArr: any) {
+      return arr.filter((item: any) => !areArraysEqual(item, nestedArr));
     }
-
-    const newArray = removeNestedArray(
-      arr.rings,
-      event.graphics[0].geometry.rings[0]
-    );
+    const geometry: any = event.graphics[0].geometry;
+    const rings = geometry.rings[0];
+    const newArray = removeNestedArray(arr.rings, rings);
     arr.rings = newArray;
-
-    // console.log("event ", event.graphics[0].geometry.rings[0]);
-    // console.log("arr rings ", arr);
-    // arr.rings.filter(
-    //   (arr) => !arr.includes(event.graphics[0].geometry.rings[0])
-    // );
   });
   console.log("arr", arr);
 };
