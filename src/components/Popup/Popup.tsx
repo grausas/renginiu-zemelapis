@@ -12,7 +12,7 @@ interface Popup {
   auth: any;
 }
 
-const shareUrl = "http://localhost:5173/";
+const shareUrl = window.location.origin;
 
 export default function Popup({ popupData, auth }: Popup) {
   const toast = useToast();
@@ -61,7 +61,7 @@ export default function Popup({ popupData, auth }: Popup) {
               top="1"
               left="1"
               _hover={{ cursor: "pointer" }}
-              onClick={() => console.log("item", item)}
+              // onClick={() => console.log("item", item)}
             />
           </Tooltip>
         )}

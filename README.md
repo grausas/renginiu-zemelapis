@@ -42,5 +42,5 @@ npm install
 3. Paleiskite aplikaciją
 
 ```sh
-npm start
+npm run dev
 ```

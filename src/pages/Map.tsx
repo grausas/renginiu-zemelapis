@@ -111,24 +111,7 @@ export function Map() {
       const result = { graphic: results.features[0] };
       await getAttachments([result], layer);
       // const parcelExtent = result.graphic.geometry.extent.clone();
-      // const query = layerView.createQuery();
-      // layerView.queryExtent(query).then(function (results) {
-      //   view?.goTo(results.extent);
-      // });
 
-      // reactiveUtils
-      //   .once(() => !layerView.updating)
-      //   .then(() => {
-      // view?.goTo(
-      //   {
-      //     target: parcelExtent,
-      //     zoom: 17,
-      //   },
-      //   { duration: 400 }
-      // );
-      //   });
-
-      // zoomToFeature([result], layer);
       setPopupData([result]);
     }
     setLoading(false);
@@ -150,7 +133,6 @@ export function Map() {
         reactiveUtils.watch(
           () => [view.stationary, view.extent],
           ([stationary]) => {
-            console.log("stationary", stationary);
             if (stationary) {
               promiseUtils.debounce(queryFeatures(layer, layerView));
             }
@@ -203,12 +185,10 @@ export function Map() {
           include: featureLayer,
         });
         if (response.results.length) {
-          console.log("response", response);
           const results = response.results;
 
           await getAttachments(results, featureLayer);
 
-          console.log(results, "features returned");
           zoomToFeature(results);
           setPopupData(results);
         }
@@ -218,23 +198,18 @@ export function Map() {
   }, [featureLayer, view]);
 
   const getAttachments = async (results: any, layer?: __esri.FeatureLayer) => {
-    console.log("resultsAttach", results);
     const objectIds = results.map(
       (result: any) => result.graphic.attributes.OBJECTID
     );
     const attachmentQuery = {
       objectIds: objectIds,
     };
-    console.log("objectIds", objectIds);
-    console.log("featureLayer21212121", layer);
     await layer?.queryAttachments(attachmentQuery).then((attachments) => {
-      console.log("attachments", attachments);
       if (Object.keys(attachments).length > 0) {
+        console.log("results", results);
         results.map((result: any) => {
-          console.log("result", result);
           const resultId = result.graphic.attributes.OBJECTID;
           if (attachments[resultId]) {
-            console.log("attachmentsAdd", attachments);
             result.graphic.set("attachments", attachments[resultId]);
           }
         });
@@ -245,8 +220,6 @@ export function Map() {
   };
 
   const zoomToFeature = async (results: any) => {
-    console.log("VIEWIIWIWIEIEUIWBIEGYB");
-
     view?.goTo(
       {
         target: results[0].graphic,
@@ -289,8 +262,6 @@ export function Map() {
       setDateStart(startDate);
       setDateEnd(endDate);
     }
-    console.log("objectID", objectID);
-    console.log("queryParameters", queryParameters);
   }, []);
 
   const filteredData = useMemo(() => {
