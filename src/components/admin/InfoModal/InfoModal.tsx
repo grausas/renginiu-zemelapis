@@ -30,7 +30,7 @@ export default function InfoModal() {
           }}
         />
       </Tooltip>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <Modal size="xl" isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Paaiškinimas kaip kurti naujus renginius</ModalHeader>
@@ -40,6 +40,24 @@ export default function InfoModal() {
               <ListItem>
                 <ListIcon as={CheckCircleIcon} color="green.500" />
                 Nubraižyti žemėlapyje geometriją
+              </ListItem>
+              <ListItem>
+                <ListIcon as={CheckCircleIcon} color="green.500" />
+                Ilgalaikis renginys - toks renginys kuris vyksta nepertraukiamai
+                nuo nurodytos pradžios datos ir laiko iki nurodytos pabaigos
+                datos ir laiko.
+              </ListItem>
+              <ListItem>
+                <ListIcon as={CheckCircleIcon} color="green.500" />
+                Jeigu norite sukurti renginį kuris vyks nepertraukiamai nuo
+                šiandien 15:00 iki rytojaus 10:00, turite pažymėti varnelę
+                ilgalaikis renginys.
+              </ListItem>
+              <ListItem>
+                <ListIcon as={CheckCircleIcon} color="green.500" />
+                Norint sukurti renginį kuris vyksta tam tikromis dienomis ir tik
+                tam tikromis valandomis, reikia pasirinkti datas ir pažymėti
+                savaitės dienas, kuriomis renginys vyksta.
               </ListItem>
             </List>
           </ModalBody>

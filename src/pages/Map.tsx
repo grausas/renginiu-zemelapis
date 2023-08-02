@@ -4,11 +4,14 @@ import React, {
   useState,
   useCallback,
   useMemo,
+  Suspense,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import ArcGISMap from "../components/Map/Map";
+// import ArcGISMap from "../components/Map/Map";
+const ArcGISMap = React.lazy(() => import("../components/Map/Map"));
 import { Flex, Stack, Text, useRadioGroup } from "@chakra-ui/react";
-import Sidebar from "../components/Sidebar/Sidebar";
+// import Sidebar from "../components/Sidebar/Sidebar";
+const Sidebar = React.lazy(() => import("../components/Sidebar/Sidebar"));
 import Search from "../components/Search/Search";
 import FilterByDate from "../components/FilterByDate/FilterByDate";
 import Card from "../components/Card/Card";
