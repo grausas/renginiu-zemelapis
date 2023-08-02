@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useLayoutEffect, useRef } from "react";
 import { Box } from "@chakra-ui/react";
 import { MapContext } from "../../context/map-context";
 
@@ -8,7 +8,7 @@ const ArcGISMap = () => {
 
   console.log("Map relaod");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (mapRef.current && loadMap) {
       loadMap(mapRef.current);
     }
