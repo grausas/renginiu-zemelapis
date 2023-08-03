@@ -7,6 +7,9 @@
   ],
   "navigationFallback": {
     "rewrite": "index.html",
-    "exclude": ["/images/*.{png,jpg,gif,ico}", "/*.{css,scss,js}"]
+    "exclude": ["/static/media/*.{png,jpg,jpeg,gif,bmp}", "/static/css/*"]
+  },
+  "mimeTypes": {
+    ".json": "text/json"
   }
 }
