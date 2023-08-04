@@ -111,10 +111,8 @@ export function Map() {
       const result = { graphic: results.features[0] };
       await getAttachments([result], layer);
       // const parcelExtent = result.graphic.geometry.extent.clone();
-
       setPopupData([result]);
     }
-    setLoading(false);
   };
 
   // query features by where params
@@ -126,7 +124,8 @@ export function Map() {
 
     view?.whenLayerView(layer).then(async (layerView) => {
       // initial count
-      queryFeatures(layer, layerView);
+      await queryFeatures(layer, layerView);
+      setLoading(false);
 
       // subsequent map interaction
       handles.add(
@@ -135,11 +134,13 @@ export function Map() {
           ([stationary]) => {
             if (stationary) {
               promiseUtils.debounce(queryFeatures(layer, layerView));
+              setLoading(false);
             }
           }
         )
       );
     });
+
     return () => handles.remove();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [whereParams, view]);
@@ -285,7 +286,7 @@ export function Map() {
   return (
     <Flex w="100" h="100%" flexDirection={{ base: "column", md: "row" }}>
       <Sidebar>
-        <Stack direction={"row"} spacing="1" px="3" mb="2">
+        <Stack direction={"row"} spacing="1" px="3">
           <Search
             handleSearch={(e: React.ChangeEvent<HTMLInputElement>) =>
               setSearchTerm(e.target.value)
@@ -298,8 +299,13 @@ export function Map() {
             dateStart={dateStart}
           />
         </Stack>
-        <Flex px="3" mb="2" align="center" justify="space-between">
-          <Flex>
+        <Flex
+          px="3"
+          my={{ base: "1", md: "2" }}
+          align="center"
+          justify="space-between"
+        >
+          <Flex fontSize={{ base: "sm", md: "md" }}>
             Rodomi{" "}
             <Text mx="1" fontWeight="500">
               {!loading ? filteredData.length : "..."}
@@ -307,7 +313,7 @@ export function Map() {
             renginiai
           </Flex>
           <Text ml="1" fontSize="sm">
-            {new Date(dateStart).toLocaleDateString("lt-LT")} -{" "}
+            {new Date(dateStart).toLocaleDateString("lt-LT")} /{" "}
             {new Date(dateEnd).toLocaleDateString("lt-LT")}
           </Text>
         </Flex>
@@ -326,8 +332,8 @@ export function Map() {
           flexDirection={{ base: "row", md: "column" }}
           position="relative"
           w="100%"
-          h={{ base: "180px", md: "calc(100% - 160px)" }}
-          maxH="100%"
+          minH={{ base: "120px", md: "calc(100% - 160px)" }}
+          // h={popupData.length > 0 ? "" : "160px"}
           px="3"
           overflow="auto"
           overflowY={{ base: "hidden", md: "auto" }}
@@ -347,10 +353,17 @@ export function Map() {
           }}
         >
           {popupData.length > 0 ? (
-            <>
+            <Flex flexDirection="column" maxH="300px">
               <BackButton handleClick={handleBack} />
-              <Popup popupData={popupData} auth={auth} />
-            </>
+              <Flex
+                flexDirection="column"
+                h="100%"
+                overflow="auto"
+                position="relative"
+              >
+                <Popup popupData={popupData} auth={auth} />
+              </Flex>
+            </Flex>
           ) : !loading ? (
             filteredData.length > 0 ? (
               <Card data={filteredData} handleClick={handleCard} />

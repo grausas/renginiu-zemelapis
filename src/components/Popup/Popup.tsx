@@ -45,12 +45,13 @@ export default function Popup({ popupData, auth }: Popup) {
         mb="2"
         mr={{ base: "2", md: "0" }}
         shadow="md"
-        p="3"
+        p={{ base: "2", md: "3" }}
         borderRadius="md"
         w={{
           base: popupData.length > 1 ? "calc(100%-40px)" : "100vw",
           md: "auto",
         }}
+        // w="100%"
         position="relative"
       >
         {auth.user.token && (
@@ -68,7 +69,7 @@ export default function Popup({ popupData, auth }: Popup) {
         <Tooltip label="Dalintis" fontSize="xs">
           <Image
             src={share}
-            boxSize="5"
+            boxSize={{ base: "4", md: "5" }}
             position="absolute"
             top="1"
             right="1"
@@ -92,10 +93,10 @@ export default function Popup({ popupData, auth }: Popup) {
               <Flex
                 justify="center"
                 key={category.id}
-                w={{
-                  base: popupData.length > 1 ? "calc(100%-40px)" : "100vw",
-                  md: "auto",
-                }}
+                // w={{
+                //   base: popupData.length > 1 ? "calc(100%-40px)" : "100%",
+                //   md: "auto",
+                // }}
               >
                 <Flex
                   justify="center"
@@ -126,8 +127,13 @@ export default function Popup({ popupData, auth }: Popup) {
         </Text>
 
         <Flex align="center" mb="2">
-          <Image src={calendar} alt="calendar" boxSize="5" mr="3" />
-          <Box fontSize="sm" color="gray.600" fontWeight="500">
+          <Image
+            src={calendar}
+            alt="calendar"
+            boxSize={{ base: "4", md: "5" }}
+            mr="3"
+          />
+          <Box fontSize="sm" color="gray.600" fontWeight="500" lineHeight="1.2">
             <Text>
               {item.graphic.attributes.ILGALAIKIS === 1
                 ? formatStartDate(startDate, endDate)
@@ -140,8 +146,13 @@ export default function Popup({ popupData, auth }: Popup) {
             </Text>
           </Box>
         </Flex>
-        <Flex align="center" mb="2" fontSize="sm">
-          <Image src={document} alt="document" mr="3" boxSize="5" />
+        <Flex align="center" mb={{ base: "1", md: "2" }} fontSize="sm">
+          <Image
+            src={document}
+            alt="document"
+            mr="3"
+            boxSize={{ base: "4", md: "5" }}
+          />
           <Text lineHeight="1.3">{item.graphic.attributes.ORGANIZATORIUS}</Text>
         </Flex>
         <Text fontSize="sm" mb="1">

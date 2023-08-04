@@ -41,12 +41,13 @@ export default function Card({ data, handleClick }: CardProps) {
         borderRadius="md"
         shadow="base"
         mb={{ base: "0", md: "2" }}
-        mr={{ base: "1", md: "0" }}
+        mr={{ base: sortedData.length <= 1 ? "0" : "1", md: "0" }}
         flexDirection="column"
         onClick={() => {
           handleClick(feature);
         }}
         _hover={{ bg: "gray.50", cursor: "pointer" }}
+        w="100%"
       >
         {CategoryData.map((category) => {
           if (category.value === feature.attributes.KATEGORIJA) {
@@ -60,7 +61,10 @@ export default function Card({ data, handleClick }: CardProps) {
                   py="0.5"
                   borderRadius="md"
                   color="brand.white"
-                  w={{ base: "70vw", md: "auto" }}
+                  w={{
+                    base: sortedData.length <= 1 ? "100%" : "60vw",
+                    md: "auto",
+                  }}
                 >
                   <Image src={category.icon} mr="1" boxSize="6" />
                   <Text
@@ -77,16 +81,23 @@ export default function Card({ data, handleClick }: CardProps) {
           }
         })}
         <Text
-          textAlign="center"
-          py={{ base: "1", md: "3" }}
+          textAlign={{ base: "left", md: "center" }}
+          py={{ base: "2", md: "4" }}
           fontWeight="500"
           fontSize={{ base: "sm", md: "md" }}
+          lineHeight="1.2"
         >
           {feature.attributes.PAVADINIMAS}
         </Text>
         <Flex align="center">
-          <Image src={calendar} alt="calendar" w="20px" mr="3" />
-          <Box fontSize="sm">
+          <Image
+            src={calendar}
+            alt="calendar"
+            boxSize={{ base: "4", md: "5" }}
+            // w={{ base: "18px", md: "20px" }}
+            mr="3"
+          />
+          <Box fontSize="sm" lineHeight="1.2">
             <Text>
               {feature.attributes.ILGALAIKIS === 1
                 ? formatStartDate(startDate, endDate)

@@ -9,14 +9,14 @@ interface ButtonProps {
 export default function BackButton({ handleClick }: ButtonProps) {
   return (
     <Button
-      leftIcon={<ArrowLeftIcon boxSize="3" />}
+      leftIcon={<ArrowLeftIcon boxSize={{ base: "2", md: "3" }} />}
       variant="outline"
       bg="brand.white"
       size="sm"
       shadow="sm"
       color="brand.dark"
       fontSize="xs"
-      py="2"
+      py={{ base: "0", md: "2" }}
       fontWeight="400"
       textTransform="uppercase"
       onClick={handleClick}
