@@ -43,15 +43,14 @@ export default function Popup({ popupData, auth }: Popup) {
         flexDirection={"column"}
         bg="brand.white"
         mb="2"
-        mr={{ base: "2", md: "0" }}
         shadow="md"
         p={{ base: "2", md: "3" }}
         borderRadius="md"
-        w={{
-          base: popupData.length > 1 ? "calc(100%-40px)" : "100vw",
-          md: "auto",
-        }}
-        // w="100%"
+        // w={{
+        //   base: popupData.length > 1 ? "calc(100%-40px)" : "100vw",
+        //   md: "auto",
+        // }}
+        w="100%"
         position="relative"
       >
         {auth.user.token && (
@@ -62,6 +61,7 @@ export default function Popup({ popupData, auth }: Popup) {
               top="1"
               left="1"
               _hover={{ cursor: "pointer" }}
+              // onClick={() => console.log("item", item)}
             />
           </Tooltip>
         )}
