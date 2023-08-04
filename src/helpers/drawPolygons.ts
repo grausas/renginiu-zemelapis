@@ -39,8 +39,7 @@ export const drawPolygon = async (
   let arr: any;
   home.on("create", function ({ graphic, state }) {
     featureLayer.opacity = 0.2;
-    // check if the create event's state has changed to complete indicating
-    // the graphic create operation is completed.
+
     if (state === "complete") {
       if (arr) {
         const geometry: any = graphic.geometry;
@@ -49,11 +48,8 @@ export const drawPolygon = async (
       } else {
         arr = graphic.geometry;
       }
-      // remove the graphic from the layer. Sketch adds
-      // the completed graphic to the layer by default.
-      setGeometry(arr);
 
-      // use the graphic.geometry to query features that intersect it
+      setGeometry(arr);
     }
 
     if (state === "cancel") {

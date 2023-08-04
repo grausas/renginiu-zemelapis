@@ -96,11 +96,8 @@ export const AddFeature = async (
     });
   }
 
-  const deleteFeatures = [{ objectId: [7596, 7594, 7590] }];
-
   const edits = {
     addFeatures: addFeature,
-    deleteFeatures: deleteFeatures,
   };
 
   const attachments: __esri.EditsProperties[] = [];
