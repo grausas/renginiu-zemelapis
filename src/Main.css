@@ -11,3 +11,11 @@
 .esri-ui-bottom-right .esri-component {
   margin-top: 10px;
 }
+
+.esri-view-width-xsmall .esri-expand--auto .esri-expand__container--expanded {
+  position: sticky;
+}
+
+.esri-ui-manual-container > .esri-component {
+  display: none;
+}

@@ -4,7 +4,7 @@ export default function Spinner() {
   return (
     <Loader
       color="orange"
-      size="xl"
+      size={{ base: "lg", md: "xl" }}
       position="absolute"
       top="calc(50% - 25px)"
       left="calc(50% - 25px)"

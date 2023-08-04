@@ -13,6 +13,7 @@ import {
   Text,
   Image,
   Box,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { CategoryData } from "../../utils/Category";
 import CategoryIcon from "../../assets/categories.png";
@@ -46,6 +47,7 @@ const Filter = React.memo(
     const [checkedItems, setCheckedItems] = useState<boolean[]>(
       CategoryData.map(() => false)
     );
+    const [isLargerThan720] = useMediaQuery("(min-width: 720px)");
 
     useMemo(() => {
       setStartDate(new Date(dateStart));
@@ -157,7 +159,11 @@ const Filter = React.memo(
     );
 
     return (
-      <Popover closeOnBlur={false} placement="right-end" isLazy>
+      <Popover
+        placement={isLargerThan720 ? "right-end" : "bottom-start"}
+        isLazy
+        flip
+      >
         <PopoverTrigger>
           <Button
             bg="brand.white"
