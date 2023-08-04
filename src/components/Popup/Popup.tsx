@@ -62,7 +62,6 @@ export default function Popup({ popupData, auth }: Popup) {
               top="1"
               left="1"
               _hover={{ cursor: "pointer" }}
-              // onClick={() => console.log("item", item)}
             />
           </Tooltip>
         )}
