@@ -139,8 +139,8 @@ export const AddFeature = async (
   await featureLayerPrivate()
     .applyEdits(edits)
     .then((response) => {
-      results = "success";
       if (response) {
+        results = "success";
         attachFeatures(response);
       }
     })

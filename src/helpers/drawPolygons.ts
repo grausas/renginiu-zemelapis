@@ -70,7 +70,6 @@ export const drawPolygon = async (
     const rings = geometry.rings[0];
     const newArray = removeNestedArray(arr.rings, rings);
     arr.rings = newArray;
-    console.log("arr", arr);
     if (arr.rings.length === 0) {
       setGeometry(undefined);
     } else {
