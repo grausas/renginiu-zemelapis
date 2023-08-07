@@ -46,10 +46,6 @@ export default function Popup({ popupData, auth }: Popup) {
         shadow="md"
         p={{ base: "2", md: "3" }}
         borderRadius="md"
-        // w={{
-        //   base: popupData.length > 1 ? "calc(100%-40px)" : "100vw",
-        //   md: "auto",
-        // }}
         w="100%"
         position="relative"
       >

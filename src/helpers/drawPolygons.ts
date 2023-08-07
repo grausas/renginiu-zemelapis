@@ -5,7 +5,9 @@ export const gLayer = new graphicLayer({
 
 export const drawPolygon = async (
   view: __esri.MapView | undefined,
-  setGeometry: any,
+  setGeometry: React.Dispatch<
+    React.SetStateAction<__esri.Geometry | undefined>
+  >,
   featureLayer: __esri.FeatureLayer
 ) => {
   const sketch = await (await import("@arcgis/core/widgets/Sketch.js")).default;
@@ -68,5 +70,11 @@ export const drawPolygon = async (
     const rings = geometry.rings[0];
     const newArray = removeNestedArray(arr.rings, rings);
     arr.rings = newArray;
+    console.log("arr", arr);
+    if (arr.rings.length === 0) {
+      setGeometry(undefined);
+    } else {
+      setGeometry(arr);
+    }
   });
 };

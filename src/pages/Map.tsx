@@ -49,10 +49,12 @@ export function Map() {
   const [loading, setLoading] = useState(true);
   const [whereParams, setWhereParams] = useState(defaultWhereParams);
   const [popupData, setPopupData] = useState<any[]>([]);
-  const [geometry, setGeometry] = useState<__esri.Geometry[]>([]);
+  const [geometry, setGeometry] = useState<__esri.Geometry>();
   const [objectId, setObjectId] = useState<number>();
   const { view } = useContext(MapContext);
   const auth = useContext(AuthContext);
+
+  console.log("mapGerometry", geometry);
 
   const removeFilterEffect = () => {
     const effect = new FeatureEffect({
@@ -333,7 +335,7 @@ export function Map() {
           position="relative"
           w="100%"
           minH={{ base: "120px", md: "calc(100% - 160px)" }}
-          // h={popupData.length > 0 ? "" : "160px"}
+          h={{ md: popupData.length > 0 ? "100%" : "calc(100% - 160px)" }}
           px="3"
           overflow="auto"
           overflowY={{ base: "hidden", md: "auto" }}
@@ -353,7 +355,10 @@ export function Map() {
           }}
         >
           {popupData.length > 0 ? (
-            <Flex flexDirection="column" maxH="300px">
+            <Flex
+              flexDirection="column"
+              maxH={{ base: "300px", md: "calc(100% - 160px)" }}
+            >
               <BackButton handleClick={handleBack} />
               <Flex
                 flexDirection="column"
