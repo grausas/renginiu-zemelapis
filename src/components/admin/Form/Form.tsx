@@ -103,8 +103,6 @@ export default function Form({ geometry, setGeometry }: Form) {
     },
   });
 
-  console.log("geometry", geometry);
-
   const {
     register,
     handleSubmit,
@@ -187,11 +185,9 @@ export default function Form({ geometry, setGeometry }: Form) {
   }, [successText, toast]);
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log("geometry", geometry);
     if (geometry === undefined) {
       geometryErrorOnOpen();
     } else {
-      console.log("hererer");
       setLoading(true);
       geometryErrorClose();
       const dataToSubmit = data.Savaites_dienos.toString();
@@ -202,7 +198,6 @@ export default function Form({ geometry, setGeometry }: Form) {
       delete data.Attachments;
       const results = await AddFeature(data, attachments, geometry);
       if (results === "success") {
-        console.log("ssuususuucucsuue");
         setLoading(false);
         setSuccessText({
           text: "Renginys sėkmingai sukurtas",

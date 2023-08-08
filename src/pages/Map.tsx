@@ -54,8 +54,6 @@ export function Map() {
   const { view } = useContext(MapContext);
   const auth = useContext(AuthContext);
 
-  console.log("mapGerometry", geometry);
-
   const removeFilterEffect = () => {
     const effect = new FeatureEffect({
       excludedEffect: "opacity(100%) ",
@@ -115,6 +113,7 @@ export function Map() {
       // const parcelExtent = result.graphic.geometry.extent.clone();
       setPopupData([result]);
     }
+    setLoading(false);
   };
 
   // query features by where params
@@ -136,7 +135,6 @@ export function Map() {
           ([stationary]) => {
             if (stationary) {
               promiseUtils.debounce(queryFeatures(layer, layerView));
-              setLoading(false);
             }
           }
         )
@@ -209,7 +207,6 @@ export function Map() {
     };
     await layer?.queryAttachments(attachmentQuery).then((attachments) => {
       if (Object.keys(attachments).length > 0) {
-        console.log("results", results);
         results.map((result: any) => {
           const resultId = result.graphic.attributes.OBJECTID;
           if (attachments[resultId]) {
