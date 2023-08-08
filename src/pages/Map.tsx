@@ -113,6 +113,7 @@ export function Map() {
       // const parcelExtent = result.graphic.geometry.extent.clone();
       setPopupData([result]);
     }
+    setLoading(false);
   };
 
   // query features by where params
@@ -134,7 +135,6 @@ export function Map() {
           ([stationary]) => {
             if (stationary) {
               promiseUtils.debounce(queryFeatures(layer, layerView));
-              setLoading(false);
             }
           }
         )
