@@ -2,7 +2,7 @@ import { useContext, useLayoutEffect, useRef } from "react";
 import { Box } from "@chakra-ui/react";
 import { MapContext } from "../../context/map-context";
 
-const ArcGISMap = () => {
+const ArcGISMap = ({ isOpen }: { isOpen: boolean }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const { loadMap } = useContext(MapContext);
 
@@ -14,9 +14,16 @@ const ArcGISMap = () => {
 
   return (
     <Box
-      w={{ base: "100%", md: "calc(100% - 400px)" }}
-      h="100%"
-      pt={{ base: "20px", md: "60px" }}
+      position={{ base: "unset", md: "absolute" }}
+      right="0"
+      top="60px"
+      bottom="0"
+      w={{
+        base: "100%",
+        md: isOpen ? "calc(100% - 20px)" : "calc(100% - 400px)",
+      }}
+      h={{ base: "100%", md: "calc(100% - 60px)" }}
+      pt={{ base: "20px", md: "0px" }}
       ref={mapRef}
     ></Box>
   );

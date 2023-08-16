@@ -7,7 +7,13 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import ArcGISMap from "../components/Map/Map";
-import { Flex, Stack, Text, useRadioGroup } from "@chakra-ui/react";
+import {
+  Flex,
+  Stack,
+  Text,
+  useDisclosure,
+  useRadioGroup,
+} from "@chakra-ui/react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Search from "../components/Search/Search";
 import FilterByDate from "../components/FilterByDate/FilterByDate";
@@ -24,6 +30,7 @@ import * as promiseUtils from "@arcgis/core/core/promiseUtils.js";
 import { MapContext } from "../context/map-context";
 import { addDays } from "../helpers/addDays";
 import NoResults from "../components/NoResults/NoResults";
+import EditForm from "../components/admin/EditForm/EditForm";
 const Form = React.lazy(() => import("../components/admin/Form/Form"));
 const Filter = React.lazy(() => import("../components/Filter/Filter"));
 import { AuthContext } from "../context/auth";
@@ -31,14 +38,22 @@ const todayStart = new Date(new Date().setHours(0, 0, 0)).getTime();
 const todayEnd = new Date(new Date().setHours(23, 59, 59)).getTime();
 const defaultWhereParams = `RENGINIO_PRADZIA <= '${todayEnd}' AND RENGINIO_PABAIGA >= '${todayStart}'`;
 const options = ["šiandien", "savaitė", "mėnesis"];
-import { drawPolygon } from "../helpers/drawPolygons";
+import { drawPolygon, gLayer } from "../helpers/drawPolygons";
+import { updatePolygon } from "../helpers/updatePolygons";
 // locale
 import * as intl from "@arcgis/core/intl";
 
 export function Map() {
   intl.setLocale("lt");
   const history = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenSidebar,
+    onOpen: onOpenSidebar,
+    onClose: onCloseSidebar,
+  } = useDisclosure();
   const [data, setData] = useState<__esri.Graphic[]>([]);
+  const [editData, setEditData] = useState<__esri.Graphic>();
   const [searchTerm, setSearchTerm] = useState("");
   const [featureLayer, setFeatureLayer] = useState<
     __esri.FeatureLayer | undefined
@@ -50,6 +65,7 @@ export function Map() {
   const [whereParams, setWhereParams] = useState(defaultWhereParams);
   const [popupData, setPopupData] = useState<any[]>([]);
   const [geometry, setGeometry] = useState<__esri.Geometry>();
+  const [editGeometry, setEditGeometry] = useState<__esri.Geometry>();
   const [objectId, setObjectId] = useState<number>();
   const { view } = useContext(MapContext);
   const auth = useContext(AuthContext);
@@ -57,9 +73,11 @@ export function Map() {
   const removeFilterEffect = () => {
     const effect = new FeatureEffect({
       excludedEffect: "opacity(100%) ",
+      includedEffect: "opacity(100%) ",
     });
     if (featureLayer !== undefined) {
       featureLayer.featureEffect = effect;
+      featureLayer.opacity = 1;
     }
   };
 
@@ -248,8 +266,14 @@ export function Map() {
   const handleBack = () => {
     setObjectId(undefined);
     setPopupData([]);
-    removeFilterEffect();
     history("/", { replace: true });
+    if (auth.user.token) {
+      onClose();
+      setEditData(undefined);
+      setEditGeometry(undefined);
+      gLayer.removeAll();
+    }
+    removeFilterEffect();
   };
 
   useEffect(() => {
@@ -282,9 +306,22 @@ export function Map() {
     setPopupData([result]);
   };
 
+  const handleEdit = (e: any) => {
+    if (!featureLayer) return;
+    updatePolygon(view, setEditGeometry, featureLayer, e.graphic);
+
+    setEditGeometry(e.graphic.geometry);
+    setEditData(e);
+    onOpen();
+  };
+
   return (
     <Flex w="100" h="100%" flexDirection={{ base: "column", md: "row" }}>
-      <Sidebar>
+      <Sidebar
+        isOpen={isOpenSidebar}
+        onClose={onCloseSidebar}
+        onOpen={onOpenSidebar}
+      >
         <Stack direction={"row"} spacing="1" px="3">
           <Search
             handleSearch={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -363,7 +400,11 @@ export function Map() {
                 overflow="auto"
                 position="relative"
               >
-                <Popup popupData={popupData} auth={auth} />
+                <Popup
+                  popupData={popupData}
+                  auth={auth}
+                  handleEdit={handleEdit}
+                />
               </Flex>
             </Flex>
           ) : !loading ? (
@@ -377,9 +418,19 @@ export function Map() {
           )}
         </Flex>
       </Sidebar>
-      <ArcGISMap />
+      <ArcGISMap isOpen={isOpenSidebar} />
       {auth.user.token && (
         <Form geometry={geometry} setGeometry={setGeometry} />
+      )}
+      {auth.user.token && editData && (
+        <EditForm
+          geometry={editGeometry}
+          setGeometry={setEditGeometry}
+          isOpen={isOpen}
+          onClose={onClose}
+          editData={editData}
+          newGeometry={geometry}
+        />
       )}
     </Flex>
   );

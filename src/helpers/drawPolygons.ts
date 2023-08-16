@@ -10,9 +10,9 @@ export const drawPolygon = async (
   >,
   featureLayer: __esri.FeatureLayer
 ) => {
+  view?.map.layers.add(gLayer);
   const sketch = await (await import("@arcgis/core/widgets/Sketch.js")).default;
 
-  view?.map.layers.add(gLayer);
   const home = new sketch({
     view: view,
     layer: gLayer,
@@ -58,6 +58,7 @@ export const drawPolygon = async (
       featureLayer.opacity = 1;
     }
   });
+
   home.on("delete", function (event) {
     function areArraysEqual(arr1: any, arr2: any) {
       return JSON.stringify(arr1) === JSON.stringify(arr2);

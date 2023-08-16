@@ -10,11 +10,12 @@ import { formatStartDate, formatEndDate } from "../../helpers/formatDate";
 interface Popup {
   popupData: __esri.ViewHit[];
   auth: any;
+  handleEdit: any;
 }
 
 const shareUrl = window.location.origin;
 
-export default function Popup({ popupData, auth }: Popup) {
+export default function Popup({ popupData, auth, handleEdit }: Popup) {
   const toast = useToast();
 
   return popupData?.map((item: any) => {
@@ -57,6 +58,7 @@ export default function Popup({ popupData, auth }: Popup) {
               top="1"
               left="1"
               _hover={{ cursor: "pointer" }}
+              onClick={() => handleEdit(item)}
             />
           </Tooltip>
         )}
