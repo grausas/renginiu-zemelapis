@@ -9,7 +9,6 @@ import Legend from "@arcgis/core/widgets/Legend.js";
 import Home from "@arcgis/core/widgets/Home.js";
 import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol.js";
 import Expand from "@arcgis/core/widgets/Expand.js";
-import { featureLayerPublic } from "../layers";
 import { layerRenderer } from "./layerRenderer";
 
 interface MapApp {
@@ -18,7 +17,7 @@ interface MapApp {
 
 const app: MapApp = {};
 
-export function init(container: HTMLDivElement) {
+export function init(container: HTMLDivElement, layer: __esri.FeatureLayer) {
   if (app.view) {
     app.view.destroy();
   }
@@ -45,7 +44,7 @@ export function init(container: HTMLDivElement) {
 
   const map = new ArcGISMap({
     basemap: baseMap,
-    layers: [featureLayerPublic()],
+    layers: [layer],
   });
 
   const view = new MapView({

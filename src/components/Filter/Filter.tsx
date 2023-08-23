@@ -196,7 +196,7 @@ const Filter = React.memo(
                   selectedDate={startDate}
                   onChange={(date) => setStartDate(date)}
                   inputType="date"
-                  minDate={new Date().setDate(new Date().getDate() - 30)}
+                  minDate={new Date().setDate(new Date().getDate() - 2000)}
                   maxDate={new Date().setDate(new Date().getFullYear() + 1)}
                 />
               </Box>

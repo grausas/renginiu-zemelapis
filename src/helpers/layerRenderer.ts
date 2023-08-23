@@ -13,6 +13,7 @@ export const layerRenderer = (view: any) => {
   reactiveUtils
     .whenOnce(() => view.ready)
     .then(() => {
+      if (view.map.layers.length === 0) return;
       const uniqueValue =
         view.map.layers.getItemAt(0).renderer.uniqueValueInfos;
 
